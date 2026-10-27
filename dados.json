@@ -1,0 +1,40 @@
+{
+  "ultimaAtualizacao": "Outubro de 2026",
+  "categorias": {
+    "territorio": {
+      "titulo": "1. Município e Território",
+      "icone": "map-pin",
+      "descricao": "Dados populacionais e territoriais de Rondonópolis-MT.",
+      "links": [
+        {
+          "nome": "IBGE Cidades - Rondonópolis",
+          "descricao": "Panorama geral, infográficos e dados demográficos do município.",
+          "url": "https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama",
+          "orgao": "IBGE",
+          "restrito": false
+        }
+      ],
+      "indicadores": [
+        { "nome": "População Residente (Censo 2022)", "valor": "244.897 hab.", "periodo": "2022", "fonte": "IBGE" },
+        { "nome": "Estimativa Populacional", "valor": "260.150 hab.", "periodo": "2025/2026", "fonte": "IBGE" }
+      ]
+    },
+    "cadunico": {
+      "titulo": "2. Cadastro Único e Benefícios",
+      "icone": "users",
+      "descricao": "CECAD, Bolsa Família, BPC e combate à extrema pobreza.",
+      "links": [
+        {
+          "nome": "CECAD 2.0 (Consulta/Extração)",
+          "descricao": "Acesso oficial para relatórios do Cadastro Único.",
+          "url": "https://cecad.cidadania.gov.br/",
+          "orgao": "MDS",
+          "restrito": true
+        }
+      ],
+      "indicadores": [
+        { "nome": "Total de Famílias Cadastradas", "valor": "A carregar relatório", "periodo": "Mensal", "fonte": "SEMPRAS / CECAD" }
+      ]
+    }
+  }
+}
