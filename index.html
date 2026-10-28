@@ -84,7 +84,9 @@ const percentual = n => Number(n).toFixed(1).replace(".",",")+"%";
 
 const abas=[
 ["municipio","Município, Território e IBGE"],
-["rede","Rede SUAS, CadSUAS e Contatos"],
+["rede","Rede Socioassistencial e Intersetorial"],
+["cadsuas","CadSUAS e Gestão do Trabalho — NOB-RH SUAS"],
+["monitoramento","Monitoramento da Rede SUAS"],
 ["mulher","Superintendência da Mulher"],
 ["cadunico","Cadastro Único, RI Social e IVCAD"],
 ["basica","Proteção Social Básica — RMA"],
@@ -119,6 +121,8 @@ if(graficoAtivo){graficoAtivo.destroy();graficoAtivo=null;}
 const funcoes={
  municipio:municipio,
  rede:rede,
+ cadsuas:cadsuas,
+ monitoramento:monitoramento,
  mulher:mulher,
  cadunico:cadunico,
  basica:basica,
@@ -707,6 +711,49 @@ function vsaFiltrarSet(){const q=vsaNorm(document.getElementById('vsaSetBusca').
  document.getElementById('vsaSetCount').textContent=rows.length+' providências encontradas.';
  document.getElementById('vsaSetLista').innerHTML=rows.map(m=>`<details><summary>SETASC ${vsaEsc(m.id)} • ${vsaEsc(m.unidade)} — ${vsaEsc(m.status)}</summary><p><b>Eixo:</b> ${vsaEsc(m.eixo)}</p><p><b>Demanda:</b> ${vsaEsc(m.demanda)}</p><p><b>Providência:</b> ${vsaEsc(m.acao)}</p><p><b>Responsável:</b> ${vsaEsc(m.responsavel)}</p><p><b>Prazo:</b> ${vsaEsc(m.prazo)}</p><p><b>Execução registrada:</b> ${vsaEsc(typeof m.execucao==='number'?(100*m.execucao).toLocaleString('pt-BR')+'%':m.execucao)}</p><p><b>Próximo passo:</b> ${vsaEsc(m.proximo)}</p><p><b>Atualização:</b> ${vsaEsc(m.atualizacao)}</p></details>`).join('')||'<p>Sem providências encontradas.</p>';
 }
+
+// ==========================================================
+// ORGANIZAÇÃO DA REDE EM 3 ABAS INDEPENDENTES — 14 ABAS
+// ==========================================================
+rede=function(){
+ conteudo.innerHTML=`
+ <div class="card"><h2>Rede Socioassistencial e Intersetorial</h2>
+ <p>Diretório de unidades, serviços, OSCs, conselhos e órgãos públicos. Dados informados no levantamento institucional; confirme responsáveis e contatos periodicamente.</p>
+ <div class="cards">${[['Registros institucionais',VSA_UNIDADES.length],['Registros de OSCs',VSA_OSCS.length],['CRAS ativos',8],['Portais municipais',VSA_LINKS.length]].map(x=>`<div class="kpi"><small>${vsaEsc(x[0])}</small><strong>${x[1]}</strong></div>`).join('')}</div></div>
+ <div class="card"><h3>Rede municipal de Educação, Saúde e Prefeitura</h3><div class="links">${VSA_LINKS.map(x=>`<a href="${vsaEsc(x[1])}" target="_blank" rel="noopener noreferrer">${vsaEsc(x[0])}</a>`).join('')}</div></div>
+ <div class="card"><h3>Consultar unidades e OSCs</h3><div class="controles"><input id="vsaBuscaRede" placeholder="Buscar unidade, bairro, telefone, responsável, e-mail ou serviço"><select id="vsaTipoRede"><option value="">Todos os registros</option><option value="Institucional">Rede institucional</option><option value="OSC">Organizações da sociedade civil</option></select></div><p id="vsaContagemRede"></p><div id="vsaResultadoRede"></div>
+ <div class="aviso">Relação informativa de OSCs: a inclusão não comprova inscrição no CMAS nem parceria formal. Endereços protegidos de unidades de acolhimento não devem ser divulgados. CNPJs não foram informados na base.</div></div>`;
+ document.getElementById('vsaBuscaRede').addEventListener('input',vsaFiltrarRede);
+ document.getElementById('vsaTipoRede').addEventListener('change',vsaFiltrarRede);
+ vsaFiltrarRede();
+};
+function cadsuas(){
+ conteudo.innerHTML=`
+ <div class="card"><h2>CadSUAS e Gestão do Trabalho — NOB-RH SUAS</h2><p>Monitoramento do quadro de pessoal, vínculos e lotações. Dados do levantamento enviado, não de consulta automática ao CadSUAS.</p>
+ <div class="cards">${[['Servidores cadastrados',289],['Ativos',284],['Inativos, cedidos ou afastados',5],['Lotações informadas',32]].map(x=>`<div class="kpi"><small>${x[0]}</small><strong>${x[1]}</strong></div>`).join('')}</div>
+ <div class="aviso">O quadro por categoria profissional × vínculo soma 287 registros, enquanto o consolidado informa 284 ativos. Há divergências de classificação entre lotações. Não usar essas diferenças como déficit validado.</div></div>
+ <div class="card"><h3>Distribuição por tipo de unidade</h3><div class="grafico"><canvas id="vsaRhTipos"></canvas></div><div id="vsaRhTabela"></div></div>
+ <div class="card"><h3>Vínculos e categorias profissionais</h3><div class="grafico"><canvas id="vsaRhVinc"></canvas></div><div id="vsaRhCat"></div></div>
+ <div class="card"><h3>Pesquisa de profissionais por lotação</h3><div class="controles"><input id="vsaLotBusca" placeholder="Pesquisar lotação ou unidade..."></div><div id="vsaLotLista"></div></div>
+ <div class="card"><h3>Alertas para Gestão do Trabalho</h3><p>Conferir equipe de referência, carga horária, forma de ingresso, afastamentos e vínculo, considerando NOB-RH SUAS e os registros oficiais do CadSUAS.</p></div>`;
+ document.getElementById('vsaLotBusca').addEventListener('input',vsaFiltrarLot);
+ vsaFiltrarLot();
+ vsaRHCharts();
+}
+function monitoramento(){
+ const linhas=VSA_RH_LOT.map(r=>[vsaEsc(r[0]),vsaFmt(r[1]),vsaFmt(r[2]),vsaFmt(r[3]),vsaFmt(r[4]),vsaFmt(r[5])]);
+ conteudo.innerHTML=`
+ <div class="card"><h2>Monitoramento da Rede SUAS</h2><p>Acompanhamento técnico da rede, estrutura, lotações e necessidades de atualização cadastral.</p>
+ ${indicadores([['CRAS ativos',8],['Lotações no quadro de RH',32],['Famílias CadÚnico — set/2026','50.941'],['Meta de verificação','Por unidade']])}
+ <div class="aviso">Esta aba apresenta dados de referência e itens de verificação. Não representa vistoria concluída nem avaliação oficial de conformidade da NOB-RH SUAS ou do Censo SUAS.</div></div>
+ <div class="card"><h3>Quadro de referência — lotações informadas</h3><div class="controles"><input id="vsaMonitorBusca" placeholder="Pesquisar unidade..."></div><div id="vsaMonitorTabela"></div></div>
+ <div class="card"><h3>Checklist de monitoramento por unidade</h3>
+ ${[['CadSUAS e identificação','Confirmar unidade, responsável, contatos e atualizações'],['Estrutura física e acessibilidade','Conferir condições do imóvel e acessibilidade'],['Equipe de referência','Verificar quantitativo, perfil e carga horária efetivos'],['Cobertura territorial','Revisar bairros de abrangência e demanda'],['Registros de atendimento','Cruzar RMA, prontuários, SISC e outros sistemas pertinentes'],['Censo SUAS','Conferir preenchimento, consistência e situação dos questionários']].map(x=>`<details><summary>${x[0]}</summary><p>${x[1]}</p><p><b>Situação:</b> a verificar na unidade.</p></details>`).join('')}</div>`;
+ const busca=document.getElementById('vsaMonitorBusca');
+ function filtrar(){let q=vsaNorm(busca.value);document.getElementById('vsaMonitorTabela').innerHTML=tabela(['Lotação','Ativos','Efetivos','Contratados','Comissionados','Terceirizados'],VSA_RH_LOT.filter(r=>vsaNorm(r[0]).includes(q)).map(r=>r.map((v,i)=>i?vsaFmt(v):vsaEsc(v))));}
+ busca.addEventListener('input',filtrar);filtrar();
+}
+
 // Evita acumulacão de gráficos ao trocar de aba
 const abrirAnterior=abrir;
 abrir=function(id){vsaClear();abrirAnterior(id)};
