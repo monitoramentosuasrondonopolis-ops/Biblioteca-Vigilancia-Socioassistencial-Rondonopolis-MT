@@ -20,10 +20,17 @@
       ]
     },
     "cadunico": {
-      "titulo": "2. Cadastro Único e IVCAD",
+      "titulo": "2. Cadastro Único, RI Social e IVCAD",
       "icone": "users",
-      "descricao": "CECAD, IVCAD, Bolsa Família e mapeamento socioeconômico das famílias.",
+      "descricao": "CECAD, RI Social, IVCAD, Bolsa Família e mapeamento socioeconômico das famílias.",
       "links": [
+        {
+          "nome": "RI Social (Rede de Informações do SUAS)",
+          "descricao": "Sistema do MDS para cruzamento de dados, indicadores sociais e informações do Cadastro Único e SUAS.",
+          "url": "https://aplicacoes.mds.gov.br/sagi/risocial/",
+          "orgao": "MDS",
+          "restrito": true
+        },
         {
           "nome": "CECAD 2.0",
           "descricao": "Sistema de consulta, seleção e extração de dados do Cadastro Único.",
