@@ -72,7 +72,7 @@ footer{text-align:center;background:#172e4b;color:white;padding:25px}
 <small>SEMPRAS | RONDONÓPOLIS - MT</small>
 <h1>Biblioteca e Painel da Vigilância Socioassistencial</h1>
 <p>Diagnóstico Socioterritorial • Monitoramento • Gestão da Informação • PMAS 2026–2029</p>
-<small>Base documental consolidada até outubro de 2026</small>
+<small>Base documental consolidada até outubro de 2026 — VERSÃO PSE CORRIGIDA 28/10/2026</small>
 </header>
 
 <main>
@@ -651,8 +651,8 @@ function pseFmt(n){return n.toLocaleString('pt-BR')}
 function pseLinks(tipo){return PSE_URLS[tipo].map((id,i)=>`<a target="_blank" rel="noopener noreferrer" href="https://drive.google.com/file/d/${id}/view">${PSE_MESES[i]}/2026 — formulário</a>`).join(' &nbsp; | &nbsp; ')}
 function psePainel(){
  const c=PSE_CREAS,p=PSE_POP;
- return card('Proteção Social Especial — RMA 2026 | CREAS e Centro POP',
- `<p><b>Período documental:</b> janeiro a abril de 2026. Análise baseada em oito formulários oficiais de RMA/SNAS. Dados agregados, sem identificação de usuários.</p>`+
+ return card('✅ RMA 2026 CARREGADO — CREAS E CENTRO POP | JANEIRO A ABRIL',
+ `<p style="background:#dbeafe;padding:12px;border-radius:8px;color:#123c71;font-weight:bold">VERSÃO ATUALIZADA 28/10/2026 — Dados reais dos formulários, sem quadros 'A validar'.</p><p><b>Período documental:</b> janeiro a abril de 2026. Análise baseada em oito formulários oficiais de RMA/SNAS. Dados agregados, sem identificação de usuários.</p>`+
  indicadores([
  ['CREAS — casos em PAEFI (abril)',pseFmt(c[3][0])],
  ['CREAS — novos casos no quadrimestre',pseFmt(pseSoma(c,1))],
