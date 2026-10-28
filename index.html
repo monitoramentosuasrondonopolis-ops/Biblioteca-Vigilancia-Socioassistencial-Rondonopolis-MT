@@ -1,63 +1,127 @@
-<!-- INÍCIO: COMPLEMENTO REDE SUAS / CADSUAS -->
+
+<!-- ===============================================
+PAINEL INTERATIVO IBGE — RONDONÓPOLIS/MT
+INTEGRAÇÃO COM API OFICIAL DO IBGE
+COLE ANTES DE </body> NO index.html
+================================================ -->
 
 <style>
-#redeComplemento{font-family:Arial,sans-serif;color:#25364a}
-#redeComplemento *{box-sizing:border-box}
-#redeComplemento .rc-card{
- background:#fff;border:1px solid #dce5ef;
- padding:22px;border-radius:14px;margin:17px 0
+#ibge-interativo{
+  font-family:Arial,sans-serif;
+  color:#26364a;
+  margin-top:22px;
 }
-#redeComplemento h2,#redeComplemento h3{color:#173b75}
-#redeComplemento .rc-grid{
- display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
- gap:12px
+#ibge-interativo *{box-sizing:border-box}
+#ibge-interativo .ibge-card{
+  background:white;
+  border:1px solid #dce5ef;
+  border-radius:14px;
+  padding:20px;
+  margin:16px 0;
+  box-shadow:0 2px 8px #142d4c0b;
 }
-#redeComplemento .rc-kpi{
- padding:18px;background:#eff6ff;border-radius:11px
+#ibge-interativo h2,
+#ibge-interativo h3{color:#173b75}
+#ibge-interativo .ibge-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+  margin:18px 0;
 }
-#redeComplemento .rc-kpi strong{
- display:block;font-size:26px;color:#1d4ed8
+#ibge-interativo .ibge-kpi{
+  background:#eff6ff;
+  border:1px solid #dbeafe;
+  border-radius:12px;
+  padding:18px;
 }
-#redeComplemento .rc-kpi small{color:#64748b}
-#redeComplemento .rc-links{
- display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
- gap:12px;margin:15px 0
+#ibge-interativo .ibge-kpi small{
+  display:block;
+  color:#52657e;
+  line-height:1.5;
 }
-#redeComplemento .rc-links a{
- display:block;background:#edf5ff;padding:16px;
- border-radius:10px;color:#174b8a;text-decoration:none;
- font-weight:bold;border:1px solid #dce8fa
+#ibge-interativo .ibge-kpi strong{
+  display:block;
+  font-size:26px;
+  color:#1d4ed8;
+  margin-top:8px;
 }
-#redeComplemento .rc-controles{
- display:flex;gap:10px;flex-wrap:wrap;margin:15px 0
+#ibge-interativo .ibge-chart{
+  position:relative;
+  height:370px;
 }
-#redeComplemento input,#redeComplemento select{
- padding:12px;border:1px solid #cbd5e1;
- border-radius:8px;flex:1;min-width:180px
+#ibge-interativo .ibge-tools{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:15px 0;
+  align-items:center;
 }
-#redeComplemento .rc-lista{
- display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
- gap:12px
+#ibge-interativo button{
+  background:#1d4ed8;
+  border:0;
+  border-radius:8px;
+  padding:12px 16px;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
 }
-#redeComplemento details{
- border:1px solid #dae4ee;border-radius:10px;
- padding:14px;background:#fafcff;min-width:0
+#ibge-interativo button:disabled{
+  opacity:.5;cursor:wait;
 }
-#redeComplemento summary{
- cursor:pointer;font-weight:bold;color:#173b75
+#ibge-interativo select{
+  padding:12px;
+  border:1px solid #cbd5e1;
+  border-radius:8px;
+  background:white;
 }
-#redeComplemento p{
- overflow-wrap:anywhere;line-height:1.5
+#ibge-interativo table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
 }
-#redeComplemento .rc-aviso{
- padding:14px;background:#fffbeb;
- border-left:4px solid #f59e0b;margin:15px 0
+#ibge-interativo th{
+  text-align:left;
+  background:#e8eef8;
+  padding:11px;
 }
-#redeComplemento .rc-valor{
- white-space:pre-line;font-size:13px
+#ibge-interativo td{
+  padding:11px;
+  border-bottom:1px solid #e2e8f0;
 }
-#redeComplemento .rc-label{
- font-weight:bold;color:#334155
+#ibge-interativo .ibge-alerta{
+  padding:14px;
+  background:#fffbeb;
+  border-left:4px solid #f59e0b;
+  margin:12px 0;
+  line-height:1.6;
+}
+#ibge-interativo .ibge-info{
+  padding:14px;
+  background:#eff6ff;
+  border-left:4px solid #2563eb;
+  margin:12px 0;
+  line-height:1.6;
+}
+#ibge-interativo .ibge-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+}
+#ibge-interativo .ibge-links a{
+  display:inline-block;
+  background:#edf5ff;
+  border-radius:8px;
+  padding:12px;
+  color:#1d4ed8;
+  text-decoration:none;
+  font-weight:bold;
+}
+#ibge-interativo .ibge-muted{
+  font-size:12px;
+  color:#64748b;
+}
+@media(max-width:600px){
+  #ibge-interativo .ibge-chart{height:300px}
 }
 </style>
 
@@ -65,680 +129,541 @@
 (function(){
 "use strict";
 
-/* LINKS OFICIAIS DA PREFEITURA */
+const IBGE_CODIGO="5107602";
+const IBGE_UF="51";
 
-const linksRede=[
-["Educação — Rede Municipal","https://www.rondonopolis.mt.gov.br/informacoes-da-rede-municipal-de-educacao/"],
-["Saúde — Rede Básica","https://www.rondonopolis.mt.gov.br/rede-basica/"],
-["Saúde — Rede Hospitalar","https://www.rondonopolis.mt.gov.br/rede-hospitalar/"],
-["Ramais da Prefeitura","https://www.rondonopolis.mt.gov.br/ramais/"],
-["Ramais da Educação","https://www.rondonopolis.mt.gov.br/ramais/?q=&unit=5"],
-["Órgãos Municipais","https://www.rondonopolis.mt.gov.br/orgaos-municipais/?p=2"]
-];
+const IBGE_API={
+ localidade:
+ "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/5107602",
 
-/*
- CAMPOS:
- nome, tipo, responsável, telefone, email,
- endereço, serviços ou observações.
-*/
+ censoMunicipio:
+ "https://servicodados.ibge.gov.br/api/v3/agregados/4714/periodos/2022/variaveis/93%7C6318%7C614?localidades=N6%5B5107602%5D",
 
-const unidadesRede=[
+ censoEstado:
+ "https://servicodados.ibge.gov.br/api/v3/agregados/4714/periodos/2022/variaveis/93?localidades=N3%5B51%5D",
 
-["SEMPRAS","Gestão",
-"Fabiana Frederico Rizati Perez",
-"(66) 3439-9100",
-"assistenciasocialroo@gmail.com",
-"Av. Getúlio Vargas, 1439, Vila Aurora I",
-"Secretaria Municipal de Promoção e Assistência Social."],
-
-["Superintendência de Gestão","Gestão",
-"Rubinalda Rodrigues dos Santos",
-"(66) 3439-9100",
-"financeirosempras@gmail.com",
-"Av. Getúlio Vargas, 729, Vila Aurora I",
-"Gestão administrativa e financeira."],
-
-["Coordenação Jurídica","Gestão",
-"Marielle Barbosa de Brito",
-"(66) 3439-9100",
-"juridicosempras@gmail.com",
-"Av. Getúlio Vargas, 729, Vila Aurora I",
-"Assessoramento jurídico."],
-
-["Engenharia e Arquitetura","Gestão",
-"Tainá de Oliveira Boaventura",
-"(66) 99991-2973",
-"engenharia.sempras@gmail.com",
-"Av. Getúlio Vargas, 729, Vila Aurora I",
-"Engenharia e arquitetura da SEMPRAS."],
-
-["Benefícios, Programas e Projetos","Gestão",
-"",
-"(66) 3439-9100",
-"suas.rondonopolis@gmail.com",
-"Av. Getúlio Vargas, 729, Vila Aurora I",
-"Gestão de benefícios, programas e projetos socioassistenciais."],
-
-["Posto Cadastro Único","Cadastro Único",
-"Nayane Soraille Domingues Silva",
-"(66) 99921-1763",
-"gestaocadpbfroo@gmail.com",
-"Ganha Tempo, Rua João Pessoa, 802, Centro",
-"Atendimento de segunda a sexta, das 8h às 17h."],
-
-["Educação Permanente","Gestão",
-"Marcia Gislene Casali",
-"(66) 3439-9100",
-"educacaopermanenteroo@gmail.com",
-"Av. Getúlio Vargas, 729, Vila Aurora I",
-"Formação e educação permanente."],
-
-["Vigilância Socioassistencial","Gestão",
-"Alessandra dos Santos Oliveira Silva",
-"(66) 99664-4164",
-"monitoramento.suas.rondonopolis@gmail.com",
-"Av. Getúlio Vargas, 729, Vila Aurora I",
-"Diagnóstico, informação, monitoramento e avaliação."],
-
-["Parcerias com OSC","Gestão",
-"Mayara Aparecida Nunes dos Anjos e Wanessa Keller Leão Borges",
-"(66) 98413-7220",
-"parceriassempras@gmail.com",
-"Av. Getúlio Vargas, 729, Vila Aurora I",
-"Parcerias com organizações da sociedade civil."],
-
-["Superintendência da Mulher","Mulher",
-"Ariene Ferreira Ferreira",
-"(66) 99991-0486",
-"superintendenciadamulher.roo@gmail.com",
-"Rua Arnaldo Estevão de Figueiredo, 167, Vila Aurora I",
-"Políticas públicas para mulheres."],
-
-["Políticas do Trabalho","Gestão",
-"Eunice Helen Frota Prado e Stephani Caroline Nunes de Souza",
-"(66) 3439-9100",
-"politicasdotrabalhosempras@gmail.com",
-"Av. Getúlio Vargas, 729, Vila Aurora I",
-"Cursos e políticas de inclusão produtiva."],
-
-["Proteção Social Básica","Gestão",
-"Márcia dos Santos Medeiros",
-"(66) 3439-9100",
-"bsemprasbasica@gmail.com",
-"Av. Getúlio Vargas, 729, Vila Aurora I",
-"Coordenação da Proteção Social Básica."],
-
-["CRAS Alfredo de Castro","CRAS",
-"Roberta Gobes de Barros",
-"(66) 3411-5796",
-"crasalfredodecastro@gmail.com",
-"Rua Projetada, s/n, Alfredo de Castro",
-"PAIF e Cadastro Único. Abrangência: Alfredo de Castro, Celina Bezerra, Vila Bueno, Vila Paulista e áreas rurais."],
-
-["CRAS Ana Carla","CRAS",
-"Daiani Rodrigues Neto",
-"(66) 3411-5755 / 3411-5754",
-"crasanacarla2025@gmail.com",
-"Rua D, s/n, Jardim Ana Carla II",
-"PAIF e Cadastro Único. Abrangência: Ana Carla, Parque Universitário, Pedra 90, Rosa Bororo, Vila Olinda e outras localidades."],
-
-["CRAS Conjunto São José","CRAS",
-"Monica Gomes Silveiro",
-"(66) 3411-5786 / 3411-5792",
-"crasconjunto@gmail.com",
-"Rua F, s/n, Conjunto São José",
-"PAIF. Abrangência: Conjunto São José, Jardim Liberdade, Jardim Tropical, Serra Dourada e outros bairros."],
-
-["CRAS Cidade Alta / Jardim Iguaçu","CRAS",
-"Elizabeth Marmo de Souza Resende",
-"(66) 3411-5740 / 99616-1860",
-"crasiguacu@outlook.com",
-"Av. Jussara, 1700, Parque Residencial Cidade Alta",
-"PAIF. Abrangência: Cidade Alta, Jardim Iguaçu, Jardim Rondônia, Vila Aurora e outras localidades."],
-
-["CRAS Luz D'Yara","CRAS",
-"José da Silva Barros",
-"(66) 3411-4392 / 98412-7167",
-"crasluzdaiara@gmail.com",
-"Rua Claudemiro Justino Anjos, 99, Jardim Modelo",
-"PAIF. Abrangência: Luz D'Yara, Jardim Modelo, Vila Operária, Vila Mineira, Jardim Primavera e outros bairros."],
-
-["CRAS Sagrada Família / CEU","CRAS",
-"Maria Sueli Bonfim",
-"(66) 3411-5797 / 98419-9465",
-"crassagradafamilia2@gmail.com",
-"Av. Ilda Ribeiro Barbosa, s/n, Residencial Margaridas",
-"PAIF. Abrangência: Sagrada Família, Jardim Atlântico, Jardim Europa, Parque São Jorge e outras localidades."],
-
-["CRAS Rio Vermelho","CRAS",
-"Isabel Cristina da Silva Itacarambi",
-"(66) 99906-0709",
-"crasriovermelhoroo@gmail.com",
-"Av. Beira Rio, s/n, Vila Salmen II",
-"PAIF. Abrangência: Cidade Salmen, Centro, Jardim Ipanema, Jardim Paulista e outros bairros."],
-
-["CRAS Padre Lothar","CRAS",
-"Tatiane dos Santos Otani",
-"(66) 3411-5789 / 99684-2778",
-"craspadrelothar2022@gmail.com",
-"Rua Marina, 1933, Vila Rica",
-"PAIF. Abrangência: Vila Rica, Padre Lothar, Jardim Aeroporto, Mathias Neves e outras localidades."],
-
-["SCFV Vila Olímpica","SCFV",
-"Fabrício Luiz Gardin de Carvalho",
-"(66) 3411-5791",
-"espacojovemcidadaoii@hotmail.com",
-"Rua Sueli Maria da Silva, 224, Cidade Salmen",
-"Serviço de Convivência e Fortalecimento de Vínculos."],
-
-["SCFV Padre Lothar","SCFV",
-"Carlos Danilo Pereira da Silva",
-"(66) 98438-3289",
-"scfvpadrelothar@gmail.com",
-"Rua Campo Limpo, 579, Vila Operária",
-"Serviço de Convivência e Fortalecimento de Vínculos."],
-
-["SCFV Alfredo de Castro","SCFV",
-"Mauro Sergio da Silva",
-"(66) 3411-5798",
-"scfvalfredodecastroroo@gmail.com",
-"Av. Gavião Real, Setor Residencial Boa Vista",
-"Serviço de Convivência e Fortalecimento de Vínculos."],
-
-["CRAI","Proteção Especial",
-"Lauro Martins de Aguiar",
-"(66) 99695-7453",
-"migracao.roo.sempras@gmail.com",
-"Av. Tiradentes, 1904, Centro",
-"Atendimento especializado."],
-
-["Superintendência de Proteção Social Especial","Gestão",
-"Daniela Souza Bizerra",
-"(66) 3439-9100 / 99604-9521",
-"semprasespecial@gmail.com",
-"Av. Getúlio Vargas, 729, Vila Aurora",
-"Gestão da Proteção Social Especial."],
-
-["CREAS","Proteção Especial",
-"Andréia Santiago Santos",
-"(66) 99711-2881",
-"creasrondonopolis@gmail.com",
-"Rua Arthur Monteiro Magalhães, 115, Jardim Beira Rio",
-"PAEFI e atendimento especializado."],
-
-["Centro POP e Abordagem Social","Proteção Especial",
-"Naidellainy Cristina D. de O. Silva",
-"(66) 3411-5744 / 98421-0976",
-"centropoprondonopolis@gmail.com",
-"Av. Bandeirantes, 1191, Centro",
-"Atendimento à população em situação de rua e abordagem social."],
-
-["Família Acolhedora","Acolhimento",
-"Luciana",
-"",
-"familiaacolhedorarondonopolis@gmail.com",
-"Av. Getúlio Vargas, 1439, Vila Aurora I",
-"Serviço de acolhimento em família acolhedora."],
-
-["Casa de Passagem","Acolhimento",
-"Gerson Ferreira dos Santos Filho",
-"(66) 9604-9521",
-"casadepassagem1245@gmail.com",
-"Rua Poxoréu, 857, Centro",
-"Acolhimento para pernoite."],
-
-["Casa Abrigo Rotativa","Acolhimento",
-"Laura Lilian Dias Silva",
-"(66) 98412-8105",
-"casaabrigorotativaroo@gmail.com",
-"Endereço protegido",
-"Serviço de acolhimento."],
-
-["Acolhimento Mulheres Vítimas de Violência","Acolhimento",
-"Patricia Silva Colturato Costa",
-"(66) 99662-7982",
-"casadamulherrondonopoliss@gmail.com",
-"Endereço protegido",
-"Atendimento 24 horas."],
-
-["Escritório Social","Proteção Especial",
-"Adriana Ferreira Silva Alves",
-"(66) 98438-1317",
-"escritoriosocialrondonopolis@gmail.com",
-"Av. Tiradentes, 1904, Centro",
-"Atendimento e articulação institucional."],
-
-["Conselho Tutelar — Central","Conselhos",
-"",
-"(66) 99217-9667",
-"ctroor1@hotmail.com",
-"Rua Poxoréu, 847, Centro",
-"Defesa dos direitos de crianças e adolescentes."],
-
-["Conselho Tutelar — Vila Operária","Conselhos",
-"",
-"(66) 99235-6769",
-"tutelar767@gmail.com",
-"Av. São João, 1408, Cidade Natal",
-"Defesa dos direitos de crianças e adolescentes."],
-
-["CMAS","Conselhos",
-"Paulo Otavio",
-"(66) 3423-1754",
-"nucleodosconselhosroomt@gmail.com",
-"Av. Tiradentes, 1904, Centro",
-"Conselho Municipal de Assistência Social."],
-
-["CMDCA","Conselhos",
-"Wagner Garcia Bolonhesi",
-"(66) 3423-1754",
-"cmdcarondonopolis2018@gmail.com",
-"Av. Tiradentes, 1904, Centro",
-"Conselho Municipal dos Direitos da Criança e Adolescente."],
-
-["Conselho Municipal dos Direitos da Mulher","Conselhos",
-"",
-"(66) 3423-1754",
-"nucleodosconselhosroomt@gmail.com",
-"Av. Tiradentes, 1904, Centro",
-"Controle social das políticas para mulheres."],
-
-["Conselho dos Direitos da Pessoa Idosa","Conselhos",
-"",
-"(66) 3423-1754",
-"nucleodosconselhosroomt@gmail.com",
-"Av. Tiradentes, 1904, Centro",
-"Defesa dos direitos da pessoa idosa."],
-
-["Conselho dos Direitos da Pessoa com Deficiência","Conselhos",
-"",
-"(66) 3423-1754",
-"nucleodosconselhosroomt@gmail.com",
-"Av. Tiradentes, 1904, Centro",
-"Defesa dos direitos da pessoa com deficiência."],
-
-["COMPIR","Conselhos",
-"",
-"(66) 3423-1754",
-"nucleodosconselhosroomt@gmail.com",
-"Av. Tiradentes, 1904, Centro",
-"Conselho Municipal de Promoção da Igualdade Racial."]
-];
-
-/* ORGANIZAÇÕES DA SOCIEDADE CIVIL */
-
-const oscsRede=[
-
-["APAE","OSC",
-"Adriana Freitas Guimarães Ram",
-"(66) 3422-2985",
-"apaeroo@terra.com.br",
-"Av. Padre Anchieta, 890, Vila Aurora",
-"Apoio às pessoas com deficiência e suas famílias."],
-
-["ASSUROO — Associação de Surdos","OSC",
-"Sérgio Gonçalves",
-"(66) 99967-2441",
-"assuroomt@gmail.com",
-"Rua Dez, 2, Residencial André Maggi",
-"Inclusão e defesa dos direitos das pessoas com deficiência auditiva."],
-
-["Associação Boa Semente","OSC",
-"Rosana Aparecida Leite",
-"(66) 3423-4500",
-"cbomsamaritano_roomt@hotmail.com",
-"Av. Bandeirantes, 1190, Centro",
-"Atendimento e alimentação a pessoas em vulnerabilidade social."],
-
-["AVROC — Combate ao Câncer","OSC",
-"Rita Valéria da Silva",
-"(66) 99621-1374",
-"avroc.roo@hotmail.com",
-"Rua Armando Fajardo, 262, Vila Aurora I",
-"Apoio psicossocial a famílias de pessoas com câncer."],
-
-["Associação A Caminho da Luz","OSC",
-"Rogerio de Azeredo",
-"(66) 9997-5603",
-"rogerioazd75@gmail.com",
-"Rua das Flores, 573, Vila Rica",
-"Atendimento a mulheres e famílias em vulnerabilidade."],
-
-["Associação Koblenz Brasil — KOBRA","OSC",
-"Josyane Alves da Silva Santos",
-"(66) 3425-2902",
-"associacaokobra@gmail.com",
-"Av. Emanuel Pinheiro, 2723, Vila Operária",
-"Atividades para crianças e adolescentes."],
-
-["Associação Resgate Vidas — Jardim de Deus","OSC",
-"Elias Marques de Oliveira",
-"(66) 99991-8144",
-"resgatevidasmt@gmail.com",
-"Residencial Alfredo de Castro Araújo II",
-"Atividades socioeducativas para crianças e adolescentes."],
-
-["Associação Resgate Vidas — Talita Cumi","OSC",
-"Elias Marques de Oliveira",
-"(66) 99991-8144",
-"resgatevidasmt@gmail.com",
-"Jardim Atlântico",
-"Apoio a mulheres em situação de vulnerabilidade."],
-
-["Associação Resgate Vidas — Cinco Pães","OSC",
-"Elias Marques de Oliveira",
-"(66) 99991-8144",
-"resgatevidasmt@gmail.com",
-"Rua Rui Barbosa, 1023, Centro",
-"Restaurante comunitário e segurança alimentar."],
-
-["ARDV — Deficientes Visuais","OSC",
-"Cristiano Garcia de Souza",
-"(66) 3421-8091",
-"ardvroo@hotmail.com",
-"Rua João Pessoa, 845, Centro",
-"Atendimento e apoio a pessoas com deficiência visual."],
-
-["Oratório Filhos de Dom Bosco","OSC",
-"Rosinete de Souza da Silva",
-"(66) 3421-2567",
-"administrativo.roo@missaosalesiana.org.br",
-"Av. E, Jardim Universitário",
-"Atividades educativas, culturais e esportivas."],
-
-["Cáritas Diocesana","OSC",
-"Manoel Messias",
-"(66) 3421-4361",
-"caritasdiocesanaroo@terra.com.br",
-"Av. João XXIII, 3324, Vila Operária",
-"Ações de proteção social e apoio à pessoa idosa."],
-
-["Casa do Adolescente Sagrada Família","OSC",
-"Graziela Beltrame de Matos",
-"(66) 99644-3170",
-"casfroo@gmail.com",
-"Parque Sagrada Família",
-"Atendimento a crianças e adolescentes."],
-
-["Casa do Oleiro","OSC",
-"Murilo de Carvalho Silva",
-"(66) 99698-6148",
-"casadooleiromt@gmail.com",
-"Chácara Estrela Dalva",
-"Acolhimento e apoio a homens adultos."],
-
-["Casa Laura Vicunha","OSC",
-"Maria Aparecida Rocha",
-"(66) 99985-9794",
-"vicunhacasalauravicunha@gmail.com",
-"Rua Papa Evaristo, 1340, Vila Cardoso",
-"Atividades socioeducativas para meninas e adolescentes."],
-
-["Casa São Domingos Sávio","OSC",
-"Irene Silva de Oliveira",
-"(66) 3423-2608",
-"casasaodomingos.savio@hotmail.com",
-"Jardim Brasília",
-"Atividades de convivência para crianças e adolescentes."],
-
-["Centro de Reabilitação Louis Braille","OSC",
-"Luiz Antonio de Toledo",
-"(66) 3421-0598",
-"diretoria@louisbraille.com.br",
-"Av. Emanuel Pinheiro, 2625",
-"Reabilitação e apoio à pessoa com deficiência."],
-
-["Fundação Lar Cristão","OSC",
-"Ana Mariza Panes do Rego",
-"(66) 3426-3101",
-"larcristaoconta@gmail.com",
-"Rua Belém, 1370, Jardim Tropical",
-"Acolhimento institucional de adultos e idosos com deficiência."],
-
-["Fundação Lar Espírita Nazaré","OSC",
-"Marcelo Suguiyama Galliazzi",
-"(66) 99900-1065",
-"lardenazarerondonopolis@gmail.com",
-"Rua Pedro Ferrer, 1633, Jardim Mato Grosso",
-"Segurança alimentar e convivência."],
-
-["Lar Bezerra de Menezes","OSC",
-"Pedro Fernandes de Camargo",
-"(66) 99965-5766",
-"",
-"Rua Teotônio Vilela, 677, Vila São Sebastião II",
-"Segurança alimentar e apoio social."],
-
-["Lar dos Idosos Paul Percys Herrys","OSC",
-"Maria Brasilina",
-"(66) 99680-6268",
-"lardosidosospph@hotmail.com",
-"Rodovia MT-270, km 2",
-"Acolhimento institucional de pessoas idosas."],
-
-["Obra Kolping de Rondonópolis","OSC",
-"José Rodrigues de Moraes",
-"(66) 3426-2311",
-"obrakolpingepkvo@gmail.com",
-"Av. Emanuel Pinheiro, 2723, Vila Operária",
-"Qualificação profissional e inclusão produtiva."]
-];
-
-/* RENDERIZAÇÃO DO PAINEL */
-
-const todosRede=[
-...unidadesRede,
-...oscsRede
-];
-
-const escRede=s=>String(s??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#39;");
-
-const normalRede=s=>String(s??"")
-.normalize("NFD")
-.replace(/[\u0300-\u036f]/g,"")
-.toLowerCase();
-
-function htmlRedeComplemento(){
-return `
-<div id="redeComplemento">
-
-<div class="rc-card">
-<h2>Diretório da Rede SUAS e Rede Intersetorial</h2>
-<p>Rondonópolis/MT — Informações institucionais e contatos.</p>
-
-<div class="rc-grid">
-<div class="rc-kpi">
-<small>Unidades e registros institucionais</small>
-<strong>${unidadesRede.length}</strong>
-</div>
-<div class="rc-kpi">
-<small>Registros de OSCs nesta versão</small>
-<strong>${oscsRede.length}</strong>
-</div>
-<div class="rc-kpi">
-<small>CRAS ativos</small>
-<strong>8</strong>
-</div>
-<div class="rc-kpi">
-<small>Links municipais oficiais</small>
-<strong>${linksRede.length}</strong>
-</div>
-</div>
-</div>
-
-<div class="rc-card">
-<h3>Rede Municipal de Educação, Saúde e Órgãos</h3>
-
-<div class="rc-links">
-${linksRede.map(l=>`
-<a href="${escRede(l[1])}"
-target="_blank" rel="noopener noreferrer">
-${escRede(l[0])}
-</a>
-`).join("")}
-</div>
-
-<div class="rc-aviso">
-Os links abrem as páginas oficiais da Prefeitura.
-As informações externas são consultadas nos próprios portais.
-</div>
-</div>
-
-<div class="rc-card">
-<h3>Pesquisar Rede Socioassistencial e OSCs</h3>
-
-<div class="rc-controles">
-<input id="rcBusca"
-placeholder="Pesquisar unidade, bairro, telefone, responsável ou serviço">
-
-<select id="rcTipo">
-<option value="">Todas as categorias</option>
-</select>
-</div>
-
-<p id="rcTotal"></p>
-
-<div id="rcResultados" class="rc-lista"></div>
-</div>
-
-<div class="rc-card">
-<h3>Orientações técnicas e atualização dos dados</h3>
-
-<div class="rc-aviso">
-Os contatos e responsáveis foram extraídos das relações
-fornecidas pela SEMPRAS e precisam de conferência periódica.
-Os endereços de acolhimento protegido não são divulgados.
-A inclusão de OSCs nesta relação não comprova inscrição no CMAS
-ou existência de parceria formal.
-</div>
-
-<p>Os campos de CNPJ não foram preenchidos porque não
-constavam do material enviado.</p>
-</div>
-
-</div>`;
-}
-
-function filtrarRedeComplemento(){
-
-const raiz=document.getElementById("redeComplemento");
-if(!raiz)return;
-
-const busca=normalRede(
-raiz.querySelector("#rcBusca").value
-);
-const tipo=raiz.querySelector("#rcTipo").value;
-
-const encontrados=todosRede.filter(r=>{
-return (!tipo||r[1]===tipo)&&
-(!busca||normalRede(r.join(" ")).includes(busca));
-});
-
-raiz.querySelector("#rcTotal").textContent=
-encontrados.length+" registros encontrados.";
-
-raiz.querySelector("#rcResultados").innerHTML=
-encontrados.map(r=>`
-<details>
-<summary>${escRede(r[0])}</summary>
-
-<p><span class="rc-label">Categoria:</span>
-${escRede(r[1])}</p>
-
-<p><span class="rc-label">Responsável:</span>
-${escRede(r[2]||"Não informado")}</p>
-
-<p><span class="rc-label">Telefone:</span>
-${escRede(r[3]||"Não informado")}</p>
-
-<p><span class="rc-label">E-mail:</span>
-${escRede(r[4]||"Não informado")}</p>
-
-<p><span class="rc-label">Endereço:</span>
-${escRede(r[5]||"Não informado")}</p>
-
-<p class="rc-valor">
-<span class="rc-label">Serviços / Abrangência:</span>
-${escRede(r[6]||"Não informado")}
-</p>
-
-</details>
-`).join("")||"<p>Nenhum registro encontrado.</p>";
-}
-
-function montarRedeComplemento(){
-
-const alvo=document.getElementById("conteudo");
-if(!alvo)return;
-
-document.getElementById("redeComplemento")?.remove();
-
-alvo.insertAdjacentHTML(
-"beforeend",htmlRedeComplemento()
-);
-
-const raiz=document.getElementById("redeComplemento");
-
-const tipos=[...new Set(todosRede.map(r=>r[1]))].sort();
-
-raiz.querySelector("#rcTipo").innerHTML=
-'<option value="">Todas as categorias</option>'+
-tipos.map(t=>`
-<option value="${escRede(t)}">${escRede(t)}</option>
-`).join("");
-
-raiz.querySelector("#rcBusca")
-.addEventListener("input",filtrarRedeComplemento);
-
-raiz.querySelector("#rcTipo")
-.addEventListener("change",filtrarRedeComplemento);
-
-filtrarRedeComplemento();
-}
-
-/* INTEGRAÇÃO COM A ABA 2 DO PAINEL */
-
-if(typeof window.rede==="function"){
-
-const redeAnterior=window.rede;
-
-window.rede=function(...args){
-const resultado=redeAnterior.apply(this,args);
-montarRedeComplemento();
-return resultado;
+ estimativas:
+ "https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/-6/variaveis/9324?localidades=N6%5B5107602%5D"
 };
+
+let dadosIBGE={
+ municipio:null,
+ censo:{},
+ estado:{},
+ estimativas:[]
+};
+
+const graficosIBGE={};
+
+const formatarIBGE=(n,casas=0)=>
+ Number(n).toLocaleString("pt-BR",{
+  minimumFractionDigits:casas,
+  maximumFractionDigits:casas
+ });
+
+function numeroIBGE(valor){
+ if(valor===null||valor===undefined)return null;
+ const s=String(valor).trim();
+ if(!s||s==="-"||s==="..."||s==="X"||s==="..")
+  return null;
+ const n=Number(s);
+ return Number.isFinite(n)?n:null;
+}
+
+function textoSeguroIBGE(valor){
+ return String(valor??"")
+ .replace(/&/g,"&amp;")
+ .replace(/</g,"&lt;")
+ .replace(/>/g,"&gt;")
+ .replace(/"/g,"&quot;");
+}
+
+async function requisicaoIBGE(url){
+ const resposta=await fetch(url,{
+  headers:{"Accept":"application/json"},
+  cache:"no-store"
+ });
+ if(!resposta.ok){
+  throw new Error("API retornou HTTP "+resposta.status);
+ }
+ return await resposta.json();
+}
+
+function obterVariaveisIBGE(resposta){
+ const resultado={};
+
+ if(!Array.isArray(resposta))return resultado;
+
+ resposta.forEach(item=>{
+  const id=String(item.id);
+  const serie=item.resultados?.[0]?.series?.[0]?.serie;
+
+  if(!serie)return;
+
+  const periodo=Object.keys(serie)[0];
+  resultado[id]={
+   nome:item.variavel||id,
+   unidade:item.unidade||"",
+   periodo,
+   valor:numeroIBGE(serie[periodo])
+  };
+ });
+
+ return resultado;
+}
+
+function obterEstimativasIBGE(resposta){
+ if(!Array.isArray(resposta))return [];
+
+ const serie=resposta[0]?.resultados?.[0]?.series?.[0]?.serie;
+
+ if(!serie)return [];
+
+ return Object.entries(serie)
+ .map(([ano,valor])=>({
+  ano:Number(ano),
+  populacao:numeroIBGE(valor)
+ }))
+ .filter(x=>Number.isInteger(x.ano)&&x.populacao!==null)
+ .sort((a,b)=>a.ano-b.ano);
+}
+
+function criarPainelIBGE(){
+ return `
+ <section id="ibge-interativo">
+
+  <div class="ibge-card">
+   <h2>Panorama Estatístico Interativo — IBGE</h2>
+   <p>
+    Município de Rondonópolis, Mato Grosso.
+    Indicadores consultados diretamente nas APIs
+    oficiais de Localidades e de Agregados do IBGE.
+   </p>
+
+   <div class="ibge-tools">
+    <button id="ibge-atualizar" type="button">
+     Atualizar dados do IBGE
+    </button>
+    <span id="ibge-situacao" aria-live="polite">
+     Aguardando consulta...
+    </span>
+   </div>
+
+   <div id="ibge-indicadores" class="ibge-grid"></div>
+  </div>
+
+  <div class="ibge-card">
+   <h3>Evolução das estimativas populacionais</h3>
+   <p>
+    Série anual de estimativas disponíveis
+    na tabela 6579 do IBGE.
+   </p>
+
+   <div class="ibge-chart">
+    <canvas id="ibge-grafico-evolucao"></canvas>
+   </div>
+
+   <div id="ibge-analise-evolucao"
+        class="ibge-info">
+    Aguardando dados.
+   </div>
+  </div>
+
+  <div class="ibge-card">
+   <h3>Comparativo: Rondonópolis e Mato Grosso</h3>
+   <p>
+    População residente apurada pelo Censo 2022.
+   </p>
+
+   <div class="ibge-chart">
+    <canvas id="ibge-grafico-comparativo"></canvas>
+   </div>
+
+   <div id="ibge-analise-comparativo"
+        class="ibge-info">
+    Aguardando dados.
+   </div>
+  </div>
+
+  <div class="ibge-card">
+   <h3>Consulta interativa dos indicadores</h3>
+
+   <div class="ibge-tools">
+    <select id="ibge-selecionar">
+     <option value="93">População residente</option>
+     <option value="6318">Área territorial do Censo</option>
+     <option value="614">Densidade demográfica</option>
+    </select>
+   </div>
+
+   <div id="ibge-detalhe"></div>
+  </div>
+
+  <div class="ibge-card">
+   <h3>Identificação territorial do município</h3>
+   <div id="ibge-localidade"></div>
+  </div>
+
+  <div class="ibge-card">
+   <h3>Fontes e metodologia</h3>
+
+   <div class="ibge-links">
+    <a href="https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama"
+       target="_blank" rel="noopener">
+       IBGE Cidades
+    </a>
+
+    <a href="https://servicodados.ibge.gov.br/api/docs/agregados?versao=3"
+       target="_blank" rel="noopener">
+       Documentação da API de Agregados
+    </a>
+
+    <a href="https://servicodados.ibge.gov.br/api/docs/localidades"
+       target="_blank" rel="noopener">
+       Documentação da API de Localidades
+    </a>
+   </div>
+
+   <div class="ibge-alerta">
+    Os indicadores do Censo 2022 representam
+    informações censitárias, enquanto a tabela
+    de estimativas apresenta resultados anuais
+    de outra operação estatística.
+
+    Os dados não são necessariamente atualizados
+    todos os anos nem devem ser interpretados
+    como se pertencessem à mesma pesquisa.
+   </div>
+
+   <p class="ibge-muted">
+    Fonte: IBGE — APIs de Agregados e Localidades.
+    Código do município: 5107602.
+    Os dados exibidos são resultados agregados,
+    sem informações pessoais.
+   </p>
+  </div>
+
+ </section>`;
+}
+
+function montarKPIsIBGE(){
+
+ const c=dadosIBGE.censo;
+ const ult=dadosIBGE.estimativas.at(-1);
+
+ const itens=[
+  ["População residente — Censo 2022",
+   c["93"]?.valor,
+   "habitantes"],
+  ["Área territorial — tabela 4714",
+   c["6318"]?.valor,
+   "km²"],
+  ["Densidade demográfica — Censo 2022",
+   c["614"]?.valor,
+   "hab./km²"],
+  ["Última estimativa disponível",
+   ult?.populacao,
+   ult?"habitantes — "+ult.ano:""]
+ ];
+
+ document.getElementById("ibge-indicadores").innerHTML=
+ itens.map((r,i)=>`
+  <div class="ibge-kpi">
+   <small>${textoSeguroIBGE(r[0])}</small>
+   <strong>
+    ${r[1]===null||r[1]===undefined
+      ?"Indisponível"
+      :formatarIBGE(r[1],i===1||i===2?2:0)}
+   </strong>
+   <small>${textoSeguroIBGE(r[2])}</small>
+  </div>
+ `).join("");
+}
+
+function desenharGraficoIBGE(id,tipo,labels,datasets,opcoes={}){
+
+ if(typeof Chart==="undefined")return;
+
+ const canvas=document.getElementById(id);
+ if(!canvas)return;
+
+ if(graficosIBGE[id]){
+  graficosIBGE[id].destroy();
+ }
+
+ graficosIBGE[id]=new Chart(canvas,{
+  type:tipo,
+  data:{labels,datasets},
+  options:{
+   responsive:true,
+   maintainAspectRatio:false,
+   plugins:{
+    legend:{position:"top"}
+   },
+   ...opcoes
+  }
+ });
+}
+
+function montarEvolucaoIBGE(){
+
+ const dados=dadosIBGE.estimativas;
+
+ if(!dados.length){
+  document.getElementById("ibge-analise-evolucao")
+   .textContent="Série de estimativas indisponível.";
+  return;
+ }
+
+ desenharGraficoIBGE(
+  "ibge-grafico-evolucao",
+  "line",
+  dados.map(d=>String(d.ano)),
+  [{
+   label:"População estimada",
+   data:dados.map(d=>d.populacao),
+   borderColor:"#2563eb",
+   backgroundColor:"rgba(37,99,235,.12)",
+   tension:.25,
+   fill:true
+  }]
+ );
+
+ const primeiro=dados[0];
+ const ultimo=dados[dados.length-1];
+
+ const diferenca=ultimo.populacao-primeiro.populacao;
+ const variacao=primeiro.populacao?
+   100*diferenca/primeiro.populacao:null;
+
+ document.getElementById("ibge-analise-evolucao").textContent=
+  "Entre "+primeiro.ano+" e "+ultimo.ano+
+  ", as estimativas passaram de "+
+  formatarIBGE(primeiro.populacao)+" para "+
+  formatarIBGE(ultimo.populacao)+" habitantes. "+
+  (variacao===null?"":"Variação aproximada de "+
+  formatarIBGE(variacao,2)+"%.")+
+  " Isso representa variação estimada da população, "+
+  "não uma contagem censitária.";
+}
+
+function montarComparativoIBGE(){
+
+ const municipal=dadosIBGE.censo["93"]?.valor;
+ const estadual=dadosIBGE.estado["93"]?.valor;
+
+ if(municipal===null||municipal===undefined||
+ estadual===null||estadual===undefined){
+  document.getElementById("ibge-analise-comparativo")
+   .textContent="Comparativo indisponível na consulta.";
+  return;
+ }
+
+ const restante=Math.max(0,estadual-municipal);
+
+ desenharGraficoIBGE(
+  "ibge-grafico-comparativo",
+  "doughnut",
+  ["Rondonópolis","Demais municípios de Mato Grosso"],
+  [{
+   data:[municipal,restante],
+   backgroundColor:["#2563eb","#cbd5e1"]
+  }]
+ );
+
+ const participacao=100*municipal/estadual;
+
+ document.getElementById("ibge-analise-comparativo")
+  .textContent=
+  "Rondonópolis concentrava aproximadamente "+
+  formatarIBGE(participacao,2)+
+  "% da população residente de Mato Grosso "+
+  "no Censo Demográfico de 2022.";
+}
+
+function montarDetalheIBGE(){
+
+ const id=document.getElementById("ibge-selecionar").value;
+ const dado=dadosIBGE.censo[id];
+ const alvo=document.getElementById("ibge-detalhe");
+
+ if(!dado||dado.valor===null){
+  alvo.textContent="Indicador não disponível na consulta.";
+  return;
+ }
+
+ alvo.innerHTML=`
+  <div class="ibge-grid">
+   <div class="ibge-kpi">
+    <small>${textoSeguroIBGE(dado.nome)}</small>
+    <strong>${formatarIBGE(
+      dado.valor,id==="93"?0:2
+    )}</strong>
+    <small>${textoSeguroIBGE(dado.unidade)}</small>
+   </div>
+   <div class="ibge-kpi">
+    <small>Período de referência</small>
+    <strong>${textoSeguroIBGE(dado.periodo)}</strong>
+    <small>Fonte: IBGE, tabela 4714</small>
+   </div>
+  </div>`;
+}
+
+function montarTerritorioIBGE(){
+
+ const municipio=dadosIBGE.municipio;
+ const alvo=document.getElementById("ibge-localidade");
+
+ if(!municipio){
+  alvo.textContent="Informação territorial indisponível.";
+  return;
+ }
+
+ // A API pode apresentar hierarquias alternativas
+ // conforme sua versão.
+ const uf=municipio.microrregiao?.mesorregiao?.UF||
+ municipio["regiao-imediata"]?.["regiao-intermediaria"]?.UF;
+
+ const imediata=municipio["regiao-imediata"];
+ const intermediaria=imediata?.["regiao-intermediaria"];
+
+ const dados=[
+  ["Município",municipio.nome],
+  ["Código IBGE",municipio.id],
+  ["UF",uf?.nome||"Mato Grosso"],
+  ["Região geográfica imediata",imediata?.nome||"Não informado"],
+  ["Região geográfica intermediária",intermediaria?.nome||"Não informado"]
+ ];
+
+ alvo.innerHTML=`
+  <div style="overflow-x:auto">
+   <table>
+    <thead><tr>
+     <th>Identificação</th>
+     <th>Informação</th>
+    </tr></thead>
+    <tbody>
+    ${dados.map(r=>`
+      <tr>
+       <td>${textoSeguroIBGE(r[0])}</td>
+       <td>${textoSeguroIBGE(r[1])}</td>
+      </tr>
+    `).join("")}
+    </tbody>
+   </table>
+  </div>`;
+}
+
+async function atualizarDadosIBGE(){
+
+ const raiz=document.getElementById("ibge-interativo");
+ if(!raiz)return;
+
+ const botao=document.getElementById("ibge-atualizar");
+ const situacao=document.getElementById("ibge-situacao");
+
+ botao.disabled=true;
+ situacao.textContent="Consultando API oficial do IBGE...";
+
+ const consultas=await Promise.allSettled([
+  requisicaoIBGE(IBGE_API.localidade),
+  requisicaoIBGE(IBGE_API.censoMunicipio),
+  requisicaoIBGE(IBGE_API.censoEstado),
+  requisicaoIBGE(IBGE_API.estimativas)
+ ]);
+
+ dadosIBGE.municipio=
+  consultas[0].status==="fulfilled"?consultas[0].value:null;
+
+ dadosIBGE.censo=
+  consultas[1].status==="fulfilled"?
+  obterVariaveisIBGE(consultas[1].value):{};
+
+ dadosIBGE.estado=
+  consultas[2].status==="fulfilled"?
+  obterVariaveisIBGE(consultas[2].value):{};
+
+ dadosIBGE.estimativas=
+  consultas[3].status==="fulfilled"?
+  obterEstimativasIBGE(consultas[3].value):[];
+
+ if(!document.getElementById("ibge-interativo"))return;
+
+ montarKPIsIBGE();
+ montarEvolucaoIBGE();
+ montarComparativoIBGE();
+ montarDetalheIBGE();
+ montarTerritorioIBGE();
+
+ const sucesso=consultas.filter(
+  x=>x.status==="fulfilled"
+ ).length;
+
+ situacao.textContent=
+ sucesso===4?
+ "Consulta concluída — 4 fontes carregadas.":
+ "Consulta parcial: "+sucesso+
+ " de 4 fontes carregadas. Tente atualizar novamente.";
+
+ botao.disabled=false;
+}
+
+function instalarPainelIBGE(){
+
+ const alvo=document.getElementById("conteudo");
+ if(!alvo)return;
+
+ Object.values(graficosIBGE).forEach(g=>g.destroy());
+ Object.keys(graficosIBGE).forEach(k=>delete graficosIBGE[k]);
+
+ document.getElementById("ibge-interativo")?.remove();
+
+ alvo.insertAdjacentHTML("beforeend",criarPainelIBGE());
+
+ document.getElementById("ibge-atualizar")
+ .addEventListener("click",atualizarDadosIBGE);
+
+ document.getElementById("ibge-selecionar")
+ .addEventListener("change",montarDetalheIBGE);
+
+ atualizarDadosIBGE();
+}
+
+/* INTEGRAÇÃO COM A ABA 1 — MUNICÍPIO E IBGE */
+
+if(typeof window.municipio==="function"){
+
+ const municipioOriginal=window.municipio;
+
+ window.municipio=function(...args){
+  const resultado=municipioOriginal.apply(this,args);
+  instalarPainelIBGE();
+  return resultado;
+ };
 
 }else{
 
-document.addEventListener("click",e=>{
-const botao=e.target.closest("button");
-if(!botao)return;
+ // Alternativa caso a versão tenha outra
+ // forma de navegação entre abas.
+ document.addEventListener("click",e=>{
 
-const texto=normalRede(botao.textContent);
+  const botao=e.target.closest("button");
+  if(!botao)return;
 
-if(texto.includes("rede suas")||
-texto.includes("cadsuas")){
-setTimeout(montarRedeComplemento,0);
+  if(/munic[ií]pio.*ibge/i.test(botao.textContent)){
+   setTimeout(instalarPainelIBGE,0);
+  }
+ });
 }
-});
-}
 
-/* MONTA SE A ABA JÁ ESTIVER ABERTA */
+const ativo=document.querySelector("#menu button.ativo");
 
-const botaoAtivo=document.querySelector("#menu button.ativo");
-
-if(botaoAtivo&&
-/rede suas|cadsuas/i.test(botaoAtivo.textContent)){
-montarRedeComplemento();
+if(ativo&&/munic[ií]pio.*ibge/i.test(ativo.textContent)){
+ instalarPainelIBGE();
 }
 
 })();
 </script>
 
-<!-- FIM: COMPLEMENTO REDE SUAS / CADSUAS -->
+<!-- FIM: PAINEL INTERATIVO IBGE -->
 
