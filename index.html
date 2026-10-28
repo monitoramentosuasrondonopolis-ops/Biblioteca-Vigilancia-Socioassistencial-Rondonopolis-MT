@@ -1,846 +1,745 @@
 
-<!-- =========================================
-PAINEL INTERATIVO PMAS 2026-2029 E SETASC
-SEMPRAS - RONDONÓPOLIS/MT
-INSERIR ANTES DE </body>
-========================================= -->
-
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<!-- INÍCIO: COMPLEMENTO REDE SUAS / CADSUAS -->
 
 <style>
-#pmas2026 {
-  font-family: Arial, sans-serif;
-  color: #25364d;
+#redeComplemento{font-family:Arial,sans-serif;color:#25364a}
+#redeComplemento *{box-sizing:border-box}
+#redeComplemento .rc-card{
+ background:#fff;border:1px solid #dce5ef;
+ padding:22px;border-radius:14px;margin:17px 0
 }
-#pmas2026 * {
-  box-sizing: border-box;
+#redeComplemento h2,#redeComplemento h3{color:#173b75}
+#redeComplemento .rc-grid{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+ gap:12px
 }
-#pmas2026 .pmas-box {
-  background: white;
-  border: 1px solid #dbe5f0;
-  padding: 20px;
-  border-radius: 14px;
-  margin-bottom: 18px;
+#redeComplemento .rc-kpi{
+ padding:18px;background:#eff6ff;border-radius:11px
 }
-#pmas2026 .pmas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(175px,1fr));
-  gap: 12px;
-  margin: 18px 0;
+#redeComplemento .rc-kpi strong{
+ display:block;font-size:26px;color:#1d4ed8
 }
-#pmas2026 .pmas-kpi {
-  padding: 20px;
-  background: #edf5ff;
-  border-radius: 12px;
-  border: 1px solid #d6e6fa;
+#redeComplemento .rc-kpi small{color:#64748b}
+#redeComplemento .rc-links{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+ gap:12px;margin:15px 0
 }
-#pmas2026 .pmas-kpi small {
-  display: block;
-  color: #526580;
-  line-height: 1.5;
+#redeComplemento .rc-links a{
+ display:block;background:#edf5ff;padding:16px;
+ border-radius:10px;color:#174b8a;text-decoration:none;
+ font-weight:bold;border:1px solid #dce8fa
 }
-#pmas2026 .pmas-kpi strong {
-  display: block;
-  font-size: 28px;
-  color: #1957a5;
-  margin-top: 8px;
+#redeComplemento .rc-controles{
+ display:flex;gap:10px;flex-wrap:wrap;margin:15px 0
 }
-#pmas2026 h2,
-#pmas2026 h3 {
-  color: #164477;
+#redeComplemento input,#redeComplemento select{
+ padding:12px;border:1px solid #cbd5e1;
+ border-radius:8px;flex:1;min-width:180px
 }
-#pmas2026 .pmas-filtros {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 18px 0;
+#redeComplemento .rc-lista{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+ gap:12px
 }
-#pmas2026 input,
-#pmas2026 select {
-  padding: 12px;
-  border: 1px solid #cad7e5;
-  border-radius: 9px;
-  background: white;
-  min-width: 170px;
-  flex: 1;
-  max-width: 100%;
+#redeComplemento details{
+ border:1px solid #dae4ee;border-radius:10px;
+ padding:14px;background:#fafcff;min-width:0
 }
-#pmas2026 button {
-  padding: 12px 17px;
-  border: 0;
-  border-radius: 9px;
-  background: #1957a5;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
+#redeComplemento summary{
+ cursor:pointer;font-weight:bold;color:#173b75
 }
-#pmas2026 .pmas-grafico {
-  height: 340px;
-  position: relative;
+#redeComplemento p{
+ overflow-wrap:anywhere;line-height:1.5
 }
-#pmas2026 .pmas-tabela {
-  width: 100%;
-  overflow-x: auto;
-  max-height: 600px;
+#redeComplemento .rc-aviso{
+ padding:14px;background:#fffbeb;
+ border-left:4px solid #f59e0b;margin:15px 0
 }
-#pmas2026 table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
+#redeComplemento .rc-valor{
+ white-space:pre-line;font-size:13px
 }
-#pmas2026 th {
-  background: #e6eef9;
-  padding: 12px;
-  text-align: left;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-#pmas2026 td {
-  border-bottom: 1px solid #e2e8f0;
-  padding: 11px;
-  vertical-align: top;
-}
-#pmas2026 details {
-  border: 1px solid #dce5ef;
-  border-radius: 10px;
-  margin: 12px 0;
-  padding: 14px;
-  background: #fafcff;
-}
-#pmas2026 summary {
-  cursor: pointer;
-  color: #164477;
-  font-weight: bold;
-}
-#pmas2026 .pmas-aviso {
-  background: #fffbeb;
-  border-left: 4px solid #f59e0b;
-  padding: 14px;
-  margin: 14px 0;
-  line-height: 1.6;
-}
-#pmas2026 .pmas-meta {
-  margin: 8px 0;
-  line-height: 1.6;
-}
-#pmas2026 .pmas-meta b {
-  color: #164477;
-}
-#pmas2026 .pmas-status {
-  background: #dbeafe;
-  border-radius: 7px;
-  padding: 5px 9px;
-  display: inline-block;
+#redeComplemento .rc-label{
+ font-weight:bold;color:#334155
 }
 </style>
 
 <script>
 (function(){
-
 "use strict";
 
-/* =========================================
-   BANCO DE DADOS
-========================================= */
+/* LINKS OFICIAIS DA PREFEITURA */
 
-let metasPMAS = [];
-let metasSETASC = [];
-let graficosPMAS = [];
-
-const resumoAreas = [
-  ["Gestão do SUAS",59],
-  ["Proteção Social Especial",37],
-  ["Proteção Social Básica",32],
-  ["Engenharia e Arquitetura",20],
-  ["Benefícios Socioassistenciais",20],
-  ["Gestão Financeira",15],
-  ["Controle Social",8]
+const linksRede=[
+["Educação — Rede Municipal","https://www.rondonopolis.mt.gov.br/informacoes-da-rede-municipal-de-educacao/"],
+["Saúde — Rede Básica","https://www.rondonopolis.mt.gov.br/rede-basica/"],
+["Saúde — Rede Hospitalar","https://www.rondonopolis.mt.gov.br/rede-hospitalar/"],
+["Ramais da Prefeitura","https://www.rondonopolis.mt.gov.br/ramais/"],
+["Ramais da Educação","https://www.rondonopolis.mt.gov.br/ramais/?q=&unit=5"],
+["Órgãos Municipais","https://www.rondonopolis.mt.gov.br/orgaos-municipais/?p=2"]
 ];
 
-const numeroPMAS = valor =>
-  Number(valor).toLocaleString("pt-BR");
-
-function seguroPMAS(valor){
-  return String(valor ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#39;");
-}
-
-function valorPMAS(v){
-  if(v === null || v === undefined) return "";
-  return String(v);
-}
-
-/* =========================================
-   IMPORTAÇÃO DA PLANILHA OFICIAL
-========================================= */
-
-function importarPMAS(arquivo){
-
-  if(!arquivo){
-    return;
-  }
-
-  if(typeof XLSX === "undefined"){
-    alert("Biblioteca de planilhas indisponível.");
-    return;
-  }
-
-  const leitor = new FileReader();
-
-  leitor.onload = function(evento){
-
-    try{
-
-      const workbook = XLSX.read(
-        evento.target.result,
-        {type:"array",cellDates:true}
-      );
-
-      const nomePMAS = workbook.SheetNames.find(
-        nome => nome.trim() === "PMAS Consolidado"
-      ) || workbook.SheetNames.find(
-        nome => nome.trim() === "Base Original"
-      );
-
-      const nomeSETASC = workbook.SheetNames.find(
-        nome => nome.trim() === "SETASC Consolidado"
-      );
-
-      if(!nomePMAS || !nomeSETASC){
-        alert(
-          "Não foram encontradas as abas PMAS Consolidado e SETASC Consolidado."
-        );
-        return;
-      }
-
-      const matrizPMAS = XLSX.utils.sheet_to_json(
-        workbook.Sheets[nomePMAS],
-        {header:1,defval:"",raw:false}
-      );
-
-      const matrizSETASC = XLSX.utils.sheet_to_json(
-        workbook.Sheets[nomeSETASC],
-        {header:1,defval:"",raw:false}
-      );
-
-      metasPMAS = matrizPMAS.slice(4)
-        .filter(r => /^\d+$/.test(String(r[0]).trim()))
-        .map(r => ({
-          numero:r[0],
-          eixo:r[1],
-          diretriz:r[2],
-          objetivo:r[3],
-          acao:r[4],
-          ano2026:r[5],
-          ano2027:r[6],
-          ano2028:r[7],
-          ano2029:r[8],
-          periodo:r[9],
-          situacao:r[10],
-          semaforo:r[11],
-          resultado:r[12],
-          impacto:r[13],
-          responsavel:r[14],
-          indicador:r[15],
-          linha:r
-        }));
-
-      metasSETASC = matrizSETASC.slice(4)
-        .filter(r => /^\d+$/.test(String(r[0]).trim()))
-        .map(r => ({
-          id:r[0],
-          semaforo:r[1],
-          status:r[2],
-          eixo:r[3],
-          unidade:r[4],
-          dificuldade:r[5],
-          acao:r[6],
-          responsavel:r[7],
-          prazo:r[8],
-          execucao:r[9],
-          proximo:r[10],
-          atualizacao:r[11],
-          linha:r
-        }));
-
-      preencherFiltrosPMAS();
-      atualizarPMAS();
-
-    }catch(erro){
-      console.error(erro);
-      alert("Erro ao interpretar a planilha: "+erro.message);
-    }
-  };
-
-  leitor.readAsArrayBuffer(arquivo);
-}
-
-/* =========================================
-   INTERFACE PRINCIPAL
-========================================= */
-
-function telaPMAS(){
-
-  return `
-  <div id="pmas2026">
-
-    <div class="pmas-box">
-
-      <h2>Resumo Visual do PMAS 2026–2029</h2>
-
-      <p>
-        Prefeitura Municipal de Rondonópolis —
-        Vigilância Socioassistencial.
-      </p>
-
-      <div class="pmas-grid">
-
-        <div class="pmas-kpi">
-          <small>Metas PMAS previstas</small>
-          <strong>191</strong>
-        </div>
-
-        <div class="pmas-kpi">
-          <small>Providências SETASC</small>
-          <strong>64</strong>
-        </div>
-
-        <div class="pmas-kpi">
-          <small>Áreas de acompanhamento</small>
-          <strong>7</strong>
-        </div>
-
-        <div class="pmas-kpi">
-          <small>Vigência do PMAS</small>
-          <strong>2026–2029</strong>
-        </div>
-
-      </div>
-
-      <div class="pmas-aviso">
-        Importe a planilha oficial
-        <b>metas_pmas_com_setasc.xlsm</b>
-        para carregar as metas completas e as
-        providências SETASC.
-
-        <p>
-          Os quantitativos acima representam o
-          planejamento cadastrado, não a execução
-          das metas.
-        </p>
-      </div>
-
-      <input
-        type="file"
-        id="arquivoPMAS"
-        accept=".xlsx,.xlsm,.xls"
-      >
-
-      <p id="situacaoImportacaoPMAS">
-        Aguardando importação da planilha.
-      </p>
-
-    </div>
-
-    <div class="pmas-box">
-
-      <h3>Distribuição das metas por área</h3>
-
-      <div class="pmas-grafico">
-        <canvas id="graficoAreasPMAS"></canvas>
-      </div>
-
-    </div>
-
-    <div class="pmas-box">
-
-      <h3>Consulta e Monitoramento das Metas</h3>
-
-      <div class="pmas-filtros">
-
-        <input
-          id="buscaMetaPMAS"
-          placeholder="Pesquisar número, meta, diretriz ou ação..."
-        >
-
-        <select id="filtroEixoPMAS">
-          <option value="">Todos os eixos</option>
-        </select>
-
-        <select id="filtroAnoPMAS">
-          <option value="">Todos os anos</option>
-          <option value="2026">2026</option>
-          <option value="2027">2027</option>
-          <option value="2028">2028</option>
-          <option value="2029">2029</option>
-        </select>
-
-        <select id="filtroSituacaoPMAS">
-          <option value="">Todas as situações</option>
-        </select>
-
-      </div>
-
-      <div id="indicadoresFiltroPMAS"></div>
-
-      <div id="listaMetasPMAS"></div>
-
-    </div>
-
-    <div class="pmas-box">
-
-      <h3>Plano de Aprimoramento — SETASC</h3>
-
-      <div class="pmas-grafico">
-        <canvas id="graficoSETASC"></canvas>
-      </div>
-
-      <div class="pmas-filtros">
-
-        <input
-          id="buscaSETASC"
-          placeholder="Pesquisar unidade, providência ou responsável..."
-        >
-
-        <select id="filtroSETASC">
-          <option value="">Todas as situações</option>
-        </select>
-
-      </div>
-
-      <div id="listaSETASC"></div>
-
-    </div>
-
-    <div class="pmas-box">
-
-      <h3>Análise Técnica e Monitoramento</h3>
-
-      <p>
-        A Vigilância Socioassistencial poderá
-        utilizar o painel para identificar metas
-        com necessidade de acompanhamento,
-        comparar o planejamento plurianual e
-        consolidar informações para a gestão
-        e o controle social.
-      </p>
-
-      <div class="pmas-aviso">
-        Os resultados previstos e percentuais
-        planejados para os anos de 2026, 2027,
-        2028 e 2029 não devem ser classificados
-        como execução realizada sem evidência
-        documental correspondente.
-      </div>
-
-    </div>
-
-  </div>`;
-}
-
-/* =========================================
-   GRÁFICOS
-========================================= */
-
-function limparGraficosPMAS(){
-  graficosPMAS.forEach(g => g.destroy());
-  graficosPMAS = [];
-}
-
-function graficosResumoPMAS(){
-
-  if(typeof Chart === "undefined") return;
-
-  const elemento=document.getElementById(
-    "graficoAreasPMAS"
-  );
-
-  if(!elemento)return;
-
-  graficosPMAS.push(new Chart(elemento,{
-    type:"bar",
-    data:{
-      labels:resumoAreas.map(a=>a[0]),
-      datasets:[{
-        label:"Quantidade de metas",
-        data:resumoAreas.map(a=>a[1]),
-        backgroundColor:"#2563eb"
-      }]
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      indexAxis:"y",
-      plugins:{
-        legend:{display:false}
-      },
-      scales:{
-        x:{beginAtZero:true}
-      }
-    }
-  }));
-}
-
-function graficoSituacaoSETASC(){
-
-  if(typeof Chart==="undefined")return;
-
-  const canvas=document.getElementById(
-    "graficoSETASC"
-  );
-
-  if(!canvas || !metasSETASC.length)return;
-
-  const contagem={};
-
-  metasSETASC.forEach(meta=>{
-    const s=valorPMAS(meta.status).trim() ||
-      "Não informado";
-    contagem[s]=(contagem[s]||0)+1;
-  });
-
-  graficosPMAS
-    .filter(g=>g.canvas===canvas)
-    .forEach(g=>g.destroy());
-
-  graficosPMAS=graficosPMAS.filter(
-    g=>g.canvas!==canvas
-  );
-
-  graficosPMAS.push(new Chart(canvas,{
-    type:"doughnut",
-    data:{
-      labels:Object.keys(contagem),
-      datasets:[{
-        data:Object.values(contagem),
-        backgroundColor:[
-          "#16a34a",
-          "#2563eb",
-          "#eab308",
-          "#dc2626",
-          "#94a3b8"
-        ]
-      }]
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      plugins:{
-        legend:{position:"bottom"}
-      }
-    }
-  }));
-}
-
-/* =========================================
-   FILTROS
-========================================= */
-
-function preencherFiltrosPMAS(){
-
-  const eixos=[
-    ...new Set(
-      metasPMAS.map(m=>valorPMAS(m.eixo))
-        .filter(Boolean)
-    )
-  ].sort();
-
-  document.getElementById("filtroEixoPMAS")
-    .innerHTML='<option value="">Todos os eixos</option>'+
-    eixos.map(e=>`
-      <option value="${seguroPMAS(e)}">
-        ${seguroPMAS(e)}
-      </option>
-    `).join("");
-
-  const situacoes=[
-    ...new Set(
-      metasPMAS.map(m=>valorPMAS(m.situacao))
-        .filter(Boolean)
-    )
-  ].sort();
-
-  document.getElementById("filtroSituacaoPMAS")
-    .innerHTML=
-    '<option value="">Todas as situações</option>'+
-    situacoes.map(s=>`
-      <option value="${seguroPMAS(s)}">
-        ${seguroPMAS(s)}
-      </option>
-    `).join("");
-
-  const statusSETASC=[
-    ...new Set(
-      metasSETASC.map(m=>valorPMAS(m.status))
-        .filter(Boolean)
-    )
-  ].sort();
-
-  document.getElementById("filtroSETASC")
-    .innerHTML=
-    '<option value="">Todas as situações</option>'+
-    statusSETASC.map(s=>`
-      <option value="${seguroPMAS(s)}">
-        ${seguroPMAS(s)}
-      </option>
-    `).join("");
-}
-
-/* =========================================
-   LISTA DE METAS PMAS
-========================================= */
-
-function atualizarMetasPMAS(){
-
-  const busca=document.getElementById(
-    "buscaMetaPMAS"
-  ).value.toLowerCase();
-
-  const eixo=document.getElementById(
-    "filtroEixoPMAS"
-  ).value;
-
-  const ano=document.getElementById(
-    "filtroAnoPMAS"
-  ).value;
-
-  const situacao=document.getElementById(
-    "filtroSituacaoPMAS"
-  ).value;
-
-  let lista=metasPMAS.filter(m=>{
-
-    const texto=Object.values(m)
-      .filter(v=>typeof v!=="object")
-      .join(" ").toLowerCase();
-
-    if(busca && !texto.includes(busca))return false;
-    if(eixo && valorPMAS(m.eixo)!==eixo)return false;
-
-    if(situacao &&
-       valorPMAS(m.situacao)!==situacao)return false;
-
-    if(ano && !valorPMAS(m["ano"+ano]).trim())
-      return false;
-
-    return true;
-  });
-
-  document.getElementById("indicadoresFiltroPMAS")
-    .innerHTML=`
-      <div class="pmas-grid">
-        <div class="pmas-kpi">
-          <small>Metas encontradas</small>
-          <strong>${lista.length}</strong>
-        </div>
-        <div class="pmas-kpi">
-          <small>Total importado</small>
-          <strong>${metasPMAS.length}</strong>
-        </div>
-      </div>
-    `;
-
-  document.getElementById("listaMetasPMAS")
-    .innerHTML=lista.length?
-    lista.map(m=>`
-
-      <details>
-
-        <summary>
-          Meta ${seguroPMAS(m.numero)} —
-          ${seguroPMAS(m.eixo)}
-          ${m.situacao?
-          " | "+seguroPMAS(m.situacao):""}
-        </summary>
-
-        <div class="pmas-meta">
-          <b>Diretriz estratégica:</b>
-          ${seguroPMAS(m.diretriz)}
-        </div>
-
-        <div class="pmas-meta">
-          <b>Objetivo específico:</b>
-          ${seguroPMAS(m.objetivo)}
-        </div>
-
-        <div class="pmas-meta">
-          <b>Ação estratégica:</b>
-          ${seguroPMAS(m.acao)}
-        </div>
-
-        <h4>Planejamento anual</h4>
-
-        <div class="pmas-grid">
-          ${[2026,2027,2028,2029].map(a=>`
-            <div class="pmas-kpi">
-              <small>${a}</small>
-              <strong style="font-size:19px">
-                ${seguroPMAS(m["ano"+a]) || "—"}
-              </strong>
-            </div>
-          `).join("")}
-        </div>
-
-        <p><b>Período de execução:</b>
-          ${seguroPMAS(m.periodo)||"Não informado"}</p>
-
-        <p><b>Situação:</b>
-          ${seguroPMAS(m.situacao)||"Não informada"}</p>
-
-        <p><b>Resultados:</b>
-          ${seguroPMAS(m.resultado)||"Consultar base original"}</p>
-
-        <p><b>Impacto:</b>
-          ${seguroPMAS(m.impacto)||"Consultar base original"}</p>
-
-      </details>
-
-    `).join(""):
-    '<p>Nenhuma meta encontrada para os filtros selecionados.</p>';
-}
-
-/* =========================================
-   LISTA SETASC
-========================================= */
-
-function atualizarSETASC(){
-
-  const busca=document.getElementById(
-    "buscaSETASC"
-  ).value.toLowerCase();
-
-  const filtro=document.getElementById(
-    "filtroSETASC"
-  ).value;
-
-  const lista=metasSETASC.filter(m=>{
-
-    const texto=[
-      m.id,m.eixo,m.unidade,m.dificuldade,
-      m.acao,m.responsavel,m.prazo,m.status
-    ].join(" ").toLowerCase();
-
-    return (!busca||texto.includes(busca)) &&
-      (!filtro||valorPMAS(m.status)===filtro);
-  });
-
-  document.getElementById("listaSETASC").innerHTML=`
-
-    <p>
-      <b>${lista.length}</b> providências encontradas.
-      Total importado: ${metasSETASC.length}.
-    </p>
-
-    ${lista.map(m=>`
-
-      <details>
-
-        <summary>
-          Providência ${seguroPMAS(m.id)} —
-          ${seguroPMAS(m.unidade)}
-          | ${seguroPMAS(m.status)}
-        </summary>
-
-        <p><b>Eixo:</b>
-          ${seguroPMAS(m.eixo)}</p>
-
-        <p><b>Dificuldade / Meta:</b>
-          ${seguroPMAS(m.dificuldade)}</p>
-
-        <p><b>Ação:</b>
-          ${seguroPMAS(m.acao)}</p>
-
-        <p><b>Responsável:</b>
-          ${seguroPMAS(m.responsavel)}</p>
-
-        <p><b>Prazo:</b>
-          ${seguroPMAS(m.prazo)}</p>
-
-        <p><b>Execução registrada:</b>
-          ${seguroPMAS(m.execucao)}</p>
-
-        <p><b>Próximo passo:</b>
-          ${seguroPMAS(m.proximo)}</p>
-
-        <p><b>Última atualização:</b>
-          ${seguroPMAS(m.atualizacao)}</p>
-
-      </details>
-
-    `).join("")}
-  `;
-}
-
-function atualizarPMAS(){
-
-  document.getElementById("situacaoImportacaoPMAS")
-    .textContent=
-    "Planilha carregada: "+metasPMAS.length+
-    " metas PMAS e "+metasSETASC.length+
-    " providências SETASC.";
-
-  atualizarMetasPMAS();
-  atualizarSETASC();
-  graficoSituacaoSETASC();
-}
-
-/* =========================================
-   INTEGRAÇÃO COM A ABA 11
-========================================= */
-
-function iniciarPainelPMAS(){
-
-  const alvo=document.getElementById("conteudo");
-
-  if(!alvo)return;
-
-  limparGraficosPMAS();
-
-  alvo.innerHTML=telaPMAS();
-
-  document.getElementById("arquivoPMAS")
-    .addEventListener("change",function(){
-      importarPMAS(this.files[0]);
-    });
-
-  [
-    "buscaMetaPMAS",
-    "filtroEixoPMAS",
-    "filtroAnoPMAS",
-    "filtroSituacaoPMAS"
-  ].forEach(id=>{
-    document.getElementById(id)
-      .addEventListener("input",atualizarMetasPMAS);
-  });
-
-  [
-    "buscaSETASC",
-    "filtroSETASC"
-  ].forEach(id=>{
-    document.getElementById(id)
-      .addEventListener("input",atualizarSETASC);
-  });
-
-  preencherFiltrosPMAS();
-  atualizarMetasPMAS();
-  atualizarSETASC();
-  graficosResumoPMAS();
-
-  if(metasSETASC.length)graficoSituacaoSETASC();
-}
-
 /*
- Substitui a função de conteúdo da aba 11.
- Mantém a navegação das outras onze abas.
+ CAMPOS:
+ nome, tipo, responsável, telefone, email,
+ endereço, serviços ou observações.
 */
 
-window.pmas=iniciarPainelPMAS;
+const unidadesRede=[
+
+["SEMPRAS","Gestão",
+"Fabiana Frederico Rizati Perez",
+"(66) 3439-9100",
+"assistenciasocialroo@gmail.com",
+"Av. Getúlio Vargas, 1439, Vila Aurora I",
+"Secretaria Municipal de Promoção e Assistência Social."],
+
+["Superintendência de Gestão","Gestão",
+"Rubinalda Rodrigues dos Santos",
+"(66) 3439-9100",
+"financeirosempras@gmail.com",
+"Av. Getúlio Vargas, 729, Vila Aurora I",
+"Gestão administrativa e financeira."],
+
+["Coordenação Jurídica","Gestão",
+"Marielle Barbosa de Brito",
+"(66) 3439-9100",
+"juridicosempras@gmail.com",
+"Av. Getúlio Vargas, 729, Vila Aurora I",
+"Assessoramento jurídico."],
+
+["Engenharia e Arquitetura","Gestão",
+"Tainá de Oliveira Boaventura",
+"(66) 99991-2973",
+"engenharia.sempras@gmail.com",
+"Av. Getúlio Vargas, 729, Vila Aurora I",
+"Engenharia e arquitetura da SEMPRAS."],
+
+["Benefícios, Programas e Projetos","Gestão",
+"",
+"(66) 3439-9100",
+"suas.rondonopolis@gmail.com",
+"Av. Getúlio Vargas, 729, Vila Aurora I",
+"Gestão de benefícios, programas e projetos socioassistenciais."],
+
+["Posto Cadastro Único","Cadastro Único",
+"Nayane Soraille Domingues Silva",
+"(66) 99921-1763",
+"gestaocadpbfroo@gmail.com",
+"Ganha Tempo, Rua João Pessoa, 802, Centro",
+"Atendimento de segunda a sexta, das 8h às 17h."],
+
+["Educação Permanente","Gestão",
+"Marcia Gislene Casali",
+"(66) 3439-9100",
+"educacaopermanenteroo@gmail.com",
+"Av. Getúlio Vargas, 729, Vila Aurora I",
+"Formação e educação permanente."],
+
+["Vigilância Socioassistencial","Gestão",
+"Alessandra dos Santos Oliveira Silva",
+"(66) 99664-4164",
+"monitoramento.suas.rondonopolis@gmail.com",
+"Av. Getúlio Vargas, 729, Vila Aurora I",
+"Diagnóstico, informação, monitoramento e avaliação."],
+
+["Parcerias com OSC","Gestão",
+"Mayara Aparecida Nunes dos Anjos e Wanessa Keller Leão Borges",
+"(66) 98413-7220",
+"parceriassempras@gmail.com",
+"Av. Getúlio Vargas, 729, Vila Aurora I",
+"Parcerias com organizações da sociedade civil."],
+
+["Superintendência da Mulher","Mulher",
+"Ariene Ferreira Ferreira",
+"(66) 99991-0486",
+"superintendenciadamulher.roo@gmail.com",
+"Rua Arnaldo Estevão de Figueiredo, 167, Vila Aurora I",
+"Políticas públicas para mulheres."],
+
+["Políticas do Trabalho","Gestão",
+"Eunice Helen Frota Prado e Stephani Caroline Nunes de Souza",
+"(66) 3439-9100",
+"politicasdotrabalhosempras@gmail.com",
+"Av. Getúlio Vargas, 729, Vila Aurora I",
+"Cursos e políticas de inclusão produtiva."],
+
+["Proteção Social Básica","Gestão",
+"Márcia dos Santos Medeiros",
+"(66) 3439-9100",
+"bsemprasbasica@gmail.com",
+"Av. Getúlio Vargas, 729, Vila Aurora I",
+"Coordenação da Proteção Social Básica."],
+
+["CRAS Alfredo de Castro","CRAS",
+"Roberta Gobes de Barros",
+"(66) 3411-5796",
+"crasalfredodecastro@gmail.com",
+"Rua Projetada, s/n, Alfredo de Castro",
+"PAIF e Cadastro Único. Abrangência: Alfredo de Castro, Celina Bezerra, Vila Bueno, Vila Paulista e áreas rurais."],
+
+["CRAS Ana Carla","CRAS",
+"Daiani Rodrigues Neto",
+"(66) 3411-5755 / 3411-5754",
+"crasanacarla2025@gmail.com",
+"Rua D, s/n, Jardim Ana Carla II",
+"PAIF e Cadastro Único. Abrangência: Ana Carla, Parque Universitário, Pedra 90, Rosa Bororo, Vila Olinda e outras localidades."],
+
+["CRAS Conjunto São José","CRAS",
+"Monica Gomes Silveiro",
+"(66) 3411-5786 / 3411-5792",
+"crasconjunto@gmail.com",
+"Rua F, s/n, Conjunto São José",
+"PAIF. Abrangência: Conjunto São José, Jardim Liberdade, Jardim Tropical, Serra Dourada e outros bairros."],
+
+["CRAS Cidade Alta / Jardim Iguaçu","CRAS",
+"Elizabeth Marmo de Souza Resende",
+"(66) 3411-5740 / 99616-1860",
+"crasiguacu@outlook.com",
+"Av. Jussara, 1700, Parque Residencial Cidade Alta",
+"PAIF. Abrangência: Cidade Alta, Jardim Iguaçu, Jardim Rondônia, Vila Aurora e outras localidades."],
+
+["CRAS Luz D'Yara","CRAS",
+"José da Silva Barros",
+"(66) 3411-4392 / 98412-7167",
+"crasluzdaiara@gmail.com",
+"Rua Claudemiro Justino Anjos, 99, Jardim Modelo",
+"PAIF. Abrangência: Luz D'Yara, Jardim Modelo, Vila Operária, Vila Mineira, Jardim Primavera e outros bairros."],
+
+["CRAS Sagrada Família / CEU","CRAS",
+"Maria Sueli Bonfim",
+"(66) 3411-5797 / 98419-9465",
+"crassagradafamilia2@gmail.com",
+"Av. Ilda Ribeiro Barbosa, s/n, Residencial Margaridas",
+"PAIF. Abrangência: Sagrada Família, Jardim Atlântico, Jardim Europa, Parque São Jorge e outras localidades."],
+
+["CRAS Rio Vermelho","CRAS",
+"Isabel Cristina da Silva Itacarambi",
+"(66) 99906-0709",
+"crasriovermelhoroo@gmail.com",
+"Av. Beira Rio, s/n, Vila Salmen II",
+"PAIF. Abrangência: Cidade Salmen, Centro, Jardim Ipanema, Jardim Paulista e outros bairros."],
+
+["CRAS Padre Lothar","CRAS",
+"Tatiane dos Santos Otani",
+"(66) 3411-5789 / 99684-2778",
+"craspadrelothar2022@gmail.com",
+"Rua Marina, 1933, Vila Rica",
+"PAIF. Abrangência: Vila Rica, Padre Lothar, Jardim Aeroporto, Mathias Neves e outras localidades."],
+
+["SCFV Vila Olímpica","SCFV",
+"Fabrício Luiz Gardin de Carvalho",
+"(66) 3411-5791",
+"espacojovemcidadaoii@hotmail.com",
+"Rua Sueli Maria da Silva, 224, Cidade Salmen",
+"Serviço de Convivência e Fortalecimento de Vínculos."],
+
+["SCFV Padre Lothar","SCFV",
+"Carlos Danilo Pereira da Silva",
+"(66) 98438-3289",
+"scfvpadrelothar@gmail.com",
+"Rua Campo Limpo, 579, Vila Operária",
+"Serviço de Convivência e Fortalecimento de Vínculos."],
+
+["SCFV Alfredo de Castro","SCFV",
+"Mauro Sergio da Silva",
+"(66) 3411-5798",
+"scfvalfredodecastroroo@gmail.com",
+"Av. Gavião Real, Setor Residencial Boa Vista",
+"Serviço de Convivência e Fortalecimento de Vínculos."],
+
+["CRAI","Proteção Especial",
+"Lauro Martins de Aguiar",
+"(66) 99695-7453",
+"migracao.roo.sempras@gmail.com",
+"Av. Tiradentes, 1904, Centro",
+"Atendimento especializado."],
+
+["Superintendência de Proteção Social Especial","Gestão",
+"Daniela Souza Bizerra",
+"(66) 3439-9100 / 99604-9521",
+"semprasespecial@gmail.com",
+"Av. Getúlio Vargas, 729, Vila Aurora",
+"Gestão da Proteção Social Especial."],
+
+["CREAS","Proteção Especial",
+"Andréia Santiago Santos",
+"(66) 99711-2881",
+"creasrondonopolis@gmail.com",
+"Rua Arthur Monteiro Magalhães, 115, Jardim Beira Rio",
+"PAEFI e atendimento especializado."],
+
+["Centro POP e Abordagem Social","Proteção Especial",
+"Naidellainy Cristina D. de O. Silva",
+"(66) 3411-5744 / 98421-0976",
+"centropoprondonopolis@gmail.com",
+"Av. Bandeirantes, 1191, Centro",
+"Atendimento à população em situação de rua e abordagem social."],
+
+["Família Acolhedora","Acolhimento",
+"Luciana",
+"",
+"familiaacolhedorarondonopolis@gmail.com",
+"Av. Getúlio Vargas, 1439, Vila Aurora I",
+"Serviço de acolhimento em família acolhedora."],
+
+["Casa de Passagem","Acolhimento",
+"Gerson Ferreira dos Santos Filho",
+"(66) 9604-9521",
+"casadepassagem1245@gmail.com",
+"Rua Poxoréu, 857, Centro",
+"Acolhimento para pernoite."],
+
+["Casa Abrigo Rotativa","Acolhimento",
+"Laura Lilian Dias Silva",
+"(66) 98412-8105",
+"casaabrigorotativaroo@gmail.com",
+"Endereço protegido",
+"Serviço de acolhimento."],
+
+["Acolhimento Mulheres Vítimas de Violência","Acolhimento",
+"Patricia Silva Colturato Costa",
+"(66) 99662-7982",
+"casadamulherrondonopoliss@gmail.com",
+"Endereço protegido",
+"Atendimento 24 horas."],
+
+["Escritório Social","Proteção Especial",
+"Adriana Ferreira Silva Alves",
+"(66) 98438-1317",
+"escritoriosocialrondonopolis@gmail.com",
+"Av. Tiradentes, 1904, Centro",
+"Atendimento e articulação institucional."],
+
+["Conselho Tutelar — Central","Conselhos",
+"",
+"(66) 99217-9667",
+"ctroor1@hotmail.com",
+"Rua Poxoréu, 847, Centro",
+"Defesa dos direitos de crianças e adolescentes."],
+
+["Conselho Tutelar — Vila Operária","Conselhos",
+"",
+"(66) 99235-6769",
+"tutelar767@gmail.com",
+"Av. São João, 1408, Cidade Natal",
+"Defesa dos direitos de crianças e adolescentes."],
+
+["CMAS","Conselhos",
+"Paulo Otavio",
+"(66) 3423-1754",
+"nucleodosconselhosroomt@gmail.com",
+"Av. Tiradentes, 1904, Centro",
+"Conselho Municipal de Assistência Social."],
+
+["CMDCA","Conselhos",
+"Wagner Garcia Bolonhesi",
+"(66) 3423-1754",
+"cmdcarondonopolis2018@gmail.com",
+"Av. Tiradentes, 1904, Centro",
+"Conselho Municipal dos Direitos da Criança e Adolescente."],
+
+["Conselho Municipal dos Direitos da Mulher","Conselhos",
+"",
+"(66) 3423-1754",
+"nucleodosconselhosroomt@gmail.com",
+"Av. Tiradentes, 1904, Centro",
+"Controle social das políticas para mulheres."],
+
+["Conselho dos Direitos da Pessoa Idosa","Conselhos",
+"",
+"(66) 3423-1754",
+"nucleodosconselhosroomt@gmail.com",
+"Av. Tiradentes, 1904, Centro",
+"Defesa dos direitos da pessoa idosa."],
+
+["Conselho dos Direitos da Pessoa com Deficiência","Conselhos",
+"",
+"(66) 3423-1754",
+"nucleodosconselhosroomt@gmail.com",
+"Av. Tiradentes, 1904, Centro",
+"Defesa dos direitos da pessoa com deficiência."],
+
+["COMPIR","Conselhos",
+"",
+"(66) 3423-1754",
+"nucleodosconselhosroomt@gmail.com",
+"Av. Tiradentes, 1904, Centro",
+"Conselho Municipal de Promoção da Igualdade Racial."]
+];
+
+/* ORGANIZAÇÕES DA SOCIEDADE CIVIL */
+
+const oscsRede=[
+
+["APAE","OSC",
+"Adriana Freitas Guimarães Ram",
+"(66) 3422-2985",
+"apaeroo@terra.com.br",
+"Av. Padre Anchieta, 890, Vila Aurora",
+"Apoio às pessoas com deficiência e suas famílias."],
+
+["ASSUROO — Associação de Surdos","OSC",
+"Sérgio Gonçalves",
+"(66) 99967-2441",
+"assuroomt@gmail.com",
+"Rua Dez, 2, Residencial André Maggi",
+"Inclusão e defesa dos direitos das pessoas com deficiência auditiva."],
+
+["Associação Boa Semente","OSC",
+"Rosana Aparecida Leite",
+"(66) 3423-4500",
+"cbomsamaritano_roomt@hotmail.com",
+"Av. Bandeirantes, 1190, Centro",
+"Atendimento e alimentação a pessoas em vulnerabilidade social."],
+
+["AVROC — Combate ao Câncer","OSC",
+"Rita Valéria da Silva",
+"(66) 99621-1374",
+"avroc.roo@hotmail.com",
+"Rua Armando Fajardo, 262, Vila Aurora I",
+"Apoio psicossocial a famílias de pessoas com câncer."],
+
+["Associação A Caminho da Luz","OSC",
+"Rogerio de Azeredo",
+"(66) 9997-5603",
+"rogerioazd75@gmail.com",
+"Rua das Flores, 573, Vila Rica",
+"Atendimento a mulheres e famílias em vulnerabilidade."],
+
+["Associação Koblenz Brasil — KOBRA","OSC",
+"Josyane Alves da Silva Santos",
+"(66) 3425-2902",
+"associacaokobra@gmail.com",
+"Av. Emanuel Pinheiro, 2723, Vila Operária",
+"Atividades para crianças e adolescentes."],
+
+["Associação Resgate Vidas — Jardim de Deus","OSC",
+"Elias Marques de Oliveira",
+"(66) 99991-8144",
+"resgatevidasmt@gmail.com",
+"Residencial Alfredo de Castro Araújo II",
+"Atividades socioeducativas para crianças e adolescentes."],
+
+["Associação Resgate Vidas — Talita Cumi","OSC",
+"Elias Marques de Oliveira",
+"(66) 99991-8144",
+"resgatevidasmt@gmail.com",
+"Jardim Atlântico",
+"Apoio a mulheres em situação de vulnerabilidade."],
+
+["Associação Resgate Vidas — Cinco Pães","OSC",
+"Elias Marques de Oliveira",
+"(66) 99991-8144",
+"resgatevidasmt@gmail.com",
+"Rua Rui Barbosa, 1023, Centro",
+"Restaurante comunitário e segurança alimentar."],
+
+["ARDV — Deficientes Visuais","OSC",
+"Cristiano Garcia de Souza",
+"(66) 3421-8091",
+"ardvroo@hotmail.com",
+"Rua João Pessoa, 845, Centro",
+"Atendimento e apoio a pessoas com deficiência visual."],
+
+["Oratório Filhos de Dom Bosco","OSC",
+"Rosinete de Souza da Silva",
+"(66) 3421-2567",
+"administrativo.roo@missaosalesiana.org.br",
+"Av. E, Jardim Universitário",
+"Atividades educativas, culturais e esportivas."],
+
+["Cáritas Diocesana","OSC",
+"Manoel Messias",
+"(66) 3421-4361",
+"caritasdiocesanaroo@terra.com.br",
+"Av. João XXIII, 3324, Vila Operária",
+"Ações de proteção social e apoio à pessoa idosa."],
+
+["Casa do Adolescente Sagrada Família","OSC",
+"Graziela Beltrame de Matos",
+"(66) 99644-3170",
+"casfroo@gmail.com",
+"Parque Sagrada Família",
+"Atendimento a crianças e adolescentes."],
+
+["Casa do Oleiro","OSC",
+"Murilo de Carvalho Silva",
+"(66) 99698-6148",
+"casadooleiromt@gmail.com",
+"Chácara Estrela Dalva",
+"Acolhimento e apoio a homens adultos."],
+
+["Casa Laura Vicunha","OSC",
+"Maria Aparecida Rocha",
+"(66) 99985-9794",
+"vicunhacasalauravicunha@gmail.com",
+"Rua Papa Evaristo, 1340, Vila Cardoso",
+"Atividades socioeducativas para meninas e adolescentes."],
+
+["Casa São Domingos Sávio","OSC",
+"Irene Silva de Oliveira",
+"(66) 3423-2608",
+"casasaodomingos.savio@hotmail.com",
+"Jardim Brasília",
+"Atividades de convivência para crianças e adolescentes."],
+
+["Centro de Reabilitação Louis Braille","OSC",
+"Luiz Antonio de Toledo",
+"(66) 3421-0598",
+"diretoria@louisbraille.com.br",
+"Av. Emanuel Pinheiro, 2625",
+"Reabilitação e apoio à pessoa com deficiência."],
+
+["Fundação Lar Cristão","OSC",
+"Ana Mariza Panes do Rego",
+"(66) 3426-3101",
+"larcristaoconta@gmail.com",
+"Rua Belém, 1370, Jardim Tropical",
+"Acolhimento institucional de adultos e idosos com deficiência."],
+
+["Fundação Lar Espírita Nazaré","OSC",
+"Marcelo Suguiyama Galliazzi",
+"(66) 99900-1065",
+"lardenazarerondonopolis@gmail.com",
+"Rua Pedro Ferrer, 1633, Jardim Mato Grosso",
+"Segurança alimentar e convivência."],
+
+["Lar Bezerra de Menezes","OSC",
+"Pedro Fernandes de Camargo",
+"(66) 99965-5766",
+"",
+"Rua Teotônio Vilela, 677, Vila São Sebastião II",
+"Segurança alimentar e apoio social."],
+
+["Lar dos Idosos Paul Percys Herrys","OSC",
+"Maria Brasilina",
+"(66) 99680-6268",
+"lardosidosospph@hotmail.com",
+"Rodovia MT-270, km 2",
+"Acolhimento institucional de pessoas idosas."],
+
+["Obra Kolping de Rondonópolis","OSC",
+"José Rodrigues de Moraes",
+"(66) 3426-2311",
+"obrakolpingepkvo@gmail.com",
+"Av. Emanuel Pinheiro, 2723, Vila Operária",
+"Qualificação profissional e inclusão produtiva."]
+];
+
+/* RENDERIZAÇÃO DO PAINEL */
+
+const todosRede=[
+...unidadesRede,
+...oscsRede
+];
+
+const escRede=s=>String(s??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#39;");
+
+const normalRede=s=>String(s??"")
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g,"")
+.toLowerCase();
+
+function htmlRedeComplemento(){
+return `
+<div id="redeComplemento">
+
+<div class="rc-card">
+<h2>Diretório da Rede SUAS e Rede Intersetorial</h2>
+<p>Rondonópolis/MT — Informações institucionais e contatos.</p>
+
+<div class="rc-grid">
+<div class="rc-kpi">
+<small>Unidades e registros institucionais</small>
+<strong>${unidadesRede.length}</strong>
+</div>
+<div class="rc-kpi">
+<small>Registros de OSCs nesta versão</small>
+<strong>${oscsRede.length}</strong>
+</div>
+<div class="rc-kpi">
+<small>CRAS ativos</small>
+<strong>8</strong>
+</div>
+<div class="rc-kpi">
+<small>Links municipais oficiais</small>
+<strong>${linksRede.length}</strong>
+</div>
+</div>
+</div>
+
+<div class="rc-card">
+<h3>Rede Municipal de Educação, Saúde e Órgãos</h3>
+
+<div class="rc-links">
+${linksRede.map(l=>`
+<a href="${escRede(l[1])}"
+target="_blank" rel="noopener noreferrer">
+${escRede(l[0])}
+</a>
+`).join("")}
+</div>
+
+<div class="rc-aviso">
+Os links abrem as páginas oficiais da Prefeitura.
+As informações externas são consultadas nos próprios portais.
+</div>
+</div>
+
+<div class="rc-card">
+<h3>Pesquisar Rede Socioassistencial e OSCs</h3>
+
+<div class="rc-controles">
+<input id="rcBusca"
+placeholder="Pesquisar unidade, bairro, telefone, responsável ou serviço">
+
+<select id="rcTipo">
+<option value="">Todas as categorias</option>
+</select>
+</div>
+
+<p id="rcTotal"></p>
+
+<div id="rcResultados" class="rc-lista"></div>
+</div>
+
+<div class="rc-card">
+<h3>Orientações técnicas e atualização dos dados</h3>
+
+<div class="rc-aviso">
+Os contatos e responsáveis foram extraídos das relações
+fornecidas pela SEMPRAS e precisam de conferência periódica.
+Os endereços de acolhimento protegido não são divulgados.
+A inclusão de OSCs nesta relação não comprova inscrição no CMAS
+ou existência de parceria formal.
+</div>
+
+<p>Os campos de CNPJ não foram preenchidos porque não
+constavam do material enviado.</p>
+</div>
+
+</div>`;
+}
+
+function filtrarRedeComplemento(){
+
+const raiz=document.getElementById("redeComplemento");
+if(!raiz)return;
+
+const busca=normalRede(
+raiz.querySelector("#rcBusca").value
+);
+const tipo=raiz.querySelector("#rcTipo").value;
+
+const encontrados=todosRede.filter(r=>{
+return (!tipo||r[1]===tipo)&&
+(!busca||normalRede(r.join(" ")).includes(busca));
+});
+
+raiz.querySelector("#rcTotal").textContent=
+encontrados.length+" registros encontrados.";
+
+raiz.querySelector("#rcResultados").innerHTML=
+encontrados.map(r=>`
+<details>
+<summary>${escRede(r[0])}</summary>
+
+<p><span class="rc-label">Categoria:</span>
+${escRede(r[1])}</p>
+
+<p><span class="rc-label">Responsável:</span>
+${escRede(r[2]||"Não informado")}</p>
+
+<p><span class="rc-label">Telefone:</span>
+${escRede(r[3]||"Não informado")}</p>
+
+<p><span class="rc-label">E-mail:</span>
+${escRede(r[4]||"Não informado")}</p>
+
+<p><span class="rc-label">Endereço:</span>
+${escRede(r[5]||"Não informado")}</p>
+
+<p class="rc-valor">
+<span class="rc-label">Serviços / Abrangência:</span>
+${escRede(r[6]||"Não informado")}
+</p>
+
+</details>
+`).join("")||"<p>Nenhum registro encontrado.</p>";
+}
+
+function montarRedeComplemento(){
+
+const alvo=document.getElementById("conteudo");
+if(!alvo)return;
+
+document.getElementById("redeComplemento")?.remove();
+
+alvo.insertAdjacentHTML(
+"beforeend",htmlRedeComplemento()
+);
+
+const raiz=document.getElementById("redeComplemento");
+
+const tipos=[...new Set(todosRede.map(r=>r[1]))].sort();
+
+raiz.querySelector("#rcTipo").innerHTML=
+'<option value="">Todas as categorias</option>'+
+tipos.map(t=>`
+<option value="${escRede(t)}">${escRede(t)}</option>
+`).join("");
+
+raiz.querySelector("#rcBusca")
+.addEventListener("input",filtrarRedeComplemento);
+
+raiz.querySelector("#rcTipo")
+.addEventListener("change",filtrarRedeComplemento);
+
+filtrarRedeComplemento();
+}
+
+/* INTEGRAÇÃO COM A ABA 2 DO PAINEL */
+
+if(typeof window.rede==="function"){
+
+const redeAnterior=window.rede;
+
+window.rede=function(...args){
+const resultado=redeAnterior.apply(this,args);
+montarRedeComplemento();
+return resultado;
+};
+
+}else{
+
+document.addEventListener("click",e=>{
+const botao=e.target.closest("button");
+if(!botao)return;
+
+const texto=normalRede(botao.textContent);
+
+if(texto.includes("rede suas")||
+texto.includes("cadsuas")){
+setTimeout(montarRedeComplemento,0);
+}
+});
+}
+
+/* MONTA SE A ABA JÁ ESTIVER ABERTA */
+
+const botaoAtivo=document.querySelector("#menu button.ativo");
+
+if(botaoAtivo&&
+/rede suas|cadsuas/i.test(botaoAtivo.textContent)){
+montarRedeComplemento();
+}
 
 })();
 </script>
-<!-- FIM DO PAINEL PMAS -->
+
+<!-- FIM: COMPLEMENTO REDE SUAS / CADSUAS -->
+
