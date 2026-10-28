@@ -465,7 +465,8 @@ function rmaDestruir(){RMA_CHARTS.forEach(x=>{try{x.destroy()}catch(e){}});RMA_C
 function basica(){
  rmaDestruir();
  conteudo.innerHTML=card('RMA — Análise da Proteção Social Básica | CRAS — 2026',
- `<p>Dados extraídos dos formulários do <b>Registro Mensal de Atendimentos (SNAS)</b>, para os oito CRAS de Rondonópolis, entre janeiro e maio de 2026. Indicadores por competência, com comparação entre unidades, evolução mensal e acesso aos documentos originais.</p>
+ `<div style="background:#e4f8ed;border:1px solid #a8dec0;border-radius:9px;padding:12px;margin-bottom:12px;color:#14532d;font-weight:bold">RMA 2026 carregado — 40 formulários oficiais dos 8 CRAS | Janeiro a maio de 2026</div>
+ <p>Dados extraídos dos formulários do <b>Registro Mensal de Atendimentos (SNAS)</b>, para os oito CRAS de Rondonópolis, entre janeiro e maio de 2026. Indicadores por competência, com comparação entre unidades, evolução mensal e acesso aos documentos originais.</p>
  <div class="controles"><label>Mês <select id="rmaMes"><option value="Todos">Janeiro a maio</option>${RMA_MESES.map(x=>`<option value="${x}">${x}/2026</option>`).join('')}</select></label>
  <label>CRAS <select id="rmaCras"><option value="Todos">Todos os CRAS</option>${RMA_CRAS.map(x=>`<option>${x}</option>`).join('')}</select></label>
  <label>Indicador <select id="rmaIndicador">${Object.entries(RMA_CAMPOS).map(([i,v])=>`<option value="${i}" ${i==='2'?'selected':''}>${v[0]} — ${v[1]}</option>`).join('')}</select></label></div>
@@ -509,12 +510,112 @@ function rmaAtualizar(){
  const serie=linhas.map(lista=>somar(lista,k));
  const comparar=RMA_CRAS.filter(n=>cras==='Todos'||n===cras).map(n=>({nome:n,valor:k===0?somar(sel.filter(r=>r.cras===n&&r.mes===ult),k):somar(sel.filter(r=>r.cras===n),k)}));
  rmaDestruir();
+ if(typeof Chart==='undefined'){
+  for(const canvasId of ['rmaSerie','rmaBarras']){
+    const el=document.getElementById(canvasId);
+    if(el)el.insertAdjacentHTML('afterend','<p class="aviso">Os gráficos dependem do carregamento da biblioteca Chart.js. Os indicadores e a tabela continuam disponíveis acima e abaixo.</p>');
+  }
+ }
  if(typeof Chart!=='undefined'){
  RMA_CHARTS.push(new Chart(document.getElementById('rmaSerie'),{type:'line',data:{labels:meses.map(m=>m+'/2026'),datasets:[{label:RMA_CAMPOS[k][1],data:serie,borderColor:'#1d4ed8',backgroundColor:'rgba(37,99,235,.12)',fill:true,tension:.2}]},options:{responsive:true,maintainAspectRatio:false}}));
  RMA_CHARTS.push(new Chart(document.getElementById('rmaBarras'),{type:'bar',data:{labels:comparar.map(x=>x.nome),datasets:[{label:RMA_CAMPOS[k][1],data:comparar.map(x=>x.valor),backgroundColor:'#0e7490'}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',scales:{x:{beginAtZero:true}}}}));
  }
  document.getElementById('rmaTabela').innerHTML=sel.map(r=>`<tr><td>${r.mes}/2026</td><td>${r.cras}</td><td>${fmt(r.v[0])}</td><td>${fmt(r.v[1])}</td><td>${fmt(r.v[2])}</td><td>${fmt(r.v[4])}</td><td>${fmt(r.v[7])}</td><td>${fmt(r.v[11])}</td><td><a target="_blank" rel="noopener noreferrer" href="${r.url}">Formulário</a></td></tr>`).join('');
 }
+
+// PAINEL ANALÍTICO APROFUNDADO POR CRAS — RMA JAN-MAI/2026
+function rmaAnaliseAprofundada(){
+ const fmtN=n=>Number(n).toLocaleString('pt-BR');
+ const pct=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:1,minimumFractionDigits:1})+'%';
+ const total=(arr,i)=>arr.reduce((a,r)=>a+r.v[i],0);
+ const seq=arr=>RMA_MESES.map(m=>arr.find(r=>r.mes===m));
+ const cardInfo=(t,v,s)=>`<div class="kpi"><small>${t}</small><strong>${fmtN(v)}</strong><small>${s}</small></div>`;
+ const tabelaLinha=(t,v)=>`<tr><td>${t}</td><td>${fmtN(v)}</td></tr>`;
+ let html=`<div class="card" id="rmaDetalhesCRAS"><h2>Diagnóstico aprofundado por CRAS — janeiro a maio/2026</h2>
+ <p>Selecione uma unidade para analisar evolução, inserções no PAIF, visitas, benefícios e encaminhamentos. Os dados vêm dos formulários RMA de cada competência.</p>
+ <div class="controles"><label>Unidade de referência <select id="rmaUnidadeDetalhe">${RMA_CRAS.map(n=>`<option value="${n}">${n}</option>`).join('')}</select></label></div>
+ <div id="rmaCRASResumo"></div><div id="rmaCRASAnalise"></div>
+ <div class="grafico"><canvas id="rmaCRASMensal"></canvas></div>
+ <div id="rmaCRASTabela" class="tabela"></div></div>
+ <div class="card"><h2>Comparativo técnico entre os oito CRAS</h2>
+ <p>Acumulados de fluxos de janeiro a maio e estoque PAIF no mês de maio. A proporção de visitas sobre atendimentos é um <b>indicador descritivo da produção</b>, não mede a cobertura domiciliar nem a qualidade dos serviços.</p>
+ <div id="rmaComparativoCompleto" class="tabela"></div>
+ <div id="rmaAlertasGerais" class="aviso"></div></div>`;
+ conteudo.insertAdjacentHTML('beforeend',html);
+ const select=document.getElementById('rmaUnidadeDetalhe');
+ let g=null;
+ function render(){
+  const cras=select.value, dados=seq(RMA_DADOS.filter(r=>r.cras===cras));
+  const atend=total(dados,2), visitas=total(dados,7), novas=total(dados,1);
+  const cadNovo=total(dados,3),cadAtual=total(dados,4),bpc=total(dados,5),creas=total(dados,6),be=total(dados,8)+total(dados,9)+total(dados,10);
+  const estoqueInicio=dados[0].v[0],estoqueFim=dados[4].v[0];
+  document.getElementById('rmaCRASResumo').innerHTML=`<div class="cards">${[
+   ['Atendimentos particularizados',atend,'Soma de C.1 no período'],
+   ['Visitas domiciliares',visitas,'Soma de C.6 no período'],
+   ['Novas famílias PAIF',novas,'Soma de A.2 no período'],
+   ['Famílias PAIF em maio',estoqueFim,'A.1 — estoque, sem soma mensal'],
+   ['Atualizações CadÚnico encaminhadas',cadAtual,'Soma de C.3 no período'],
+   ['Benefícios eventuais registrados',be,'C.7 + C.8 + C.9 no período']
+  ].map(a=>cardInfo(...a)).join('')}</div>`;
+  const variacao=estoqueInicio?100*(estoqueFim-estoqueInicio)/estoqueInicio:null;
+  let notas=[`<b>${cras}:</b> houve ${fmtN(atend)} registros de atendimentos particularizados em cinco competências, média de ${fmtN(Math.round(atend/5))} por mês; ${fmtN(visitas)} visitas, equivalentes a ${pct(100*visitas/atend)} do volume de C.1.`,
+    `O estoque PAIF mudou de ${fmtN(estoqueInicio)} famílias em janeiro para ${fmtN(estoqueFim)} em maio (${variacao===null?'sem base para variação':pct(variacao)}). A.1 não deve ser somado entre meses.`,
+    `Foram registradas ${fmtN(novas)} novas inserções PAIF, ${fmtN(cadNovo)} encaminhamentos para inclusão e ${fmtN(cadAtual)} para atualização no CadÚnico, ${fmtN(bpc)} ao BPC e ${fmtN(creas)} ao CREAS. São contagens de ações/registros; não demonstram conclusão do encaminhamento.`];
+  if(cras==='Ana Carla') notas.push('<b>Conferência prioritária:</b> A.2 informou 287 novas famílias em janeiro e 487 em fevereiro, frente a estoque A.1 de 746 e 688. A.2 pode diferir da variação do estoque em razão de desligamentos, porém a magnitude requer checagem do preenchimento.');
+  if(cras==='Sagrada Família') notas.push('<b>Conferência cadastral:</b> C.3 caiu de 150 em abril para 12 em maio; verificar demanda, registros e eventual mudança operacional.');
+  if(cras==='Cidade Alta') notas.push('<b>Leitura territorial:</b> A.1 permaneceu entre 39 e 56 famílias apesar de mais de 3 mil registros de atendimentos particularizados no período; verificar cadastro PAIF e diferença entre atendimentos pontuais e acompanhamento sistemático.');
+  if(cras==='Conjunto São José') notas.push('<b>Pico mensal:</b> C.1 atingiu 1.994 registros em março, sugerindo verificar sazonalidade, demanda, fluxo de registro e capacidade de atendimento.');
+  document.getElementById('rmaCRASAnalise').innerHTML='<div class="aviso">'+notas.map(t=>'<p>'+t+'</p>').join('')+'</div>';
+  document.getElementById('rmaCRASTabela').innerHTML=`<table><thead><tr><th>Competência</th><th>A.1 PAIF</th><th>A.2 novas</th><th>C.1 atendimentos</th><th>C.3 CadÚnico</th><th>C.6 visitas</th><th>C.9 outros benefícios</th><th>Fonte</th></tr></thead><tbody>${dados.map(r=>`<tr><td>${r.mes}/2026</td>${[0,1,2,4,7,10].map(i=>`<td>${fmtN(r.v[i])}</td>`).join('')}<td><a href="${r.url}" target="_blank" rel="noopener noreferrer">Formulário</a></td></tr>`).join('')}</tbody></table>`;
+  if(g){g.destroy();g=null}
+  if(typeof Chart==='function')g=new Chart(document.getElementById('rmaCRASMensal'),{type:'line',data:{labels:RMA_MESES.map(m=>m+'/26'),datasets:[{label:'C.1 Atendimentos',data:dados.map(r=>r.v[2]),borderColor:'#1d4ed8',yAxisID:'y',tension:.25},{label:'C.6 Visitas',data:dados.map(r=>r.v[7]),borderColor:'#0891b2',yAxisID:'y',tension:.25},{label:'A.2 Novas no PAIF',data:dados.map(r=>r.v[1]),borderColor:'#b45309',yAxisID:'y',tension:.25}]},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},scales:{y:{beginAtZero:true}}}});
+ }
+ select.addEventListener('change',render);render();
+ const resultados=RMA_CRAS.map(n=>{const a=RMA_DADOS.filter(r=>r.cras===n);return {n,at:total(a,2),vi:total(a,7),no:total(a,1),ca:total(a,4),es:a.find(r=>r.mes==='Mai').v[0],jan:a.find(r=>r.mes==='Jan').v[0]}}).sort((a,b)=>b.at-a.at);
+ document.getElementById('rmaComparativoCompleto').innerHTML=`<table><thead><tr><th>CRAS</th><th>C.1 Atendimentos</th><th>C.6 Visitas</th><th>Visitas/C.1</th><th>A.2 Novas</th><th>A.1 Maio</th><th>C.3 Atualização CadÚnico</th></tr></thead><tbody>${resultados.map(r=>`<tr><td>${r.n}</td><td>${fmtN(r.at)}</td><td>${fmtN(r.vi)}</td><td>${pct(100*r.vi/r.at)}</td><td>${fmtN(r.no)}</td><td>${fmtN(r.es)}</td><td>${fmtN(r.ca)}</td></tr>`).join('')}</tbody></table>`;
+ document.getElementById('rmaAlertasGerais').innerHTML=`<b>Leitura comparativa:</b> Conjunto São José (${fmtN(resultados.find(r=>r.n==='Conjunto São José').at)}) e Ana Carla (${fmtN(resultados.find(r=>r.n==='Ana Carla').at)}) tiveram os maiores volumes de C.1 neste intervalo. Comparações devem considerar população referenciada, equipe, funcionamento, perfil da demanda e padrão de registro.<p><b>Qualidade dos dados:</b> conferir os picos A.2 do Ana Carla e a queda C.3 da Sagrada Família em maio. Não equiparar volume de atendimentos à quantidade de famílias únicas ou à efetividade do PAIF.</p>`;
+}
+
+// LEITURA SOCIOASSISTENCIAL CONFORME DIRETRIZES DO SUAS
+function rmaLeituraSUAS(){
+ const orientacoes={
+ "Alfredo de Castro":"Acompanhamento PAIF relativamente estável (478 em janeiro e 508 em maio). Confrontar a manutenção do acompanhamento com planos de acompanhamento, busca ativa e demandas da população territorialmente referenciada; verificar continuidade de visitas e articulação com benefícios.",
+ "Ana Carla":"Prioridade de auditoria técnica de A.2: foram registradas 287 novas inserções em janeiro e 487 em fevereiro, enquanto A.1 passou de 746 para 688. Examinar critérios de inclusão, desligamentos, atualização dos prontuários e possível erro de preenchimento; volume não equivale a efetividade.",
+ "Cidade Alta":"A.1 variou de 39 a 56 famílias, embora C.1 registre 3.392 atendimentos em cinco meses. Investigar, sem inferir automaticamente falha, se há demanda predominantemente pontual, acompanhamento registrado em outro fluxo, baixa vinculação ao PAIF ou subregistro de A.1.",
+ "Conjunto São José":"Maior volume acumulado de C.1 (6.791) e de visitas domiciliares (1.099). Verificar equilíbrio entre acolhida, acompanhamento continuado, condições de equipe e respostas aos riscos territoriais; o pico de março (1.994 atendimentos) requer validação.",
+ "Luz D'Yara":"Acompanhamento PAIF cresceu de 227 para 274 famílias. Relacionar evolução aos perfis de vulnerabilidade e à oferta do território; conferir participação de famílias com BPC/PBF e regularidade de atividades coletivas, sem tomar aumento de estoque como sucesso isolado.",
+ "Padre Lothar":"PAIF cresceu de 245 para 310 famílias. Verificar planos de acompanhamento, visitas e reavaliação periódica das situações de vulnerabilidade; confrontar encaminhamentos ao Cadastro Único com resultados efetivamente alcançados.",
+ "Rio Vermelho":"PAIF ficou entre 567 e 589 famílias, com 573 em maio. Avaliar continuidade do acompanhamento, capacidade das equipes, ações preventivas e fluxos de referência e contrarreferência; não interpretar estabilidade como ausência de novas demandas.",
+ "Sagrada Família":"PAIF passou de 191 para 252 famílias. A queda de C.3 (atualização CadÚnico) de 150 em abril para 12 em maio deve ser validada com os fluxos de atendimento e registros; não pressupõe, isoladamente, queda da necessidade de atualização."
+ };
+ const sel=document.getElementById('rmaUnidadeDetalhe');
+ if(!sel)return;
+ const host=document.getElementById('rmaDetalhesCRAS');
+ if(!host)return;
+ const bloco=document.createElement('section');
+ bloco.id='rmaLeituraNormativa';
+ bloco.innerHTML=`<h3>Leitura técnica conforme as prerrogativas do SUAS</h3>
+ <div class="aviso"><b>Parâmetro normativo:</b> LOAS/PNAS, Tipificação Nacional (Resolução CNAS 109/2009), NOB-SUAS (Resolução CNAS 33/2012), orientações técnicas do PAIF e Manual RMA/CRAS. O objetivo é verificar proteção social, territorialização, matricialidade sociofamiliar, acesso a direitos, prevenção de riscos e qualidade da oferta — não fazer ranking de produtividade.</div>
+ <p id="rmaParecerSUAS"></p>
+ <details><summary>Critérios técnicos de monitoramento e providências</summary>
+ <ol><li><b>Territorialização e cobertura:</b> confrontar demanda do território, CadÚnico, IVCAD, busca ativa e famílias referenciadas; C.1 não mede cobertura de famílias distintas.</li>
+ <li><b>Continuidade do PAIF:</b> analisar A.1 como estoque mensal, A.2 como entradas e os processos de acompanhamento, inclusive desligamentos; cruzar com prontuários, planos familiares e avaliações qualitativas.</li>
+ <li><b>Proteção e acesso a direitos:</b> avaliar encaminhamentos ao CadÚnico, BPC, CREAS e benefícios eventuais, com confirmação do acesso efetivo e contrarreferência.</li>
+ <li><b>Prevenção e atuação proativa:</b> acompanhar visitas domiciliares, grupos PAIF e busca ativa, respeitando o perfil do território e a disponibilidade da equipe.</li>
+ <li><b>Qualidade do registro:</b> conferir variações atípicas, conceitos de atendimento versus acompanhamento, ausência de duplicidades e compatibilidade entre RMA e prontuários.</li>
+ <li><b>Gestão do Trabalho:</b> interpretar resultados juntamente com equipes de referência, carga horária, infraestrutura e capacidade de atendimento, à luz da NOB-RH SUAS.</li></ol></details>
+ <p style="font-size:12px;color:#52657e">Nota: os formulários mensais descrevem produção e estoque; não permitem, isoladamente, aferir impacto sobre vínculos familiares, superação de vulnerabilidades ou qualidade do acompanhamento. As recomendações são hipóteses de verificação, não constatações de irregularidade.</p>`;
+ host.appendChild(bloco);
+ function atualizar(){
+  document.getElementById('rmaParecerSUAS').textContent=orientacoes[sel.value]||'Selecione um CRAS.';
+ }
+ sel.addEventListener('change',atualizar);
+ atualizar();
+}
+
+const basicaAntesDoAprofundamento=basica;
+basica=function(){basicaAntesDoAprofundamento();rmaAnaliseAprofundada();rmaLeituraSUAS()};
+
 // ==========================================
 // 6. PROTEÇÃO SOCIAL ESPECIAL
 // ==========================================
