@@ -1,395 +1,455 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel e Biblioteca VSA - Rondonópolis-MT</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-    <style>
-        .pmas-eixo summary { cursor: pointer; list-style-position: inside; }
-        .pmas-oculto { display: none !important; }
-        .mapa-iframe { width: 100%; height: 420px; border: 0; border-radius: 12px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Biblioteca e Painel VSA | Rondonópolis-MT</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--azul:#173b75;--azul2:#2563eb;--fundo:#f1f5f9;--texto:#243247;--borda:#dbe3ee}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fundo);font-family:Arial,sans-serif;color:var(--texto)}
+header{background:linear-gradient(120deg,#102c59,#2254a0);padding:30px 5%;color:white}
+header h1{margin:10px 0;font-size:27px}
+header p{color:#dbeafe}
+main{max-width:1300px;margin:auto;padding:22px}
+nav{display:flex;gap:9px;overflow-x:auto;padding:13px 0}
+nav button,.botao{border:0;border-radius:9px;padding:13px 17px;background:white;color:var(--azul);cursor:pointer;font-weight:bold;white-space:nowrap}
+nav button.ativo{background:var(--azul);color:white}
+.aba{display:none}.aba.ativa{display:block}
+.card{background:white;border:1px solid var(--borda);border-radius:14px;padding:20px;margin:15px 0;box-shadow:0 2px 7px #1e293b0a}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.kpi{background:#eff6ff;padding:19px;border-radius:12px;border:1px solid #dbeafe}
+.kpi small{display:block;color:#475569;line-height:1.5}
+.kpi strong{display:block;color:#1d4ed8;font-size:27px;margin-top:7px}
+h2{color:var(--azul)}h3{color:#254c80}
+.controles{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+input,select{padding:12px;border:1px solid #cbd5e1;border-radius:8px;background:white;max-width:100%;flex:1;min-width:180px}
+.grafico{height:400px;position:relative}
+.tabela{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{background:#e8eef8;text-align:left;padding:11px;white-space:nowrap}
+td{border-bottom:1px solid #e2e8f0;padding:10px}
+tr:hover td{background:#f8fafc}
+a{color:#1d4ed8}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.link{border:1px solid #dbe3ee;padding:16px;border-radius:10px;text-decoration:none;background:#f8fbff;font-weight:bold}
+.nota{background:#fffbeb;border-left:4px solid #f59e0b;padding:13px;line-height:1.6;font-size:13px}
+.verde{background:#dcfce7;padding:5px;border-radius:6px}
+.amarelo{background:#fef3c7;padding:5px;border-radius:6px}
+.vermelho{background:#fee2e2;padding:5px;border-radius:6px}
+footer{background:#1e293b;color:white;text-align:center;padding:25px;margin-top:25px}
+@media(max-width:600px){header h1{font-size:21px}main{padding:10px}.grafico{height:330px}}
+</style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
-    <header class="bg-blue-900 text-white shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 py-6">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <span class="bg-blue-800 text-blue-200 text-xs font-semibold px-2.5 py-1 rounded uppercase tracking-wider">SEMPRAS · Rondonópolis-MT</span>
-                    <h1 class="text-2xl md:text-3xl font-bold mt-1">Biblioteca e Painel da Vigilância Socioassistencial</h1>
-                    <p class="text-blue-200 text-sm mt-1">Dashboard Analítico com Múltiplos Gráficos IBGE, Rede Socioassistencial Completa e Abrangência Territorial.</p>
-                </div>
-                <div class="bg-blue-800/80 p-3 rounded-lg border border-blue-700 text-xs text-blue-100">
-                    <p class="font-semibold">📊 Sincronização Ativa</p>
-                    <p class="mt-0.5">Atualização: <span>Outubro de 2026</span></p>
-                </div>
-            </div>
-        </div>
-    </header>
+<body>
 
-    <div class="bg-white border-b shadow-sm sticky top-0 z-10">
-        <div class="max-w-7xl mx-auto px-4 py-4">
-            <div class="relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-                    <i data-lucide="search" class="w-5 h-5"></i>
-                </span>
-                <input type="text" id="busca-global" placeholder="Pesquisar por unidade, responsável, telefone, bairro, OSC ou serviço..." class="w-full pl-10 pr-4 py-3 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition">
-            </div>
-        </div>
-    </div>
+<header>
+<small>SEMPRAS • RONDONÓPOLIS-MT</small>
+<h1>Biblioteca e Painel da Vigilância Socioassistencial</h1>
+<p>Cadastro Único • Rede SUAS • IVCAD • Bolsa Família • PMAS • Diagnóstico Territorial</p>
+<small>Atualização documental: Outubro de 2026</small>
+</header>
 
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
-        <div class="flex overflow-x-auto space-x-2 border-b border-slate-200 pb-2 mb-6 scrollbar-none" id="abas-container"></div>
-        <div id="painel-conteudo"></div>
-    </main>
+<main>
+<nav id="menu">
+<button class="ativo" onclick="abrir('panorama',this)">Panorama IBGE e Rede SUAS</button>
+<button onclick="abrir('cadastro',this)">Cadastro Único e RI Social</button>
+<button onclick="abrir('territorial',this)">IVCAD e PMAS</button>
+<button onclick="abrir('bairros',this)">Ranking por Bairros</button>
+<button onclick="abrir('fontes',this)">Fontes Oficiais</button>
+</nav>
 
-    <footer class="bg-slate-800 text-slate-400 py-6 mt-auto text-center text-sm">
-        <p>Prefeitura Municipal de Rondonópolis - SEMPRAS</p>
-        <p class="mt-1 text-xs">Gerenciamento Técnico da Vigilância Socioassistencial</p>
-    </footer>
+<section id="panorama" class="aba ativa">
+<div class="card">
+<h2>Panorama de Rondonópolis</h2>
+<p>Informações demográficas e estrutura da proteção social do município.</p>
+<div class="cards">
+<div class="kpi"><small>Estimativa populacional IBGE 2026</small><strong>268.202</strong></div>
+<div class="kpi"><small>CRAS ativos</small><strong>8</strong></div>
+<div class="kpi"><small>Famílias no CadÚnico — set/2026</small><strong>50.941</strong></div>
+<div class="kpi"><small>Pessoas no CadÚnico — set/2026</small><strong>114.463</strong></div>
+</div>
+</div>
+<div class="card">
+<h3>Rede Socioassistencial</h3>
+<div id="lista-rede"></div>
+<p class="nota">O CRAS Central foi reordenado em 2026. Cidade Alta/Jardim Iguaçu e Sagrada Família/CEU são identificações territoriais associadas às respectivas unidades.</p>
+<a href="https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama" target="_blank" rel="noopener">Consultar panorama oficial do IBGE</a>
+</div>
+</section>
 
-    <script>
-        const dadosGlobais = {
-            "ultimaAtualizacao": "Outubro de 2026",
-            "categorias": {
-                "territorio": {
-                    "titulo": "1. Dashboard IBGE e Rede Socioassistencial",
-                    "icone": "bar-chart-3",
-                    "descricao": "Painel de Indicadores Gráficos Avançados (IBGE), Mapa Georreferenciado, Rede SUAS Completa e Bairros de Abrangência.",
-                    "links": [
-                        { "nome": "Acessar Página Oficial no IBGE Cidades", "descricao": "Fonte original do panorama municipal.", "url": "https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama", "orgao": "IBGE", "restrito": false },
-                        { "nome": "Planilha Oficial de Contatos e Serviços SUAS", "descricao": "Base de dados original da rede socioassistencial.", "url": "https://docs.google.com/spreadsheets/d/1uaWIdy3tGPCER8teCyuJwqmZfInh1Tte/edit?gid=1144368120#gid=1144368120", "orgao": "SEMPRAS", "restrito": false },
-                        { "nome": "Abrir Mapa Completo no Google My Maps", "descricao": "Áreas de abrangência dos CRAS.", "url": "https://www.google.com/maps/d/edit?mid=1JiHgDzghrEuWZSaiy_uipJv7Rh3TUqQ&usp=drive_link", "orgao": "VSA / SEMPRAS", "restrito": false }
-                    ],
-                    "panoramaIbge": {
-                        "geral": [
-                            { "parametro": "Código do Município", "valor": "5107602" },
-                            { "parametro": "Gentílico", "valor": "rondonopolitano" },
-                            { "parametro": "Aniversário", "valor": "10 de dezembro" },
-                            { "parametro": "Prefeito", "valor": "CLAUDIO FERREIRA DE SOUZA" }
-                        ]
-                    },
-                    "redeSuas": [
-                        { "unidade": "SEMPRAS - Secretaria Municipal de Promoção e Assistência Social", "responsavel": "FABIANA FREDERICO RIZATI PEREZ", "telefone": "(66) 3439-9100", "email": "assistenciasocialroo@gmail.com", "endereco": "AVENIDA GETÚLIO VARGAS, N°1439, VILA AURORA I", "atendimento": "Público em situação de vulnerabilidade e risco social" },
-                        { "unidade": "Superintendência de Gestão", "responsavel": "RUBINALDA RODRIGUES DOS SANTOS", "telefone": "(66) 3439-9100", "email": "financeirosempras@gmail.com", "endereco": "AVENIDA GETÚLIO VARGAS, 729, VILA AURORA", "atendimento": "Segunda a Sexta: 07h às 11h e 13h às 17h" },
-                        { "unidade": "Posto de Cadastramento do Cadastro Único (Ganha Tempo)", "responsavel": "NAYANE SORAILLE DOMINGUES SILVA", "telefone": "(66) 999211763", "email": "gestaocadpbfroo@gmail.com", "endereco": "RUA JOÃO PESSOA, 802 – CENTRO (GANHA TEMPO)", "atendimento": "Segunda a Sexta: 08h às 17h" },
-                        { "unidade": "Vigilância Socioassistencial", "responsavel": "ALESSANDRA DOS SANTOS OLIVEIRA SILVA", "telefone": "(66) 996644164", "email": "monitoramento.suas.rondonopolis@gmail.com", "endereco": "AV. GETÚLIO VARGAS, 729, VILA AURORA I", "atendimento": "Segunda a Sexta: 07h às 11h e 13h às 17h" },
-                        { "unidade": "Superintendência de Proteção Social Básica", "responsavel": "MÁRCIA DOS SANTOS MEDEIROS", "telefone": "(66) 3439-9100", "email": "bsemprasbasica@gmail.com", "endereco": "AVENIDA GETÚLIO VARGAS, 729, VILA AURORA", "atendimento": "Segunda a Sexta: 07h às 11h e 13h às 17h" },
-                        { "unidade": "CRAS Alfredo de Castro", "responsavel": "ROBERTA GOBES DE BARROS", "telefone": "(66) 3411-5796", "email": "crasalfredodecastro@gmail.com", "endereco": "RUA PROJETADA S/N - ALFREDO DE CASTRO", "atendimento": "Segunda a Sexta: 07h às 17h" },
-                        { "unidade": "CRAS Ana Carla", "responsavel": "DAIANI RODRIGUES NETO", "telefone": "(66) 3411-5755", "email": "crasanacarla2025@gmail.com", "endereco": "RUA D, S/N - JARDIM ANA CARLA II", "atendimento": "Segunda a Sexta: 07h às 17h" },
-                        { "unidade": "CRAS Conjunto São José", "responsavel": "MONICA GOMES SILVEIRO", "telefone": "(66) 3411-5786", "email": "crasconjunto@gmail.com", "endereco": "RUA JOÃO PEREIRA DA SILVA S/N - CONJUNTO SÃO JOSÉ", "atendimento": "Segunda a Sexta: 07h às 17h" },
-                        { "unidade": "CRAS Cidade Alta (Antigo CRAS Iguaçu)", "responsavel": "ELIZABETH MARMO DE SOUZA RESENDE", "telefone": "(66) 3411-5740", "email": "crasiguacu@outlook.com", "endereco": "AV. JUSSARA, 1700 - PARQUE RES. CIDADE ALTA", "atendimento": "Segunda a Sexta: 07h às 17h" },
-                        { "unidade": "CRAS Luz D'Yara", "responsavel": "JOSE DA SILVA BARROS", "telefone": "(66) 3411-4392", "email": "crasluzdaiara@gmail.com", "endereco": "RUA CLAUDEMIRO JUSTINO ANJOS, 99 - JARDIM MODELO", "atendimento": "Segunda a Sexta: 07h às 17h" },
-                        { "unidade": "CRAS Sagrada Família (CEU Sagrada Família)", "responsavel": "MARIA SUELI BONFIM", "telefone": "(66) 3411-5797", "email": "crassagradafamilia2@gmail.com", "endereco": "RUA LUIS OTAVIO RAVAGNANI LUSVARGHI S/N - RES MARGARIDA", "atendimento": "Segunda a Sexta: 07h às 17h" },
-                        { "unidade": "CRAS Rio Vermelho", "responsavel": "ISABEL CRISTINA DA SILVA ITACARAMBI", "telefone": "(66) 99906-0709", "email": "crasriovermelhoroo@gmail.com", "endereco": "AVENIDA BEIRA RIO S/Nº - VILA BOA ESPERANÇA", "atendimento": "Segunda a Sexta: 07h às 17h" },
-                        { "unidade": "CRAS Padre Lothar", "responsavel": "TATIANE DOS SANTOS OTANI", "telefone": "(66) 3411-5789", "email": "craspadrelothar2022@gmail.com", "endereco": "RUA MARINA, N°1933 - VILA RICA", "atendimento": "Segunda a Sexta: 07h às 17h" },
-                        { "unidade": "Superintendência de Proteção Social Especial", "responsavel": "DANIELA SOUZA BIZERRA", "telefone": "(66) 3439-9100", "email": "semprasespecial@gmail.com", "endereco": "AVENIDA GETÚLIO VARGAS, 729 - VILA AURORA", "atendimento": "Segunda a Sexta: 07h às 11h e 13h às 17h" },
-                        { "unidade": "CREAS (Centro de Referência Especializado)", "responsavel": "ANDRÉIA SANTIAGO SANTOS", "telefone": "(66) 99711-2881", "email": "creasrondonopolis@gmail.com", "endereco": "RUA ARTHUR MONTEIRO MAGALHÃES, 115 - JARDIM BEIRA RIO", "atendimento": "Segunda a Sexta: 07h às 11h e 13h às 17h" },
-                        { "unidade": "Centro POP e Abordagem Social", "responsavel": "NAIDELLAINY CRISTINA D. DE O. SILVA", "telefone": "(66) 3411-5744", "email": "centropoprondonopolis@gmail.com", "endereco": "AV. BANDEIRANTES, 1191 - CENTRO", "atendimento": "Segunda a Sexta: 07h às 11h e 13h às 17h" },
-                        { "unidade": "Conselho Tutelar - Central", "responsavel": "Adriana Zeni, Claudia, Marcos, Marly e Patrícia", "telefone": "(66) 99217-9667", "email": "ctroor1@hotmail.com", "endereco": "Rua Poxoréu, 847 - Bairro Centro", "atendimento": "Segunda a Sexta: 07h às 11h e 13h às 17h" },
-                        { "unidade": "CMAS - Conselho Municipal de Assistência Social", "responsavel": "Paulo Otávio", "telefone": "(66) 3423-1754", "email": "nucleodosconselhosroomt@gmail.com", "endereco": "Av. Tiradentes, 1904 - Bairro Centro", "atendimento": "Segunda a Sexta: 07h às 11h e 13h às 17h" }
-                    ],
-                    "oscs": [
-                        { "nome": "Assoc. Beneficente N. Sra. de Fátima - Casa Esperança", "responsavel": "ABADIA ROSA MIRANDA", "telefone": "(66) 3022-4316", "email": "casaespcontato@hotmail.com", "endereco": "Av. Raimundo de Matos, 3093 - Santa Cruz", "servico": "Acolhimento institucional" },
-                        { "nome": "Associação Boa Semente (Bom Samaritano)", "responsavel": "ROSANA APARECIDA LEITE", "telefone": "(66) 3423-4500", "email": "cbomsamaritano_roomt@hotmail.com", "endereco": "Av. Bandeirantes, 1190 - Centro", "servico": "Alimentação diária para população em situação de rua" },
-                        { "nome": "APAE Rondonópolis", "responsavel": "ADRIANA FREITAS GUIMARÃES RAM", "telefone": "(66) 3422-2985", "email": "apaeroo@terra.com.br", "endereco": "Av. Padre Anchieta, 890 - Vila Aurora", "servico": "Apoio e melhoria da qualidade de vida de pessoas com deficiência" },
-                        { "nome": "Cáritas Diocesana - Recanto dos Idosos", "responsavel": "MANOEL MESSIAS", "telefone": "(66) 3421-4361", "email": "caritasdiocesanaroo@terra.com.br", "endereco": "Av. João XXIII, 3324 - Vila Operária", "servico": "Acolhimento tipo república para idosos" },
-                        { "nome": "Lar dos Idosos Paul Percys Herrys (ILPI)", "responsavel": "MARIA BRASILINA", "telefone": "(66) 99680-6268", "email": "lardosidosospph@hotmail.com", "endereco": "Rodovia MT-270, Km 2 - Sagrada Família", "servico": "Acolhimento institucional ininterrupto para idosos (60+ anos)" }
-                    ]
-                },
-                "pmas_resumo": {
-                    "titulo": "2. PMAS 2026–2029 e Monitoramento",
-                    "icone": "target",
-                    "descricao": "Eixos estratégicos, diretrizes e acompanhamento de metas do Plano Municipal de Assistência Social.",
-                    "links": [
-                        { "nome": "Documento Oficial do PMAS (PDF)", "descricao": "Texto integral publicado no Diário Oficial.", "url": "https://drive.google.com/file/d/1s1s9cW6N_q5bfokcVKc_5fUWIb_3z2Ez/view", "orgao": "SEMPRAS", "restrito": false }
-                    ],
-                    "indicadores": [
-                        { "nome": "Eixo 1 - Proteção Social Básica", "valor": "78%", "periodo": "2026", "fonte": "PMAS" },
-                        { "nome": "Eixo 2 - Proteção Social Especial", "valor": "70%", "periodo": "2026", "fonte": "PMAS" }
-                    ]
-                }
-            }
-        };
+<section id="cadastro" class="aba">
+<div class="card">
+<h2>Cadastro Único — Painel Municipal</h2>
+<p>Última referência documental utilizada: setembro de 2026.</p>
+<div class="cards">
+<div class="kpi"><small>Famílias cadastradas</small><strong>50.941</strong></div>
+<div class="kpi"><small>Pessoas cadastradas</small><strong>114.463</strong></div>
+<div class="kpi"><small>Famílias em pobreza</small><strong>9.534</strong></div>
+<div class="kpi"><small>Famílias em baixa renda</small><strong>12.973</strong></div>
+<div class="kpi"><small>Famílias acima de ½ salário mínimo per capita</small><strong>28.434</strong></div>
+<div class="kpi"><small>Percentual de famílias em pobreza</small><strong>18,72%</strong></div>
+</div>
+</div>
+<div class="card">
+<h3>Evolução do Cadastro Único — 2024 a 2026</h3>
+<div class="grafico"><canvas id="grafico-evolucao"></canvas></div>
+</div>
+<div class="card">
+<h3>Famílias por faixa de renda</h3>
+<div class="grafico"><canvas id="grafico-renda"></canvas></div>
+</div>
+<div class="card">
+<h3>Série histórica consolidada</h3>
+<div class="tabela"><table id="tabela-historica"></table></div>
+</div>
+<div class="card">
+<h3>Análise da Vigilância Socioassistencial</h3>
+<p>Entre setembro de 2025 e setembro de 2026, houve crescimento de aproximadamente 2,48% no número de famílias cadastradas, passando de 49.707 para 50.941.</p>
+<p>No mesmo período, as famílias na faixa de pobreza passaram de 9.693 para 9.534, redução de aproximadamente 1,64%. Essa variação deve ser interpretada considerando atualização cadastral, mudanças de renda declarada, ingresso e saída de famílias e eventuais alterações metodológicas.</p>
+<p>A quantidade de famílias cadastradas não equivale ao total de famílias vulneráveis existentes fora do Cadastro Único.</p>
+</div>
+</section>
 
-        let abaAtiva = 'territorio';
+<section id="territorial" class="aba">
+<div class="card">
+<h2>IVCAD — Diagnóstico Territorial por CRAS</h2>
+<p>Comparativo PMAS 2025 e 2026, com prioridade informada no quadro técnico.</p>
+<div class="cards">
+<div class="kpi"><small>Famílias referenciadas PMAS 2025</small><strong>49.273</strong></div>
+<div class="kpi"><small>Famílias referenciadas PMAS 2026</small><strong>50.604</strong></div>
+<div class="kpi"><small>IVCAD médio informado 2025</small><strong>0,258</strong></div>
+<div class="kpi"><small>IVCAD médio informado 2026</small><strong>0,252</strong></div>
+</div>
+<p class="nota">Os totais do PMAS são de uma base territorial distinta dos totais mensais do RI Social. O IVCAD médio de 0,252 foi mantido conforme o quadro enviado; a média simples dos nove índices listados é aproximadamente 0,251. Recomenda-se conferir a metodologia e o arredondamento.</p>
+</div>
+<div class="card">
+<h3>Comparação dos índices de vulnerabilidade</h3>
+<div class="grafico"><canvas id="grafico-ivcad"></canvas></div>
+</div>
+<div class="card">
+<h3>Famílias referenciadas por unidade</h3>
+<div class="grafico"><canvas id="grafico-cras"></canvas></div>
+</div>
+<div class="card">
+<h3>Tabela territorial e prioridades</h3>
+<div class="tabela"><table id="tabela-territorial"></table></div>
+</div>
+<div class="card">
+<h3>Bolsa Família e Benefícios Eventuais — PMAS 2025</h3>
+<div class="cards">
+<div class="kpi"><small>Famílias beneficiárias (total informado)</small><strong>10.972</strong></div>
+<div class="kpi"><small>Benefícios eventuais concedidos</small><strong>10.963</strong></div>
+</div>
+<div class="tabela"><table id="tabela-beneficios"></table></div>
+<p class="nota">Os valores por CRAS de 2026 não foram apresentados no quadro enviado. Não foram estimados. Benefícios eventuais concedidos representam concessões, não necessariamente famílias distintas.</p>
+</div>
+<div class="card">
+<h3>Dimensões do IVCAD</h3>
+<div id="legenda-ivcad"></div>
+</div>
+</section>
 
-        const territoriosBairros = {
-            "CRAS Alfredo de Castro": ["Acampamento Palmeiras", "Alfredo de Castro I, II e III", "Assentamento Primavera", "Jardim Arco Íris", "Residencial Celina Bezerra", "Vila Naboreiro", "Vila Paulista"],
-            "CRAS Ana Carla": ["Jardim Ana Carla I, II e III", "Jardim das Paineiras", "Jardim Rui Barbosa", "Parque Rosa Bororo", "Residencial Pedra 90", "Vila Olinda I, II e III"],
-            "CRAS Padre Lothar": ["Jardim Aeroporto", "Jardim Monte Líbano", "Jardim Novo Horizonte", "Residencial Mathias Neves I e II", "Residencial Padre Lothar I e II"],
-            "CRAS Conjunto São José": ["Conjunto Hab. São José I, II e III", "Jardim América", "Jardim Copacabana", "Jardim Pindorama I e II", "Jardim Santa Fé", "Vila União"],
-            "CRAS Luz D'Yara": ["Bom Pastor", "Cascalhinho", "Jardim das Flores", "Jardim Modelo", "Jardim Primavera I e II", "Vila Operária"],
-            "CRAS Cidade Alta": ["Cidade Alta", "Cidade Universitária", "Coopha Rondon", "Jardim Brasília I e II", "Jardim Green Valley", "Vila Aurora I, II e III"],
-            "CRAS Rio Vermelho": ["Centro - A e B", "Cidade Salmen", "Jardim Guanabara I e II", "Jardim Paulista", "Vila Boa Esperança", "Vila Operária / Salmen"],
-            "CEU / CRAS Sagrada Família": ["Água da Serra", "Cidade de Deus I e II", "Jardim Atlântico", "Jardim Europa", "Parque Sagrada Família II e III", "Residencial Azaleia"]
-        };
+<section id="bairros" class="aba">
+<div class="card">
+<h2>Ranking de Bairros — Cadastro Único</h2>
+<p>Rondonópolis/MT • Referência: junho de 2026</p>
+<div class="cards">
+<div class="kpi"><small>Famílias no Cadastro Único</small><strong>50.514</strong></div>
+<div class="kpi"><small>Pessoas cadastradas</small><strong>113.524</strong></div>
+<div class="kpi"><small>Famílias em pobreza</small><strong>9.427</strong></div>
+</div>
+<p class="nota">Este ranking apresenta as 50 primeiras localidades da extração consolidada, sem unificação de grafias semelhantes. O número de famílias corresponde à contagem distinta de famílias, não à contagem de pessoas. Os demais bairros do CSV original não estão incorporados nesta versão de código.</p>
+<div class="controles">
+<input id="pesquisa-bairro" placeholder="Pesquisar bairro ou localidade..." oninput="ranking()">
+<select id="ordenacao-bairro" onchange="ranking()">
+<option value="1">Mais famílias cadastradas</option>
+<option value="2">Mais pessoas cadastradas</option>
+<option value="3">Mais famílias em pobreza</option>
+<option value="4">Maior percentual em pobreza (mín. 30 famílias)</option>
+</select>
+</div>
+<div class="grafico"><canvas id="grafico-bairros"></canvas></div>
+<h3>Ranking pesquisável</h3>
+<div class="tabela"><table id="tabela-bairros"></table></div>
+<p id="total-bairros"></p>
+</div>
+<div class="card">
+<h3>Como interpretar o ranking</h3>
+<p><b>Concentração cadastral:</b> um bairro com muitas famílias cadastradas pode demandar maior capacidade de atendimento, mas isso não significa necessariamente maior intensidade de vulnerabilidade.</p>
+<p><b>Pobreza:</b> a quantidade de famílias em pobreza pode orientar ações de busca ativa, acompanhamento pelo PAIF e articulação com o Programa Bolsa Família.</p>
+<p><b>IVCAD:</b> para classificar efetivamente a vulnerabilidade por bairro, é necessária base territorializada do índice. Não se deve atribuir automaticamente o IVCAD médio de um CRAS a todos os bairros de sua abrangência.</p>
+</div>
+</section>
 
-        function inicializarAbas() {
-            const container = document.getElementById('abas-container');
-            container.innerHTML = '';
-            const categorias = Object.keys(dadosGlobais.categorias || {});
+<section id="fontes" class="aba">
+<div class="card">
+<h2>Fontes Oficiais e Plataformas</h2>
+<div class="links">
+<a class="link" href="https://cadunico.dataprev.gov.br/" target="_blank" rel="noopener">Portal do Cadastro Único</a>
+<a class="link" href="https://aplicacoes.cidadania.gov.br/ri/ri/" target="_blank" rel="noopener">RI Social — Relatórios</a>
+<a class="link" href="https://cecad.cidadania.gov.br/" target="_blank" rel="noopener">CECAD — Consulta de Dados</a>
+<a class="link" href="https://aplicacoes.cidadania.gov.br/vis/data3/" target="_blank" rel="noopener">VIS DATA — Séries Históricas</a>
+<a class="link" href="https://observatoriocadunico.mds.gov.br/" target="_blank" rel="noopener">Observatório do Cadastro Único</a>
+<a class="link" href="https://www.gov.br/mds/" target="_blank" rel="noopener">Ministério do Desenvolvimento Social</a>
+<a class="link" href="https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama" target="_blank" rel="noopener">IBGE Cidades — Rondonópolis</a>
+</div>
+<p class="nota">Os endereços são atalhos de consulta e podem ser alterados pelos órgãos responsáveis. O RI Social foi relatado como em manutenção; isso não significa que esteja permanentemente indisponível. Acesse a plataforma para verificar seu estado atual.</p>
+</div>
+<div class="card">
+<h3>Notas metodológicas</h3>
+<p>Dados de 2024, 2025 e 2026 provenientes dos relatórios de informações apresentados. O ranking territorial utiliza consolidação da base de junho de 2026. Os quadros de IVCAD e famílias referenciadas seguem a referência PMAS informada no material enviado.</p>
+<p>Não são disponibilizados dados nominais, CPF, NIS ou identificadores familiares neste painel público.</p>
+</div>
+</section>
+</main>
 
-            categorias.forEach(catKey => {
-                const cat = dadosGlobais.categorias[catKey];
-                const btn = document.createElement('button');
-                btn.className = `px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition flex items-center gap-2 ${catKey === abaAtiva ? 'bg-blue-600 text-white shadow' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`;
-                btn.innerHTML = `<i data-lucide="${cat.icone || 'folder'}" class="w-4 h-4"></i> ${cat.titulo}`;
-                btn.onclick = () => {
-                    abaAtiva = catKey;
-                    inicializarAbas();
-                    renderizarConteudo();
-                };
-                container.appendChild(btn);
-            });
-            lucide.createIcons();
-        }
+<footer>
+Prefeitura Municipal de Rondonópolis — SEMPRAS
+<p>Vigilância Socioassistencial • Painel técnico de indicadores</p>
+</footer>
 
-        function renderizarConteudo(filtroBusca = '') {
-            try {
-                const painel = document.getElementById('painel-conteudo');
-                if (!dadosGlobais.categorias || !dadosGlobais.categorias[abaAtiva]) return;
+<script>
+"use strict";
 
-                const cat = dadosGlobais.categorias[abaAtiva];
-                let html = `<div class="mb-6"><h2 class="text-xl font-bold text-slate-900">${cat.titulo}</h2><p class="text-slate-600 text-sm">${cat.descricao}</p></div>`;
+const fmt=n=>Number(n).toLocaleString("pt-BR");
+const dec=n=>Number(n).toFixed(3).replace(".",",");
+const porcento=n=>Number(n).toFixed(1).replace(".",",")+"%";
 
-                if (abaAtiva === 'territorio') {
-                    const p = cat.panoramaIbge;
-                    html += `
-                        <!-- DASHBOARD COM MÚLTIPLOS GRÁFICOS E VALORES NAS COLUNAS -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                                <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">👥 População Censo 2022</h4>
-                                <canvas id="chartPopCenso" class="max-h-32 w-full"></canvas>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                                <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">📈 População Estimada 2026</h4>
-                                <canvas id="chartPopEst" class="max-h-32 w-full"></canvas>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                                <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">💼 Pessoal Ocupado</h4>
-                                <canvas id="chartTrabalho" class="max-h-32 w-full"></canvas>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                                <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">🎓 Matrículas Fund. / Médio</h4>
-                                <canvas id="chartEducacao" class="max-h-32 w-full"></canvas>
-                            </div>
-                        </div>
+const rede=[
+"CRAS Ana Carla","CRAS Alfredo de Castro",
+"CRAS Cidade Alta / Jardim Iguaçu",
+"CRAS Conjunto São José","CRAS Luz D'Yara",
+"CRAS Padre Lothar","CRAS Rio Vermelho",
+"CRAS Sagrada Família / CEU",
+"CREAS","Centro POP","CRAI",
+"Serviços de Convivência e Fortalecimento de Vínculos",
+"Unidades de Acolhimento","Posto do Cadastro Único"
+];
+document.getElementById("lista-rede").innerHTML=
+"<div class='cards'>"+rede.map(x=>"<div class='kpi'>"+x+"</div>").join("")+"</div>";
 
-                        <!-- MAPA E INFORMAÇÕES GERAIS -->
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                                <h3 class="text-base font-bold text-slate-800 mb-3">📌 Informações Gerais do Município (IBGE)</h3>
-                                <div class="grid grid-cols-2 gap-4">
-                                    ${p.geral.map(g => `<div class="bg-slate-50 p-3 rounded-lg border border-slate-100"><span class="text-xs text-slate-500 block">${g.parametro}</span><strong class="text-slate-800 text-sm">${g.valor}</strong></div>`).join('')}
-                                </div>
-                                <div class="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-lg text-xs text-blue-900">
-                                    <p class="font-semibold mb-1">💡 Destaques Econômicos e Sociais:</p>
-                                    <p>• PIB per capita: <strong>R$ 67.543,12</strong>[cite: 1] | IDHM: <strong>0,755</strong>[cite: 1]</p>
-                                    <p>• Densidade Demográfica: <strong>50,77 hab/km²</strong>[cite: 1] | Mortalidade Infantil: <strong>12,17 ób/mil</strong>[cite: 1]</p>
-                                </div>
-                            </div>
-                            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                                <h3 class="text-base font-bold text-slate-800 mb-2">🗺️ Mapa Geral dos Territórios (CRAS)</h3>
-                                <iframe class="mapa-iframe mb-2" src="https://www.google.com/maps/d/embed?mid=1JiHgDzghrEuWZSaiy_uipJv7Rh3TUqQ&ehbc=2E312F" loading="lazy" allowfullscreen></iframe>
-                            </div>
-                        </div>
+const historico=[
+["Set/2024",50983,113615,10472,12726,27785],
+["Dez/2024",52336,116116,10104,12713,29519],
+["Mar/2025",49434,110536,9912,12953,26569],
+["Jun/2025",50799,113263,10009,12685,28105],
+["Set/2025",49707,111412,9693,12227,27787],
+["Dez/2025",49570,111010,9498,12187,27885],
+["Mar/2026",49920,111980,9397,13150,27373],
+["Jun/2026",50514,113524,9427,13124,27963],
+["Set/2026",50941,114463,9534,12973,28434]
+];
 
-                        <!-- REDE SOCIOASSISTENCIAL COMPLETA -->
-                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 mb-8">
-                            <h3 class="text-lg font-bold text-blue-900 mb-2 flex items-center gap-2"><i data-lucide="building-2" class="w-5 h-5"></i> Rede Socioassistencial Pública e Órgãos de Controle</h3>
-                            <p class="text-xs text-slate-500 mb-4">Gestão, CRAS, CREAS, Conselhos e unidades de atendimento.</p>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left border-collapse text-sm">
-                                    <thead class="bg-slate-100 text-slate-700 text-xs uppercase">
-                                        <tr><th class="p-3">Unidade / Equipamento</th><th class="p-3">Responsável</th><th class="p-3">Contato / Telefone</th><th class="p-3">E-mail</th><th class="p-3">Endereço / Atendimento</th></tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-100">
-                                        ${cat.redeSuas.filter(u => 
-                                            u.unidade.toLowerCase().includes(filtroBusca.toLowerCase()) || 
-                                            u.responsavel.toLowerCase().includes(filtroBusca.toLowerCase()) || 
-                                            u.endereco.toLowerCase().includes(filtroBusca.toLowerCase())
-                                        ).map(u => `
-                                            <tr class="hover:bg-slate-50">
-                                                <td class="p-3 font-bold text-slate-900">${u.unidade}</td>
-                                                <td class="p-3 text-slate-700">${u.responsavel}</td>
-                                                <td class="p-3 font-medium text-blue-600">${u.telefone}</td>
-                                                <td class="p-3 text-slate-600 text-xs">${u.email}</td>
-                                                <td class="p-3 text-slate-600 text-xs"><strong>${u.endereco}</strong><br><span class="text-slate-500">${u.atendimento}</span></td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+// CRAS, famílias 2025, IVCAD 2025, prioridade 2025,
+// famílias 2026, IVCAD 2026, prioridade 2026,
+// Bolsa Família 2025, participação informada, benefícios eventuais 2025.
+const cras=[
+["Ana Carla",7232,.271,"Alta",7071,.259,"Alta",1927,17.37,1285],
+["Cidade Alta",4925,.264,"Alta",4925,.251,"Média",1086,9.76,903],
+["Padre Lothar",3814,.262,"Alta",4279,.254,"Alta",1452,13.09,1026],
+["Alfredo de Castro",3665,.272,"Alta",3854,.259,"Alta",1246,11.23,2293],
+["Luz D'Yara",7925,.248,"Média",7947,.242,"Específica",1194,10.76,920],
+["Conjunto São José",7804,.249,"Média",8083,.245,"Específica",1437,12.95,1424],
+["Sagrada Família",6884,.258,"Média",7115,.257,"Alta",1572,14.17,1525],
+["Rio Vermelho",4372,.245,"Específica",4617,.251,"Alta",583,5.25,877],
+["Central — histórico",2652,.251,"Específica",2283,.242,"Específica",475,4.28,710]
+];
 
-                        <!-- ORGANIZAÇÕES DA SOCIEDADE CIVIL (OSCS) -->
-                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 mb-8">
-                            <h3 class="text-lg font-bold text-blue-900 mb-2 flex items-center gap-2"><i data-lucide="heart-handshake" class="w-5 h-5"></i> Organizações da Sociedade Civil (OSCs)</h3>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left border-collapse text-sm">
-                                    <thead class="bg-slate-100 text-slate-700 text-xs uppercase">
-                                        <tr><th class="p-3">Instituição / OSC</th><th class="p-3">Responsável</th><th class="p-3">Contato</th><th class="p-3">Endereço</th><th class="p-3">Serviço / Atendimento</th></tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-100">
-                                        ${cat.oscs.filter(o => 
-                                            o.nome.toLowerCase().includes(filtroBusca.toLowerCase()) || 
-                                            o.responsavel.toLowerCase().includes(filtroBusca.toLowerCase()) || 
-                                            o.servico.toLowerCase().includes(filtroBusca.toLowerCase())
-                                        ).map(o => `
-                                            <tr class="hover:bg-slate-50">
-                                                <td class="p-3 font-bold text-slate-900">${o.nome}</td>
-                                                <td class="p-3 text-slate-700">${o.responsavel}</td>
-                                                <td class="p-3 font-medium text-blue-600">${o.telefone}<br><span class="text-xs text-slate-500">${o.email}</span></td>
-                                                <td class="p-3 text-slate-600 text-xs">${o.endereco}</td>
-                                                <td class="p-3 text-slate-600 text-xs">${o.servico}</td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+// Ranking de 50 localidades, referência junho/2026.
+// Cada registro: [localidade, famílias distintas, pessoas, famílias em pobreza].
+const bairros=[
+["PARQUE UNIVERSITARIO",1369,3274,298],
+["RESIDENCIAL CELINA BEZERRA",1042,2341,362],
+["CENTRO",991,1704,212],
+["JARDIM LIBERDADE",905,2083,155],
+["LOTEAMENTO PEDRA 90",723,1790,167],
+["JARDIM IGUASSU",716,1491,156],
+["RESIDENCIAL ALFREDO DE CASTRO ARAUJO",669,1672,145],
+["JARDIM TROPICAL",665,1468,109],
+["VILA OPERARIA",662,1367,83],
+["JARDIM PRIMAVERA",599,1302,66],
+["PARQUE SAO JORGE",593,1354,116],
+["JARDIM ATLANTICO",514,1023,76],
+["VILA MINEIRA",487,1130,66],
+["PARQUE ROSA BORORO",482,1273,112],
+["JARDIM SERRA DOURADA",462,1000,66],
+["PARQUE SAGRADA FAMILIA",459,972,76],
+["CIDADE ALTA",448,934,99],
+["JARDIM RUI BARBOSA",391,975,95],
+["RESIDENCIAL ALFREDO DE CASTRO ARAUJO I",388,1086,170],
+["RESIDENCIAL PADRE LOTHAR",386,990,120],
+["JARDIM TANCREDO NEVES",352,864,70],
+["VILA OLINDA II",345,811,77],
+["JARDIM SUMARE",338,733,42],
+["RESIDENCIAL DONA NEUMA DE MORAES",326,975,99],
+["JARDIM ANA CARLA II",324,810,72],
+["JARDIM ITAPUA",324,734,41],
+["VILA CARDOSO",312,646,39],
+["JARDIM EUROPA",300,562,44],
+["VILA POROXO",290,601,67],
+["JARDIM IPANEMA",283,628,16],
+["JARDIM IGUACU",273,557,51],
+["RESIDENCIAL MATHIAS NEVES II",271,716,77],
+["CONJUNTO HABITACIONAL CIDADE DE DEUS II",264,633,68],
+["JARDIM NOVA ERA",262,662,55],
+["JARDIM DAS FLORES",256,582,63],
+["JARDIM RONDONIA",252,509,49],
+["JARDIM PINDORAMA",251,521,31],
+["RESIDENCIAL VILA RICA",250,616,71],
+["RESIDENCIAL SITIO FARIAS",244,584,51],
+["VILA SAO SEBASTIAO II",244,458,53],
+["CENTRO A",241,402,42],
+["RESIDENCIAL MATHIAS NEVES I",241,668,80],
+["JARDIM MONTE LIBANO",239,508,16],
+["JARDIM GRAMADO II",233,344,23],
+["JARDIM RIVERA",233,497,18],
+["RESIDENCIAL DOM OSORIO STOFFEL",232,562,58],
+["VILA OLINDA I",232,549,51],
+["JARDIM DAS PAINEIRAS",216,480,45],
+["VILA MARIANA",211,427,35],
+["VILA ITAMARATY",208,423,22]
+];
 
-                        <!-- ABRANGÊNCIA DOS CRAS -->
-                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-8">
-                            <h3 class="text-lg font-bold text-slate-800 mb-1">Área de Abrangência Territorial dos CRAS (Bairros Referenciados)</h3>
-                            <p class="text-xs text-slate-500 mb-4">Pesquise o nome do bairro para identificar a unidade responsável.</p>
-                            <input id="pesquisaBairro" type="search" placeholder="Digite o nome de um bairro (ex: Celina Bezerra, Sagrada Família, Vila Operária)..." class="w-full p-3 border border-slate-300 rounded-lg mb-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
-                            <div id="listaTerritoriosGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-                        </div>
-                    `;
-                }
+const dimensoes=[
+["IVCAD","Índice de Vulnerabilidade das Famílias do Cadastro Único"],
+["NC","Necessidade de Cuidados"],
+["DPI","Desenvolvimento na Primeira Infância"],
+["DCA","Desenvolvimento de Crianças e Adolescentes"],
+["TQA","Trabalho e Qualificação de Adultos"],
+["DR","Disponibilidade de Recursos"],
+["CH","Condições Habitacionais"]
+];
 
-                if (cat.links && cat.links.length > 0) {
-                    html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="link" class="w-5 h-5 text-blue-600"></i> Documentos e Links Úteis</h3>`;
-                    html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">`;
-                    cat.links.forEach(link => {
-                        html += `
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                                <div>
-                                    <h4 class="font-bold text-slate-900">${link.nome}</h4>
-                                    <p class="text-xs text-slate-600 mt-1">${link.descricao}</p>
-                                </div>
-                                <div class="mt-4 pt-3 border-t flex justify-between items-center text-xs">
-                                    <span class="text-slate-500">Órgão: <strong>${link.orgao}</strong></span>
-                                    <a href="${link.url}" target="_blank" class="text-blue-600 font-semibold flex items-center gap-1">Acessar <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    html += `</div>`;
-                }
+const graficos={};
+function criarGrafico(id,tipo,labels,datasets,vertical=false){
+const el=document.getElementById(id);
+if(!el||typeof Chart==="undefined")return;
+if(graficos[id])graficos[id].destroy();
+graficos[id]=new Chart(el,{
+type:tipo,
+data:{labels,datasets},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+indexAxis:vertical?"y":"x",
+plugins:{legend:{position:"top"}},
+scales:tipo==="doughnut"?{}:{
+x:{ticks:{autoSkip:true,maxRotation:45}},
+y:{beginAtZero:tipo==="bar"}
+}
+}
+});
+}
 
-                painel.innerHTML = html;
-                lucide.createIcons();
+function tabela(id,titulos,linhas){
+const elemento=document.getElementById(id);
+elemento.replaceChildren();
+const thead=elemento.createTHead();
+const linhaTitulo=thead.insertRow();
+titulos.forEach(t=>{
+const th=document.createElement("th");
+th.textContent=t;
+linhaTitulo.appendChild(th);
+});
+const corpo=elemento.createTBody();
+linhas.forEach(reg=>{
+const tr=corpo.insertRow();
+reg.forEach(valor=>{
+const td=tr.insertCell();
+td.textContent=String(valor);
+});
+});
+}
 
-                if (abaAtiva === 'territorio') {
-                    inicializarBuscaTerritorios();
-                    renderizarGraficosDashboard();
-                }
-            } catch (err) {
-                console.error("Erro interno:", err);
-                document.getElementById('painel-conteudo').innerHTML = `<div class="p-4 bg-red-100 text-red-700 rounded-lg">Erro ao carregar os dados: ${err.message}</div>`;
-            }
-        }
+function construirHistorico(){
+tabela("tabela-historica",
+["Referência","Famílias","Pessoas","Pobreza","Baixa renda","Acima de ½ SM"],
+historico.map(r=>[r[0],...r.slice(1).map(fmt)]));
+criarGrafico("grafico-evolucao","line",historico.map(r=>r[0]),[
+{label:"Famílias",data:historico.map(r=>r[1]),borderColor:"#2563eb",tension:.25},
+{label:"Pessoas",data:historico.map(r=>r[2]),borderColor:"#0d9488",tension:.25}
+]);
+const ultimo=historico[historico.length-1];
+criarGrafico("grafico-renda","doughnut",
+["Pobreza","Baixa renda","Acima de ½ SM"],[
+{label:"Famílias",data:ultimo.slice(3),backgroundColor:["#dc2626","#eab308","#2563eb"]}
+]);
+}
 
-        // Função para renderizar múltiplos gráficos com os valores visíveis nas colunas
-        function renderizarGraficosDashboard() {
-            // Plugin simples para mostrar valores em cima das barras
-            const pluginValores = {
-                id: 'pluginValores',
-                afterDatasetsDraw(chart) {
-                    const { ctx } = chart;
-                    chart.data.datasets.forEach((dataset, i) => {
-                        const meta = chart.getDatasetMeta(i);
-                        meta.data.forEach((bar, index) => {
-                            const valor = dataset.data[index];
-                            ctx.fillStyle = '#1e293b';
-                            ctx.font = 'bold 11px sans-serif';
-                            ctx.textAlign = 'center';
-                            ctx.textBaseline = 'bottom';
-                            ctx.fillText(valor.toLocaleString('pt-BR'), bar.x, bar.y - 4);
-                        });
-                    });
-                }
-            };
+function construirTerritorial(){
+tabela("tabela-territorial",
+["CRAS","Famílias 2025","IVCAD 2025","Prioridade 2025",
+"Famílias 2026","IVCAD 2026","Prioridade 2026"],
+cras.map(r=>[r[0],fmt(r[1]),dec(r[2]),r[3],fmt(r[4]),dec(r[5]),r[6]]));
 
-            // Gráfico 1: População Censo 2022
-            const ctx1 = document.getElementById('chartPopCenso');
-            if(ctx1) {
-                new Chart(ctx1.getContext('2d'), {
-                    type: 'bar',
-                    data: { labels: ['Censo 2022'], datasets: [{ data: [244911], backgroundColor: '#2563eb', borderRadius: 6 }] },
-                    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { display: false } } },
-                    plugins: [pluginValores]
-                });
-            }
+tabela("tabela-beneficios",
+["CRAS","Bolsa Família 2025","Participação informada","Benefícios eventuais"],
+cras.map(r=>[r[0],fmt(r[7]),porcento(r[8]),fmt(r[9])]));
 
-            // Gráfico 2: População Estimada 2026
-            const ctx2 = document.getElementById('chartPopEst');
-            if(ctx2) {
-                new Chart(ctx2.getContext('2d'), {
-                    type: 'bar',
-                    data: { labels: ['Est. 2026'], datasets: [{ data: [268202], backgroundColor: '#10b981', borderRadius: 6 }] },
-                    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { display: false } } },
-                    plugins: [pluginValores]
-                });
-            }
+criarGrafico("grafico-ivcad","bar",cras.map(r=>r[0]),[
+{label:"IVCAD 2025",data:cras.map(r=>r[2]),backgroundColor:"#94a3b8"},
+{label:"IVCAD 2026",data:cras.map(r=>r[5]),backgroundColor:"#2563eb"}
+],true);
 
-            // Gráfico 3: Pessoal Ocupado
-            const ctx3 = document.getElementById('chartTrabalho');
-            if(ctx3) {
-                new Chart(ctx3.getContext('2d'), {
-                    type: 'bar',
-                    data: { labels: ['Ocupados'], datasets: [{ data: [97973], backgroundColor: '#f59e0b', borderRadius: 6 }] },
-                    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { display: false } } },
-                    plugins: [pluginValores]
-                });
-            }
+criarGrafico("grafico-cras","bar",cras.map(r=>r[0]),[
+{label:"Famílias 2025",data:cras.map(r=>r[1]),backgroundColor:"#94a3b8"},
+{label:"Famílias 2026",data:cras.map(r=>r[4]),backgroundColor:"#0d9488"}
+],true);
 
-            // Gráfico 4: Matrículas Educação
-            const ctx4 = document.getElementById('chartEducacao');
-            if(ctx4) {
-                new Chart(ctx4.getContext('2d'), {
-                    type: 'bar',
-                    data: { labels: ['Fund.', 'Médio'], datasets: [{ data: [31398, 10024], backgroundColor: ['#8b5cf6', '#ec4899'], borderRadius: 6 }] },
-                    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { display: false } } },
-                    plugins: [pluginValores]
-                });
-            }
-        }
+document.getElementById("legenda-ivcad").innerHTML=
+dimensoes.map(r=>`<p><b>${r[0]}</b> — ${r[1]}</p>`).join("");
+}
 
-        function inicializarBuscaTerritorios() {
-            const grid = document.getElementById('listaTerritoriosGrid');
-            const input = document.getElementById('pesquisaBairro');
-            if(!grid || !input) return;
+function ranking(){
+let busca=document.getElementById("pesquisa-bairro").value
+.trim().toLocaleUpperCase("pt-BR");
+let ordem=Number(document.getElementById("ordenacao-bairro").value);
 
-            function render(termo = '') {
-                grid.innerHTML = '';
-                Object.entries(territoriosBairros).forEach(([unidade, bairros]) => {
-                    const filtrados = bairros.filter(b => b.toLowerCase().includes(termo.toLowerCase()));
-                    if (filtrados.length === 0 && termo) return;
-                    
-                    const div = document.createElement('div');
-                    div.className = "bg-slate-50 border border-slate-200 rounded-lg p-4 shadow-sm";
-                    div.innerHTML = `<h4 class="font-bold text-blue-900 mb-2 border-b pb-1">${unidade}</h4><ul class="list-disc pl-5 text-xs space-y-1 text-slate-700 max-h-48 overflow-y-auto">${filtrados.map(b => `<li>${b}</li>`).join('')}</ul>`;
-                    grid.appendChild(div);
-                });
-            }
-            render();
-            input.addEventListener('input', (e) => render(e.target.value));
-        }
+let dados=bairros.filter(r=>r[0].includes(busca));
+if(ordem===4)dados=dados.filter(r=>r[1]>=30);
 
-        document.getElementById('busca-global').addEventListener('input', (e) => {
-            renderizarConteudo(e.target.value);
-        });
+dados.sort((a,b)=>{
+const valor=r=>ordem===4?r[3]/r[1]:r[ordem];
+return valor(b)-valor(a)||a[0].localeCompare(b[0],"pt-BR");
+});
 
-        inicializarAbas();
-        renderizarConteudo();
-    </script>
+tabela("tabela-bairros",
+["Posição","Bairro / Localidade","Famílias","Pessoas",
+"Famílias em pobreza","% em pobreza"],
+dados.map((r,i)=>[
+(i+1)+"º",r[0],fmt(r[1]),fmt(r[2]),
+fmt(r[3]),porcento(100*r[3]/r[1])
+]));
+
+document.getElementById("total-bairros").textContent=
+"Localidades exibidas: "+dados.length+" de "+bairros.length+
+" incluídas nesta versão.";
+
+const top=dados.slice(0,15);
+criarGrafico("grafico-bairros","bar",top.map(r=>r[0]),[
+{label:ordem===4?"% de pobreza":
+ordem===1?"Famílias":ordem===2?"Pessoas":"Famílias em pobreza",
+data:top.map(r=>ordem===4?100*r[3]/r[1]:r[ordem]),
+backgroundColor:"#2563eb"}
+],true);
+}
+
+function abrir(id,botao){
+document.querySelectorAll(".aba").forEach(x=>x.classList.remove("ativa"));
+document.getElementById(id).classList.add("ativa");
+document.querySelectorAll("#menu button").forEach(b=>b.classList.remove("ativo"));
+botao.classList.add("ativo");
+if(graficos){
+Object.values(graficos).forEach(g=>g.resize());
+}
+}
+
+construirHistorico();
+construirTerritorial();
+ranking();
+</script>
 </body>
 </html>
