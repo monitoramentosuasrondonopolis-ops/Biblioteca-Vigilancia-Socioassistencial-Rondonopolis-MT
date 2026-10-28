@@ -752,11 +752,65 @@ function monitoramento(){
  busca.addEventListener('input',filtrar);filtrar();
 }
 
+// Ranking IBGE integrado: não tenta incorporar página de download como iframe.
+let vsaRankingDados=[];
+let vsaRankingLoading=false;
+function vsaRankingMontar(){
+ const html=`<div class="card" id="vsaRankingPainel"><h2>Ranking Interativo do IBGE — Rondonópolis</h2><p>Compare Rondonópolis com os demais municípios de Mato Grosso. Fonte: IBGE, Censo 2022, tabela 4714. Os rankings são recalculados com dados da API.</p>
+ <div class="controles"><select id="vsaRankIndicador"><option value="93">População residente — Censo 2022</option><option value="614">Densidade demográfica — Censo 2022</option><option value="6318">Área territorial — Censo 2022</option></select><input id="vsaRankBusca" placeholder="Pesquisar município de Mato Grosso"><button class="acao" id="vsaRankAtualizar" type="button">Atualizar ranking</button></div>
+ <p id="vsaRankStatus" aria-live="polite">Aguardando dados do IBGE...</p><div class="cards" id="vsaRankResumo"></div><div class="grafico"><canvas id="vsaRankGrafico"></canvas></div><div class="tabela"><table><thead><tr><th>Posição MT</th><th>Município</th><th>Indicador</th></tr></thead><tbody id="vsaRankTabela"></tbody></table></div>
+ <p class="aviso">Este ranking é calculado para municípios de Mato Grosso, e não reproduz as classificações nacionais do portal IBGE Cidades. Em caso de indisponibilidade da API, permanece a consulta à fonte oficial.</p>
+ <div class="links"><a href="https://cidades.ibge.gov.br/ranking-resumido/download.html?cod=5107602" target="_blank" rel="noopener noreferrer">Ranking resumido oficial — IBGE</a><a href="https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama" target="_blank" rel="noopener noreferrer">Panorama completo — IBGE Cidades</a></div></div>
+ <div class="card"><h3>Panorama temático — indicadores apresentados no IBGE Cidades</h3><p>Referências indicadas conforme as capturas de tela fornecidas. Para atualização dos indicadores setoriais, consulte a publicação oficial.</p><div class="cards">
+ ${[['População no Censo', '244.911 habitantes','2022'],['População estimada','268.202 habitantes','2026'],['Densidade demográfica','50,77 hab./km²','2022'],['Salário médio formal','2,4 salários mínimos','2023'],['Pessoal ocupado formal','93.029 pessoas','2023'],['Escolarização de 6 a 14 anos','98,96%','2022'],['IDEB — anos iniciais','6,1','2025'],['IDEB — anos finais','5,1','2025'],['PIB per capita','R$ 67.650,08','2023'],['Mortalidade infantil','12,17 por mil nascidos vivos','2025'],['Internações por diarreia','24,7 por 100 mil habitantes','2024'],['Área urbanizada','85,29 km²','2022'],['Esgotamento sanitário adequado','86,1%','2022'],['Arborização de vias públicas','93,41%','2022'],['Área territorial','4.824,505 km²','2025']].map(r=>`<div class="kpi"><small>${r[0]} (${r[2]})</small><strong style="font-size:22px">${r[1]}</strong></div>`).join('')}</div></div>`;
+ conteudo.insertAdjacentHTML('beforeend',html);
+ document.getElementById('vsaRankIndicador').addEventListener('change',vsaRankingRender);
+ document.getElementById('vsaRankBusca').addEventListener('input',vsaRankingRender);
+ document.getElementById('vsaRankAtualizar').addEventListener('click',vsaRankingCarregar);
+ vsaRankingCarregar();
+}
+async function vsaRankingCarregar(){
+ if(vsaRankingLoading)return;
+ const status=document.getElementById('vsaRankStatus');if(!status)return;
+ vsaRankingLoading=true;status.textContent='Consultando dados oficiais do IBGE...';
+ const btn=document.getElementById('vsaRankAtualizar');if(btn)btn.disabled=true;
+ try{
+  const url='https://servicodados.ibge.gov.br/api/v3/agregados/4714/periodos/2022/variaveis/93%7C614%7C6318?localidades=N6%5Ball%5D';
+  const raw=await vsaIBGEfetch(url);const mapa=new Map();
+  for(const v of raw){const id=String(v.id);if(!['93','614','6318'].includes(id))continue;
+   for(const s of v.resultados||[]){for(const p of s.series||[]){const cod=String(p.localidade?.id||'');if(!cod.startsWith('51')||cod.length!==7)continue;
+    const n=Number(p.serie?.['2022']);if(!Number.isFinite(n))continue;
+    if(!mapa.has(cod))mapa.set(cod,{codigo:cod,nome:p.localidade?.nome||cod});
+    mapa.get(cod)[id]=n;
+   }}
+  }
+  vsaRankingDados=[...mapa.values()];
+  if(!vsaRankingDados.length)throw Error('A API não retornou municípios de Mato Grosso.');
+  vsaRankingRender();
+ }catch(e){const st=document.getElementById('vsaRankStatus');if(st)st.textContent='Não foi possível carregar o ranking: '+e.message+'. Use o link oficial abaixo.';}
+ finally{vsaRankingLoading=false;const b=document.getElementById('vsaRankAtualizar');if(b)b.disabled=false;}
+}
+function vsaRankingRender(){
+ const sel=document.getElementById('vsaRankIndicador');if(!sel)return;
+ const id=sel.value;
+ const vals=vsaRankingDados.filter(x=>Number.isFinite(x[id])).sort((a,b)=>b[id]-a[id]);
+ const busca=vsaNorm(document.getElementById('vsaRankBusca').value);
+ const lista=vals.filter(x=>vsaNorm(x.nome).includes(busca));
+ const idx=vals.findIndex(x=>x.codigo==='5107602');const local=vals[idx];
+ const unidade=id==='93'?'habitantes':id==='614'?'hab./km²':'km²';
+ document.getElementById('vsaRankStatus').textContent=vals.length+' municípios disponíveis • Censo 2022 • indicador: '+sel.selectedOptions[0].textContent;
+ document.getElementById('vsaRankResumo').innerHTML=`<div class="kpi"><small>Posição de Rondonópolis em MT</small><strong>${idx>=0?idx+1+'º':'Indisponível'}</strong></div><div class="kpi"><small>Valor de Rondonópolis</small><strong>${local?local[id].toLocaleString('pt-BR',{maximumFractionDigits:2}):'Indisponível'}</strong><small>${unidade}</small></div><div class="kpi"><small>Municípios comparados</small><strong>${vals.length}</strong></div>`;
+ document.getElementById('vsaRankTabela').innerHTML=lista.map(x=>`<tr${x.codigo==='5107602'?' style="background:#dbeafe;font-weight:bold"':''}><td>${vals.indexOf(x)+1}º</td><td>${vsaEsc(x.nome)}</td><td>${x[id].toLocaleString('pt-BR',{maximumFractionDigits:2})} ${unidade}</td></tr>`).join('');
+ const top=vals.slice(0,10);if(local&&!top.some(x=>x.codigo===local.codigo))top.push(local);
+ if(typeof Chart!=='undefined')vsaDraw('vsaRankGrafico','bar',top.map(x=>x.nome),[{label:sel.selectedOptions[0].textContent,data:top.map(x=>x[id]),backgroundColor:top.map(x=>x.codigo==='5107602'?'#f59e0b':'#2563eb')}],true);
+}
+
 // Rede incorporada ao painel Município / Território / IBGE.
 const vsaMunicipioComIBGE=municipio;
 municipio=function(){
   vsaMunicipioComIBGE();
   vsaRedeNoMunicipio();
+  vsaRankingMontar();
 };
 
 // Evita acumulacão de gráficos ao trocar de aba
