@@ -4,11 +4,11 @@
     "territorio": {
       "titulo": "1. Município e Território",
       "icone": "map-pin",
-      "descricao": "Dados populacionais e territoriais de Rondonópolis-MT.",
+      "descricao": "Dados demográficos, IBGE e cartografia social de Rondonópolis-MT.",
       "links": [
         {
           "nome": "IBGE Cidades - Rondonópolis",
-          "descricao": "Panorama geral, infográficos e dados demográficos do município.",
+          "descricao": "Panorama geral, infográficos e dados demográficos oficiais.",
           "url": "https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama",
           "orgao": "IBGE",
           "restrito": false
@@ -20,20 +20,177 @@
       ]
     },
     "cadunico": {
-      "titulo": "2. Cadastro Único e Benefícios",
+      "titulo": "2. Cadastro Único e IVCAD",
       "icone": "users",
-      "descricao": "CECAD, Bolsa Família, BPC e combate à extrema pobreza.",
+      "descricao": "CECAD, IVCAD, Bolsa Família e mapeamento socioeconômico das famílias.",
       "links": [
         {
-          "nome": "CECAD 2.0 (Consulta/Extração)",
-          "descricao": "Acesso oficial para relatórios do Cadastro Único.",
+          "nome": "CECAD 2.0",
+          "descricao": "Sistema de consulta, seleção e extração de dados do Cadastro Único.",
           "url": "https://cecad.cidadania.gov.br/",
+          "orgao": "MDS",
+          "restrito": true
+        },
+        {
+          "nome": "IVCAD / Indicadores do Cadastro Único",
+          "descricao": "Ferramentas de análise de vulnerabilidade e perfil das famílias cadastradas.",
+          "url": "https://aplicacoes.mds.gov.br/sagi/portal/index.php?grupo=142",
           "orgao": "MDS",
           "restrito": true
         }
       ],
       "indicadores": [
-        { "nome": "Total de Famílias Cadastradas", "valor": "A carregar relatório", "periodo": "Mensal", "fonte": "SEMPRAS / CECAD" }
+        { "nome": "Famílias Cadastradas no CadÚnico", "valor": "Em levantamento", "periodo": "Mensal", "fonte": "SEMPRAS / CECAD" },
+        { "nome": "Famílias Beneficiárias do Bolsa Família", "valor": "Em levantamento", "periodo": "Mensal", "fonte": "MDS" }
+      ]
+    },
+    "redesuas": {
+      "titulo": "3. Rede SUAS e CadSUAS",
+      "icone": "git-branch",
+      "descricao": "Controle da Rede Socioassistencial, unidades, CNPJ, endereços, e-mails, AEPETI e mandatos.",
+      "links": [
+        {
+          "nome": "CadSUAS / Censo SUAS",
+          "descricao": "Consulta oficial de unidades, equipamentos e trabalhadores da rede socioassistencial.",
+          "url": "https://aplicacoes.mds.gov.br/cadsuas/",
+          "orgao": "MDS",
+          "restrito": true
+        },
+        {
+          "nome": "Sistema RMA (Registro Mensal de Atendimentos)",
+          "descricao": "Envio e consulta de dados de atendimento dos CRAS, CREAS e Centro POP.",
+          "url": "https://aplicacoes.mds.gov.br/sagi/rma/",
+          "orgao": "MDS",
+          "restrito": true
+        }
+      ],
+      "indicadores": [
+        { "nome": "CRAS (Unidades Cadastradas)", "valor": "Verificar CadSUAS", "periodo": "2026", "fonte": "CadSUAS" },
+        { "nome": "CREAS / Centro POP / Acolhimentos", "valor": "Verificar CadSUAS", "periodo": "2026", "fonte": "CadSUAS" },
+        { "nome": "AEPETI (Ações Estratégicas - Erradicação do Trabalho Infantil)", "valor": "Em monitoramento", "periodo": "Mensal", "fonte": "SEMPRAS / VSA" }
+      ]
+    },
+    "especial": {
+      "titulo": "4. Proteção Social Especial",
+      "icone": "shield-alert",
+      "descricao": "Monitoramento do CREAS (PAEFI), Centro POP e unidades de Acolhimento Institucional.",
+      "links": [
+        {
+          "nome": "SAGE - Sistema de Acompanhamento do SUAS",
+          "descricao": "Indicadores e relatórios de média e alta complexidade.",
+          "url": "https://aplicacoes.mds.gov.br/sagi/sge/",
+          "orgao": "MDS",
+          "restrito": true
+        }
+      ],
+      "indicadores": [
+        { "nome": "Famílias Acompanhadas no PAEFI (CREAS)", "valor": "Em apuração", "periodo": "Mensal", "fonte": "RMA / CREAS" },
+        { "nome": "Atendimentos a Pessoas em Situação de Rua (Centro POP)", "valor": "Em apuração", "periodo": "Mensal", "fonte": "RMA / Centro POP" },
+        { "nome": "Acolhimento Institucional (Crianças/Adolescentes/Adultos)", "valor": "Em apuração", "periodo": "Mensal", "fonte": "Acolhimento / SEMPRAS" }
+      ]
+    },
+    "sisc": {
+      "titulo": "5. SISC e SCFV",
+      "icone": "bar-chart-3",
+      "descricao": "Acompanhamento do SISC, capacidade superior/inferior, metas e comparativo com meses anteriores.",
+      "links": [
+        {
+          "nome": "Sistema SISC (Serviço de Convivência)",
+          "descricao": "Registro e acompanhamento dos participantes dos Serviços de Convivência.",
+          "url": "https://aplicacoes.mds.gov.br/sisc/",
+          "orgao": "MDS",
+          "restrito": true
+        }
+      ],
+      "indicadores": [
+        { "nome": "Participantes SISC (Comparativo Mês Anterior)", "valor": "Em atualização", "periodo": "Mensal", "fonte": "SISC / MDS" },
+        { "nome": "Grupos com Capacidade Superior / Inferior", "valor": "Análise pendente", "periodo": "Mensal", "fonte": "VSA / SISC" },
+        { "nome": "Meta de Atendimento do Grupo Prioritário", "valor": "Em apuração", "periodo": "2026", "fonte": "SEMPRAS" }
+      ]
+    },
+    "conselho": {
+      "titulo": "6. CMAS (Conselho Municipal)",
+      "icone": "shield",
+      "descricao": "Monitoramento do CMAS, alertas de mandatos a vencer/vencidos, reuniões e resoluções.",
+      "links": [
+        {
+          "nome": "Portal de Conselhos / Resoluções",
+          "descricao": "Documentos normativos, atas de reuniões e controle de mandatos do CMAS.",
+          "url": "https://www.rondonopolis.mt.gov.br/",
+          "orgao": "CMAS Rondonópolis",
+          "restrito": false
+        }
+      ],
+      "indicadores": [
+        { "nome": "Status dos Mandatos do CMAS", "valor": "⚠️ Verificar Alertas", "periodo": "Atualizado", "fonte": "Secretaria Executiva CMAS" },
+        { "nome": "Resoluções Publicadas no Ano", "valor": "Em contagem", "periodo": "2026", "fonte": "CMAS" }
+      ]
+    },
+    "gestao": {
+      "titulo": "7. FMAS, Orçamento e SICOM",
+      "icone": "file-text",
+      "descricao": "Fundo Municipal de Assistência Social (coleta dia 01 e divulgação dia 15), SICOM e transparência.",
+      "links": [
+        {
+          "nome": "SICOM - Tribunal de Contas (TCE-MT)",
+          "descricao": "Informações contábeis, repasses e execução orçamentária do município.",
+          "url": "https://www.tce.mt.gov.br/",
+          "orgao": "TCE-MT",
+          "restrito": true
+        },
+        {
+          "nome": "Portal da Transparência de Rondonópolis",
+          "descricao": "Consulta de empenhos, pagamentos e dados do FMAS.",
+          "url": "https://www.rondonopolis.mt.gov.br/",
+          "orgao": "Prefeitura Municipal",
+          "restrito": false
+        }
+      ],
+      "indicadores": [
+        { "nome": "Fechamento FMAS (Coleta dia 01 / Divulgação dia 15)", "valor": "Agendado para o dia 15", "periodo": "Mensal", "fonte": "FMAS / Contabilidade" },
+        { "nome": "Execução Orçamentária", "valor": "Em levantamento", "periodo": "Mensal", "fonte": "SICOM" }
+      ]
+    },
+    "intersetorial": {
+      "titulo": "8. Articulação Intersetorial (Saúde e Educação)",
+      "icone": "book-open",
+      "descricao": "Cruzamento de dados com DATASUS, SINAN (notificações de violência) e INEP/Censo Escolar.",
+      "links": [
+        {
+          "nome": "DATASUS / SINAN - Notificações",
+          "descricao": "Dados epidemiológicos e notificações de violência nos territórios.",
+          "url": "https://datasus.saude.gov.br/",
+          "orgao": "Ministério da Saúde",
+          "restrito": false
+        },
+        {
+          "nome": "INEP - Censo Escolar",
+          "descricao": "Indicadores educacionais e frequência escolar nos territórios dos CRAS.",
+          "url": "https://www.gov.br/inep/pt-br",
+          "orgao": "MEC / INEP",
+          "restrito": false
+        }
+      ],
+      "indicadores": [
+        { "nome": "Notificações de Violência Interpessoal (SINAN)", "valor": "Em consolidação", "periodo": "2026", "fonte": "DATASUS / SMS" },
+        { "nome": "Acompanhamento BPC na Escola", "valor": "Em monitoramento", "periodo": "Mensal", "fonte": "SEMPRAS / MEC" }
+      ]
+    },
+    "publicacoes": {
+      "titulo": "9. Boletins, Notas e Ações 2026",
+      "icone": "presentation",
+      "descricao": "Painel visual (Canva), boletins socioterritoriais e notas técnicas da VSA.",
+      "links": [
+        {
+          "nome": "Painel de Ações 2026 (Canva)",
+          "descricao": "Apresentação visual das ações da Vigilância Socioassistencial de Rondonópolis.",
+          "url": "https://www.canva.com/seu-link-aqui",
+          "orgao": "SEMPRAS",
+          "restrito": false
+        }
+      ],
+      "indicadores": [
+        { "nome": "Boletins Socioterritoriais Publicados", "valor": "Em andamento", "periodo": "2026", "fonte": "VSA / SEMPRAS" }
       ]
     }
   }
