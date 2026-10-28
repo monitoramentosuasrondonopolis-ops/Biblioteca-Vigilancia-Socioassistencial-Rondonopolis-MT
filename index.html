@@ -800,19 +800,94 @@ function sisc(){
 // ==========================================
 // 8. CMAS
 // ==========================================
+
+// CMAS — consulta visual documental de 2026
+const CMAS_ENTIDADES = ["APAE – Associação de Pais e Amigos dos Excepcionais", "ARDV – Associação Rondonopolitana de Deficientes Visuais", "AVROC – Associação dos Voluntários de Rondonópolis no Combate ao Câncer", "Associação Boa Semente – Casa do Bom Samaritano", "Associação Beneficente Nossa Senhora de Fátima – Casa Esperança Masculina", "Associação Beneficente Nossa Senhora de Fátima – Comunidade Terapêutica Feminina Irmã Maria Luiza", "Associação dos Amigos do Oratório Filhos de Dom Bosco", "Associação Espírita A Caminho da Luz", "Associação Koblenz Brasil – KOBRA", "Associação dos Surdos de Rondonópolis", "Cáritas Diocesana de Rondonópolis", "Casa do Adolescente Sagrada Família", "Casa Laura Vicunha", "Casa São Domingos Sávio", "Casa Espírita André Luiz", "Casa Espírita Deus Cristo e Caridade", "Centro de Reabilitação Louis Braille", "CIEE – Centro de Integração Empresa Escola", "Diocese de Rondonópolis", "Fundação Lar Cristão", "Fundação Espírita Lar de Nazaré", "Lar dos Idosos Paul Percis Harris", "Lar Bezerra de Menezes", "Obra Kolping de Mato Grosso", "Associação Meninos de Sol", "Centro Técnico Juvenil de Jarudore – Lar São Domingos Sávio", "Associação de Amor de Voluntários de Combate ao Câncer de MT – AAVCC", "Casa do Oleiro Rondonópolis", "Associação Resgate Vidas", "Associação Divina Providência"];
+const CMAS_CALENDARIO = [["Janeiro", "Recesso", ""], ["Fevereiro", "26/02/2026", "Ata 272"], ["Março", "26/03/2026", "Ata 273"], ["Abril", "30/04/2026", "Reunião extraordinária documentada em 22/04"], ["Maio", "28/05/2026", ""], ["Junho", "25/06/2026", ""], ["Julho", "30/07/2026", ""], ["Agosto", "27/08/2026", ""], ["Setembro", "24/09/2026", ""], ["Outubro", "29/10/2026", ""], ["Novembro", "26/11/2026", ""], ["Dezembro", "15/12/2026", ""]];
+const CMAS_DOCUMENTOS = [["Ata 272 — fevereiro/2026", "1gKHxIY39ycl4eg88ZJ0cONBdjkQumGO2"], ["Ata 273 — março/2026", "18LKcqaosFv5AWnqa_9iLr1hrm5bomp6s"], ["Ata 274 — extraordinária abril/2026", "18doOMjnfACoaX1miJG9dNkHoqTmbLsTq"], ["Resolução 008/2025 — eleição da sociedade civil", "1fnbHM4Po5gOYURReu44_Uhp7Y3TV-ykA"], ["Resolução 027 — calendário 2026", "1WWKXTdAR9cCleDbZo2q6U31Zv5vBiMAn"], ["Lei municipal SUAS 2025", "180qj27MO-vSdrPTsFjO_DYBnE-jZJP0r"], ["Lei Ordinária 6.394/2010", "1lLVnxKPls3jXp5Gbqa0blZIIdICsUa6C"], ["Regimento Interno CMAS", "11R4FF-woMhrrpq70MQH_GKmvsdeG4Oz5"], ["Relação de entidades inscritas — março/2026", "1IIkqP4_nzEyJ22Sab_4w8OgN94US5epF"]];
+const CMAS_REPRESENTANTES = [["Entidades", "Titular", "Cáritas Diocesana", "Paulo Otávio de Moura Simioni"], ["Entidades", "Titular", "APAE", "Adriana Freitas Guimarães Ramalho"], ["Entidades", "Suplente", "ARDV", "Jessica Oliveira do Vale"], ["Entidades", "Suplente", "Oratório Filhos de Dom Bosco", "Rosinete de Souza da Silva"], ["Trabalhadores", "Titular", "FETSUAS/MT", "Bruno Araújo Botelho"], ["Trabalhadores", "Titular", "OAB — 1ª Subseção", "Isabelle Megiatto de Souza Lopes"], ["Trabalhadores", "Suplente", "CRP 18ª Região", "André Luiz Gusmão"], ["Trabalhadores", "Suplente", "CRESS/MT", "Tatiana Albuquerque Gulo"], ["Usuários", "Titular", "UNEGRO", "Luzia Aparecida do Nascimento"], ["Usuários", "Titular", "CRAS Jardim Iguaçu", "Sebastião Soares da Silva"], ["Usuários", "Suplente", "CRAS Conjunto São José", "João Valverde"], ["Usuários", "Suplente", "CRAS Padre Lothar", "Rita Ferreira da Silva"]];
 function cmas(){
-conteudo.innerHTML=
-card("Conselho Municipal de Assistência Social — CMAS",
-modulo("Composição e Mandatos",
-"Controle de representantes governamentais e da sociedade civil.",
-["Titulares","Suplentes","Início do mandato","Término do mandato"])+
-modulo("Reuniões e Deliberações",
-"Registro de calendário, atas, pautas, resoluções e publicações.",
-["Reuniões ordinárias","Reuniões extraordinárias","Resoluções publicadas"])+
-modulo("Controle Social do SUAS",
-"Acompanhamento das aprovações, planos, prestações de contas e deliberações.")+
-aviso("Os mandatos, datas e resoluções precisam de conferência nos documentos oficiais do Conselho.")
-);
+  const escapeCMAS=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const linkCMAS=id=>'https://drive.google.com/file/d/'+encodeURIComponent(id)+'/view';
+  const moeda=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const receita=2073020.22,despesa=1656964.40,saldo=416055.82;
+  const outros=1656964.40-526236.83-1098727.57-32000;
+  conteudo.innerHTML=`
+  <section id="cmasPainel2026">
+    <style>
+      #cmasPainel2026 .cm-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px;margin:14px 0}
+      #cmasPainel2026 .cm-kpi{padding:18px;border-radius:12px;background:#eaf2ff;border:1px solid #d4e5fd}
+      #cmasPainel2026 .cm-kpi strong{display:block;color:#144b91;font-size:26px;margin-top:9px}
+      #cmasPainel2026 .cm-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+      #cmasPainel2026 .cm-toolbar input,#cmasPainel2026 .cm-toolbar select{min-width:165px;flex:1}
+      #cmasPainel2026 .cm-meses{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+      #cmasPainel2026 .cm-mes{background:#f7faff;border:1px solid #dce5ef;padding:14px;border-radius:10px}
+      #cmasPainel2026 .cm-mes strong{display:block;margin-bottom:8px;color:#183d73}
+      #cmasPainel2026 .cm-tag{display:inline-block;padding:4px 8px;border-radius:30px;background:#e0f2fe;color:#075985;font-size:12px}
+      #cmasPainel2026 .cm-line{display:flex;align-items:center;gap:14px;margin:12px 0;flex-wrap:wrap}
+      #cmasPainel2026 .cm-track{height:17px;background:#edf2f7;border-radius:9px;overflow:hidden;flex:1;min-width:100px}
+      #cmasPainel2026 .cm-fill{height:100%;background:#2071bd}
+      #cmasPainel2026 .cm-muted{color:#52657e;font-size:13px}
+      #cmasPainel2026 .cm-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+      #cmasPainel2026 .cm-actions a{display:block;padding:13px;border:1px solid #dae6f2;background:#f1f7ff;border-radius:8px;color:#14539e;text-decoration:none}
+      #cmasPainel2026 .cm-events{display:grid;gap:12px}
+      #cmasPainel2026 .cm-event{padding:14px;border-left:4px solid #2b72bc;background:#f4f8fd;border-radius:7px}
+    </style>
+    ${card('CMAS — Painel de Controle Social 2026',
+      '<p>Conselho Municipal de Assistência Social de Rondonópolis/MT. Dados documentais do calendário, atas, resolução eleitoral e cadastro de entidades, conforme arquivos fornecidos.</p>'+
+      '<div class="cm-kpis">'+[
+       ['30','Entidades na relação de março/2026'],['11','Meses com reunião ordinária prevista'],['3','Atas de reuniões disponíveis (fev.–abr.)'],['2025–2027','Biênio da representação da sociedade civil']
+      ].map(x=>'<div class="cm-kpi"><small>'+escapeCMAS(x[1])+'</small><strong>'+escapeCMAS(x[0])+'</strong></div>').join('')+'</div>'+ 
+      aviso('Atenção: o calendário indica reuniões <b>previstas</b>, não comprova que todas ocorreram. As 30 entidades constam da relação recebida e não equivalem necessariamente a certificados válidos hoje. A Resolução 008/2025 apresenta a composição eleita da sociedade civil; alterações posteriores dependem de confirmação oficial.')
+    )}
+    ${card('Calendário oficial de reuniões — 2026',
+      '<p>Reuniões ordinárias previstas às 14h no Núcleo de Conselhos (Resolução CMAS 027). Janeiro: recesso.</p>'+
+      '<div class="cm-meses">'+CMAS_CALENDARIO.map((m,i)=>'<div class="cm-mes"><strong>'+escapeCMAS(m[0])+'</strong><div>'+escapeCMAS(m[1])+'</div><small class="cm-muted">'+escapeCMAS(m[2]||'Sem ata nesta pasta')+'</small></div>').join('')+'</div>'+
+      '<p class="cm-muted">A reunião extraordinária de 22/04/2026 está documentada na Ata 274 e é distinta da ordinária prevista para 30/04.</p>'
+    )}
+    ${card('Deliberações documentadas — 2026',
+      '<div class="cm-events">'+[
+       ['26/02 — Ata 272','Aprovação do PMAS 2026–2029 e do relatório PROCAD-SUAS do 2º semestre de 2025; aprovação da prestação FEAS/2025. O demonstrativo físico-financeiro federal de 2025 não foi deliberado naquela reunião.'],
+       ['26/03 — Ata 273','Discussões sobre certificados do CMAS, registro CNEAS e prestação de contas do FNAS/2024; consultar a ata para o detalhamento das decisões.'],
+       ['22/04 — Ata 274','Reunião extraordinária: adesão e aceite do cofinanciamento federal para o Centro POP e Resolução CMAS 006/2026 sobre FNAS/2024 aprovadas por unanimidade.']
+      ].map(x=>'<div class="cm-event"><b>'+escapeCMAS(x[0])+'</b><p>'+escapeCMAS(x[1])+'</p></div>').join('')+'</div>'
+    )}
+    ${card('Representação da sociedade civil — eleição 2025–2027',
+      '<p class="cm-muted">Composição eleita publicada pela Resolução 008/2025. Não inclui a representação governamental e não comprova permanência atual de todos os nomes.</p>'+
+      '<div class="tabela"><table><thead><tr><th>Segmento</th><th>Condição</th><th>Organização</th><th>Representante eleito</th></tr></thead><tbody>'+CMAS_REPRESENTANTES.map(r=>'<tr>'+r.map(v=>'<td>'+escapeCMAS(v)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'
+    )}
+    ${card('Entidades inscritas — relação de março/2026',
+      '<p>Diretório informativo a partir da relação intitulada "Entidades inscritas no CMAS — 2026 (atualizada)". A situação de renovação de cada certificado deve ser consultada diretamente no conselho.</p>'+
+      '<div class="cm-toolbar"><input id="cmBuscaEntidade" placeholder="Pesquisar entidade, sigla ou serviço"></div><p id="cmTotalEntidade" class="cm-muted"></p><div id="cmListaEntidade" class="tabela"></div>'
+    )}
+    ${card('Controle social do cofinanciamento estadual — exercício 2025',
+      '<p>Valores apresentados e aprovados em plenária segundo a Ata 272 (26/02/2026). As cifras se referem ao exercício de 2025, não ao orçamento de 2026.</p>'+
+      '<div class="cm-kpis">'+[
+       ['Receita — Piso Mato-Grossense',moeda(receita)],['Despesas — Piso Mato-Grossense',moeda(despesa)],['Saldo para reprogramação',moeda(saldo)],['Saldo — Benefícios Eventuais',moeda(1315164.98)]
+      ].map(x=>'<div class="cm-kpi"><small>'+escapeCMAS(x[0])+'</small><strong style="font-size:21px">'+escapeCMAS(x[1])+'</strong></div>').join('')+'</div>'+
+      '<h3>Despesas por área — Piso Mato-Grossense</h3>'+
+      [ ['Proteção Social Especial — média complexidade',1098727.57],['Proteção Social Básica',526236.83],['Gestão SUAS',32000] ].map(x=>'<div class="cm-line"><span style="width:260px;max-width:100%">'+escapeCMAS(x[0])+'</span><div class="cm-track"><div class="cm-fill" style="width:'+((x[1]/despesa)*100).toFixed(2)+'%"></div></div><strong>'+moeda(x[1])+'</strong></div>').join('')+
+      '<p class="cm-muted">O demonstrativo transcrito indica R$ 0,00 para alta complexidade. Os subtotais aqui exibidos correspondem ao total declarado no documento.</p>'
+    )}
+    ${card('Biblioteca documental do CMAS',
+      '<div class="cm-actions">'+CMAS_DOCUMENTOS.map(d=>'<a href="'+linkCMAS(d[1])+'" target="_blank" rel="noopener noreferrer">📄 '+escapeCMAS(d[0])+'</a>').join('')+'</div>'+
+      '<p class="cm-muted">Origem: pasta documental compartilhada do CMAS. Os arquivos são abertos diretamente no Google Drive e podem depender das permissões de acesso.</p>'
+    )}
+    ${card('Análise da Vigilância e providências',
+      '<p><b>Controle social:</b> recomenda-se acompanhar a publicação e execução das deliberações, a atualização dos certificados das entidades e a transparência sobre prestações de contas.</p>'+
+      '<p><b>Planejamento:</b> vincular o monitoramento do PMAS 2026–2029 às resoluções do CMAS e às evidências de execução, sem tomar a aprovação do plano como cumprimento de metas.</p>'+
+      '<p><b>Fiscalização:</b> manter rastreabilidade entre atas, resoluções, relatórios de visitas às entidades e providências da gestão; respeitar dados sigilosos das famílias.</p>'+
+      aviso('Não foram encontrados nesta pasta relatórios que permitam confirmar a realização de todas as reuniões futuras, o número de visitas executadas ou a validade atual de cada inscrição. Esses indicadores devem permanecer como “não apurados”, não como zero.')
+    )}
+  </section>`;
+  const campo=document.getElementById('cmBuscaEntidade');
+  const listar=()=>{
+   const busca=campo.value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+   const nomes=CMAS_ENTIDADES.filter(n=>n.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().includes(busca));
+   document.getElementById('cmTotalEntidade').textContent=nomes.length+' entidades exibidas';
+   document.getElementById('cmListaEntidade').innerHTML='<table><thead><tr><th>Nº</th><th>Entidade</th></tr></thead><tbody>'+nomes.map((n,i)=>'<tr><td>'+(i+1)+'</td><td>'+escapeCMAS(n)+'</td></tr>').join('')+'</tbody></table>';
+  };
+  campo.addEventListener('input',listar);listar();
 }
 
 // ==========================================
