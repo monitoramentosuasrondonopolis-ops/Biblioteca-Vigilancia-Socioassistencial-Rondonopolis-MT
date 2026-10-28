@@ -84,7 +84,6 @@ const percentual = n => Number(n).toFixed(1).replace(".",",")+"%";
 
 const abas=[
 ["municipio","Município, Território e IBGE"],
-["rede","Rede Socioassistencial e Intersetorial"],
 ["cadsuas","CadSUAS e Gestão do Trabalho — NOB-RH SUAS"],
 ["monitoramento","Monitoramento da Rede SUAS"],
 ["mulher","Superintendência da Mulher"],
@@ -120,7 +119,6 @@ document.querySelectorAll("#menu button").forEach(b=>
 if(graficoAtivo){graficoAtivo.destroy();graficoAtivo=null;}
 const funcoes={
  municipio:municipio,
- rede:rede,
  cadsuas:cadsuas,
  monitoramento:monitoramento,
  mulher:mulher,
@@ -665,14 +663,14 @@ rede=function(){vsaRedeAnterior();conteudo.insertAdjacentHTML('beforeend',`
 <div class="cards">${[['Registros institucionais',VSA_UNIDADES.length],['OSCs na relação',VSA_OSCS.length],['CRAS ativos',8],['Links oficiais',VSA_LINKS.length]].map(r=>`<div class="kpi"><small>${r[0]}</small><strong>${r[1]}</strong></div>`).join('')}</div>
 <div class="aviso">Contatos fornecidos em levantamento institucional: confirmar atualidade. OSCs listadas não são necessariamente inscritas no CMAS. Endereços protegidos não são divulgados. CNPJ não informado na base.</div></div>
 <div class="card"><h3>Educação, Saúde e Prefeitura — links oficiais</h3><div class="links">${VSA_LINKS.map(x=>`<a href="${vsaEsc(x[1])}" target="_blank" rel="noopener noreferrer">${vsaEsc(x[0])}</a>`).join('')}</div></div>
-<div class="card"><h3>Pesquisar unidades, serviços, territórios e OSCs</h3><div class="controles"><input id="vsaBuscaRede" placeholder="Pesquisar nome, bairro, responsável, telefone, e-mail, serviço..."><select id="vsaTipoRede"><option value="">Toda a rede</option><option value="Institucional">Unidades e conselhos</option><option value="OSC">Organizações da sociedade civil</option></select></div><p id="vsaContagemRede"></p><div id="vsaResultadoRede" class="vsa-result-grid"></div></div>
+<div class="card"><h3>Pesquisar unidades, serviços, territórios e OSCs</h3><div class="controles"><input id="vsaBuscaRede" placeholder="Pesquisar nome, bairro, responsável, telefone, e-mail, serviço..."><select id="vsaTipoRede"><option value="">Toda a rede</option><option value="Institucional">Unidades e conselhos</option><option value="OSC">Organizações da sociedade civil</option><option value="Setor SEMPRAS">Setores SEMPRAS da lista OSC</option></select></div><p id="vsaContagemRede"></p><div id="vsaResultadoRede" class="vsa-result-grid"></div></div>
 <div class="card"><h2>Gestão do Trabalho • NOB-RH SUAS</h2><div class="cards">${[['Cadastrados',289],['Ativos',284],['Inativos / afastados',5],['Lotações informadas',32]].map(x=>`<div class="kpi"><small>${x[0]}</small><strong>${x[1]}</strong></div>`).join('')}</div><div class="aviso">O quadro por categoria × vínculo aponta 287 registros, enquanto o consolidado aponta 284 ativos. Conferir inconsistências antes de decisões de dimensionamento.</div></div>
 <div class="card"><h3>Distribuição por tipo de unidade</h3><div class="grafico"><canvas id="vsaRhTipos"></canvas></div><div id="vsaRhTabela"></div></div>
 <div class="card"><h3>Vínculo de trabalho e categoria profissional</h3><div class="grafico"><canvas id="vsaRhVinc"></canvas></div><div id="vsaRhCat"></div></div>
 <div class="card"><h3>Quadro de lotações • detalhamento</h3><div class="controles"><input id="vsaLotBusca" placeholder="Pesquisar lotação..."></div><div id="vsaLotLista"></div></div>`);
  const callbacks=[['vsaBuscaRede',vsaFiltrarRede],['vsaTipoRede',vsaFiltrarRede],['vsaLotBusca',vsaFiltrarLot]];callbacks.forEach(([id,fn])=>document.getElementById(id).addEventListener('input',fn));vsaFiltrarRede();vsaFiltrarLot();vsaRHCharts();};
 function vsaFiltrarRede(){let q=vsaNorm(document.getElementById('vsaBuscaRede').value),tipo=document.getElementById('vsaTipoRede').value;
- let a=[...VSA_UNIDADES.map(x=>({...x,tipo:'Institucional'})),...VSA_OSCS.map(x=>({...x,tipo:'OSC'}))].filter(x=>(!tipo||x.tipo===tipo)&&(!q||vsaNorm(Object.values(x).join(' ')).includes(q)));
+ let a=[...VSA_UNIDADES.map(x=>({...x,tipo:'Institucional'})),...VSA_OSCS.map(x=>({...x,tipo:x.nome.startsWith('SEMPRAS')?'Setor SEMPRAS':'OSC'}))].filter(x=>(!tipo||x.tipo===tipo)&&(!q||vsaNorm(Object.values(x).join(' ')).includes(q)));
  document.getElementById('vsaContagemRede').textContent=a.length+' registros encontrados';
  document.getElementById('vsaResultadoRede').innerHTML=a.map(x=>`<details><summary>${vsaEsc(x.nome)}</summary><p><b>Classificação:</b> ${vsaEsc(x.tipo)}</p><p><b>Responsável:</b> ${vsaEsc(x.responsavel||'Não informado')}</p><p><b>Telefone:</b> ${vsaEsc(x.telefone||'Não informado')}</p><p><b>E-mail/site:</b> ${vsaEsc(x.email||'Não informado')}</p><p><b>Endereço:</b> ${vsaEsc(x.endereco||'Não informado')}</p><p style="white-space:pre-line"><b>Atendimento, serviços e territórios:</b> ${vsaEsc(x.servicos||'Não informado')}</p></details>`).join('')||'<p>Nenhum registro encontrado.</p>';
 }
@@ -713,16 +711,16 @@ function vsaFiltrarSet(){const q=vsaNorm(document.getElementById('vsaSetBusca').
 }
 
 // ==========================================================
-// ORGANIZAÇÃO DA REDE EM 3 ABAS INDEPENDENTES — 14 ABAS
+// REDE SOCIOASSISTENCIAL NA ABA MUNICÍPIO — 13 ABAS
 // ==========================================================
-rede=function(){
- conteudo.innerHTML=`
+function vsaRedeNoMunicipio(){
+ conteudo.insertAdjacentHTML("beforeend",`
  <div class="card"><h2>Rede Socioassistencial e Intersetorial</h2>
  <p>Diretório de unidades, serviços, OSCs, conselhos e órgãos públicos. Dados informados no levantamento institucional; confirme responsáveis e contatos periodicamente.</p>
- <div class="cards">${[['Registros institucionais',VSA_UNIDADES.length],['Registros de OSCs',VSA_OSCS.length],['CRAS ativos',8],['Portais municipais',VSA_LINKS.length]].map(x=>`<div class="kpi"><small>${vsaEsc(x[0])}</small><strong>${x[1]}</strong></div>`).join('')}</div></div>
+ <div class="cards">${[['Registros institucionais',VSA_UNIDADES.length],['Organizações da sociedade civil',VSA_OSCS.filter(x=>!x.nome.startsWith('SEMPRAS')).length],['Setores SEMPRAS listados com OSCs',VSA_OSCS.filter(x=>x.nome.startsWith('SEMPRAS')).length],['CRAS ativos',8],['Portais municipais',VSA_LINKS.length]].map(x=>`<div class="kpi"><small>${vsaEsc(x[0])}</small><strong>${x[1]}</strong></div>`).join('')}</div></div>
  <div class="card"><h3>Rede municipal de Educação, Saúde e Prefeitura</h3><div class="links">${VSA_LINKS.map(x=>`<a href="${vsaEsc(x[1])}" target="_blank" rel="noopener noreferrer">${vsaEsc(x[0])}</a>`).join('')}</div></div>
- <div class="card"><h3>Consultar unidades e OSCs</h3><div class="controles"><input id="vsaBuscaRede" placeholder="Buscar unidade, bairro, telefone, responsável, e-mail ou serviço"><select id="vsaTipoRede"><option value="">Todos os registros</option><option value="Institucional">Rede institucional</option><option value="OSC">Organizações da sociedade civil</option></select></div><p id="vsaContagemRede"></p><div id="vsaResultadoRede"></div>
- <div class="aviso">Relação informativa de OSCs: a inclusão não comprova inscrição no CMAS nem parceria formal. Endereços protegidos de unidades de acolhimento não devem ser divulgados. CNPJs não foram informados na base.</div></div>`;
+ <div class="card"><h3>Consultar unidades e OSCs</h3><div class="controles"><input id="vsaBuscaRede" placeholder="Buscar unidade, bairro, telefone, responsável, e-mail ou serviço"><select id="vsaTipoRede"><option value="">Todos os registros</option><option value="Institucional">Rede institucional</option><option value="OSC">Organizações da sociedade civil</option><option value="Setor SEMPRAS">Setores SEMPRAS da lista OSC</option></select></div><p id="vsaContagemRede"></p><div id="vsaResultadoRede"></div>
+ <div class="aviso">Relação informativa de OSCs: a inclusão não comprova inscrição no CMAS nem parceria formal. Endereços protegidos de unidades de acolhimento não devem ser divulgados. CNPJs não foram informados na base.</div></div>`);
  document.getElementById('vsaBuscaRede').addEventListener('input',vsaFiltrarRede);
  document.getElementById('vsaTipoRede').addEventListener('change',vsaFiltrarRede);
  vsaFiltrarRede();
@@ -753,6 +751,13 @@ function monitoramento(){
  function filtrar(){let q=vsaNorm(busca.value);document.getElementById('vsaMonitorTabela').innerHTML=tabela(['Lotação','Ativos','Efetivos','Contratados','Comissionados','Terceirizados'],VSA_RH_LOT.filter(r=>vsaNorm(r[0]).includes(q)).map(r=>r.map((v,i)=>i?vsaFmt(v):vsaEsc(v))));}
  busca.addEventListener('input',filtrar);filtrar();
 }
+
+// Rede incorporada ao painel Município / Território / IBGE.
+const vsaMunicipioComIBGE=municipio;
+municipio=function(){
+  vsaMunicipioComIBGE();
+  vsaRedeNoMunicipio();
+};
 
 // Evita acumulacão de gráficos ao trocar de aba
 const abrirAnterior=abrir;
