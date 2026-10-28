@@ -24,7 +24,7 @@
                 </div>
                 <div class="bg-blue-800/80 p-3 rounded-lg border border-blue-700 text-xs text-blue-100">
                     <p class="font-semibold">📊 Sincronização Ativa</p>
-                    <p class="mt-0.5">Atualização: <span id="ultima-atualizacao">Outubro de 2026</span></p>
+                    <p class="mt-0.5">Atualização: <span>Outubro de 2026</span></p>
                 </div>
             </div>
         </div>
@@ -52,7 +52,6 @@
     </footer>
 
     <script>
-        // Base de dados integrada diretamente (sem dependência externa de fetch)
         const dadosGlobais = {
             "ultimaAtualizacao": "Outubro de 2026",
             "categorias": {
@@ -173,152 +172,157 @@
         }
 
         function renderizarConteudo(filtroBusca = '') {
-            const painel = document.getElementById('painel-conteudo');
-            if (!dadosGlobais.categorias || !dadosGlobais.categorias[abaAtiva]) return;
+            try {
+                const painel = document.getElementById('painel-conteudo');
+                if (!dadosGlobais.categorias || !dadosGlobais.categorias[abaAtiva]) return;
 
-            const cat = dadosGlobais.categorias[abaAtiva];
-            let html = `<div class="mb-6"><h2 class="text-xl font-bold text-slate-900">${cat.titulo}</h2><p class="text-slate-600 text-sm">${cat.descricao}</p></div>`;
+                const cat = dadosGlobais.categorias[abaAtiva];
+                let html = `<div class="mb-6"><h2 class="text-xl font-bold text-slate-900">${cat.titulo}</h2><p class="text-slate-600 text-sm">${cat.descricao}</p></div>`;
 
-            if (abaAtiva === 'territorio' && cat.panoramaIbge) {
-                const p = cat.panoramaIbge;
-                html += `
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                            <h3 class="text-base font-bold text-slate-800 mb-3">📊 Gráfico Demográfico (Censo vs Estimativa)</h3>
-                            <canvas id="chartTerritorio" class="max-h-60 w-full"></canvas>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                            <h3 class="text-base font-bold text-slate-800 mb-2">🗺️ Mapa Geral dos Territórios (CRAS)</h3>
-                            <iframe class="mapa-iframe mb-2" src="https://www.google.com/maps/d/embed?mid=1JiHgDzghrEuWZSaiy_uipJv7Rh3TUqQ&ehbc=2E312F" loading="lazy" allowfullscreen></iframe>
-                        </div>
-                    </div>
-
-                    <div class="space-y-6 mb-8">
-                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-                            <h4 class="font-bold text-blue-900 mb-3 text-sm uppercase tracking-wider">📌 Informações Gerais do Município</h4>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                ${p.geral.map(g => `<div class="bg-slate-50 p-3 rounded-lg border border-slate-100"><span class="text-xs text-slate-500 block">${g.parametro}</span><strong class="text-slate-800 text-sm">${g.valor}</strong></div>`).join('')}
-                            </div>
-                        </div>
-
-                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                            <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">👥 População</h4>
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th><th class="p-3">No País</th><th class="p-3">No Estado</th></tr></thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    ${p.populacao.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td><td class="p-3 text-slate-500">${i.posicaoPais}</td><td class="p-3 text-slate-500">${i.posicaoEstado}</td></tr>`).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                            <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">💼 Trabalho e Rendimento</h4>
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th></tr></thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    ${p.trabalhoRendimento.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td></tr>`).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                            <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">🎓 Educação</h4>
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th></tr></thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    ${p.educacao.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td></tr>`).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                            <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">💰 Economia e IDH</h4>
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th></tr></thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    ${p.economia.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td></tr>`).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                            <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">🏥 Saúde</h4>
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th></tr></thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    ${p.saude.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td></tr>`).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-8">
-                        <h3 class="text-lg font-bold text-slate-800 mb-3">Pesquisar Bairros por Unidade de Referência</h3>
-                        <input id="pesquisaBairro" type="search" placeholder="Digite o nome de um bairro..." class="w-full p-3 border border-slate-300 rounded-lg mb-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
-                        <div id="listaTerritoriosGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                    </div>
-                `;
-            }
-
-            if (cat.tabelaContatos && cat.tabelaContatos.length > 0) {
-                let filtrados = cat.tabelaContatos.filter(c => 
-                    c.unidade.toLowerCase().includes(filtroBusca.toLowerCase()) || 
-                    c.responsavel.toLowerCase().includes(filtroBusca.toLowerCase()) ||
-                    c.endereco.toLowerCase().includes(filtroBusca.toLowerCase())
-                );
-                html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto mb-8"><table class="w-full text-left border-collapse text-sm">`;
-                html += `<thead class="bg-slate-100 text-slate-700 text-xs uppercase"><tr><th class="p-3">Unidade / Equipamento</th><th class="p-3">Responsável</th><th class="p-3">Telefone</th><th class="p-3">E-mail</th><th class="p-3">Endereço</th></tr></thead><tbody class="divide-y divide-slate-100">`;
-
-                filtrados.forEach(c => {
+                if (abaAtiva === 'territorio' && cat.panoramaIbge) {
+                    const p = cat.panoramaIbge;
                     html += `
-                        <tr class="hover:bg-slate-50">
-                            <td class="p-3 font-bold text-slate-900">${c.unidade}</td>
-                            <td class="p-3 text-slate-700">${c.responsavel}</td>
-                            <td class="p-3 font-medium text-blue-600">${c.telefone}</td>
-                            <td class="p-3 text-slate-600">${c.email}</td>
-                            <td class="p-3 text-slate-600 text-xs">${c.endereco}</td>
-                        </tr>
-                    `;
-                });
-                html += `</tbody></table></div>`;
-            }
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                                <h3 class="text-base font-bold text-slate-800 mb-3">📊 Gráfico Demográfico (Censo vs Estimativa)</h3>
+                                <canvas id="chartTerritorio" class="max-h-60 w-full"></canvas>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                                <h3 class="text-base font-bold text-slate-800 mb-2">🗺️ Mapa Geral dos Territórios (CRAS)</h3>
+                                <iframe class="mapa-iframe mb-2" src="https://www.google.com/maps/d/embed?mid=1JiHgDzghrEuWZSaiy_uipJv7Rh3TUqQ&ehbc=2E312F" loading="lazy" allowfullscreen></iframe>
+                            </div>
+                        </div>
 
-            if (cat.links && cat.links.length > 0) {
-                html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="link" class="w-5 h-5 text-blue-600"></i> Sistemas e Arquivos Relacionados</h3>`;
-                html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">`;
-                cat.links.forEach(link => {
-                    html += `
-                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                            <div>
-                                <h4 class="font-bold text-slate-900">${link.nome}</h4>
-                                <p class="text-xs text-slate-600 mt-1">${link.descricao}</p>
+                        <div class="space-y-6 mb-8">
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+                                <h4 class="font-bold text-blue-900 mb-3 text-sm uppercase tracking-wider">📌 Informações Gerais do Município</h4>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    ${p.geral.map(g => `<div class="bg-slate-50 p-3 rounded-lg border border-slate-100"><span class="text-xs text-slate-500 block">${g.parametro}</span><strong class="text-slate-800 text-sm">${g.valor}</strong></div>`).join('')}
+                                </div>
                             </div>
-                            <div class="mt-4 pt-3 border-t flex justify-between items-center text-xs">
-                                <span class="text-slate-500">Órgão: <strong>${link.orgao}</strong></span>
-                                <a href="${link.url}" target="_blank" class="text-blue-600 font-semibold flex items-center gap-1">Acessar <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
+
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">👥 População</h4>
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th><th class="p-3">No País</th><th class="p-3">No Estado</th></tr></thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        ${p.populacao.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td><td class="p-3 text-slate-500">${i.posicaoPais}</td><td class="p-3 text-slate-500">${i.posicaoEstado}</td></tr>`).join('')}
+                                    </tbody>
+                                </table>
                             </div>
+
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">💼 Trabalho e Rendimento</h4>
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th></tr></thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        ${p.trabalhoRendimento.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td></tr>`).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">🎓 Educação</h4>
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th></tr></thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        ${p.educacao.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td></tr>`).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">💰 Economia e IDH</h4>
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th></tr></thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        ${p.economia.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td></tr>`).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">🏥 Saúde</h4>
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th></tr></thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        ${p.saude.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td></tr>`).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-8">
+                            <h3 class="text-lg font-bold text-slate-800 mb-3">Pesquisar Bairros por Unidade de Referência</h3>
+                            <input id="pesquisaBairro" type="search" placeholder="Digite o nome de um bairro..." class="w-full p-3 border border-slate-300 rounded-lg mb-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
+                            <div id="listaTerritoriosGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                         </div>
                     `;
-                });
-                html += `</div>`;
-            }
+                }
 
-            if (cat.indicadores && cat.indicadores.length > 0 && abaAtiva !== 'territorio') {
-                html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="bar-chart-3" class="w-5 h-5 text-blue-600"></i> Indicadores e Resumo Analítico</h3>`;
-                html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto"><table class="w-full text-left border-collapse text-sm">`;
-                html += `<thead class="bg-slate-100 text-slate-700 text-xs uppercase"><tr><th class="p-3">Indicador / Descrição</th><th class="p-3">Valor / Dado</th><th class="p-3">Período</th><th class="p-3">Fonte</th></tr></thead><tbody class="divide-y divide-slate-100">`;
-                cat.indicadores.forEach(ind => {
-                    html += `<tr class="hover:bg-slate-50"><td class="p-3 font-medium text-slate-900">${ind.nome}</td><td class="p-3 font-bold text-blue-600">${ind.valor}</td><td class="p-3 text-slate-600">${ind.periodo}</td><td class="p-3 text-slate-600">${ind.fonte}</td></tr>`;
-                });
-                html += `</tbody></table></div>`;
-            }
+                if (cat.tabelaContatos && cat.tabelaContatos.length > 0) {
+                    let filtrados = cat.tabelaContatos.filter(c => 
+                        c.unidade.toLowerCase().includes(filtroBusca.toLowerCase()) || 
+                        c.responsavel.toLowerCase().includes(filtroBusca.toLowerCase()) ||
+                        c.endereco.toLowerCase().includes(filtroBusca.toLowerCase())
+                    );
+                    html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto mb-8"><table class="w-full text-left border-collapse text-sm">`;
+                    html += `<thead class="bg-slate-100 text-slate-700 text-xs uppercase"><tr><th class="p-3">Unidade / Equipamento</th><th class="p-3">Responsável</th><th class="p-3">Telefone</th><th class="p-3">E-mail</th><th class="p-3">Endereço</th></tr></thead><tbody class="divide-y divide-slate-100">`;
 
-            painel.innerHTML = html;
-            lucide.createIcons();
+                    filtrados.forEach(c => {
+                        html += `
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-bold text-slate-900">${c.unidade}</td>
+                                <td class="p-3 text-slate-700">${c.responsavel}</td>
+                                <td class="p-3 font-medium text-blue-600">${c.telefone}</td>
+                                <td class="p-3 text-slate-600">${c.email}</td>
+                                <td class="p-3 text-slate-600 text-xs">${c.endereco}</td>
+                            </tr>
+                        `;
+                    });
+                    html += `</tbody></table></div>`;
+                }
 
-            if (abaAtiva === 'territorio') {
-                inicializarBuscaTerritorios();
-                renderizarGraficoTerritorio();
+                if (cat.links && cat.links.length > 0) {
+                    html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="link" class="w-5 h-5 text-blue-600"></i> Sistemas e Arquivos Relacionados</h3>`;
+                    html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">`;
+                    cat.links.forEach(link => {
+                        html += `
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <h4 class="font-bold text-slate-900">${link.nome}</h4>
+                                    <p class="text-xs text-slate-600 mt-1">${link.descricao}</p>
+                                </div>
+                                <div class="mt-4 pt-3 border-t flex justify-between items-center text-xs">
+                                    <span class="text-slate-500">Órgão: <strong>${link.orgao}</strong></span>
+                                    <a href="${link.url}" target="_blank" class="text-blue-600 font-semibold flex items-center gap-1">Acessar <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                if (cat.indicadores && cat.indicadores.length > 0 && abaAtiva !== 'territorio') {
+                    html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="bar-chart-3" class="w-5 h-5 text-blue-600"></i> Indicadores e Resumo Analítico</h3>`;
+                    html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto"><table class="w-full text-left border-collapse text-sm">`;
+                    html += `<thead class="bg-slate-100 text-slate-700 text-xs uppercase"><tr><th class="p-3">Indicador / Descrição</th><th class="p-3">Valor / Dado</th><th class="p-3">Período</th><th class="p-3">Fonte</th></tr></thead><tbody class="divide-y divide-slate-100">`;
+                    cat.indicadores.forEach(ind => {
+                        html += `<tr class="hover:bg-slate-50"><td class="p-3 font-medium text-slate-900">${ind.nome}</td><td class="p-3 font-bold text-blue-600">${ind.valor}</td><td class="p-3 text-slate-600">${ind.periodo}</td><td class="p-3 text-slate-600">${ind.fonte}</td></tr>`;
+                    });
+                    html += `</tbody></table></div>`;
+                }
+
+                painel.innerHTML = html;
+                lucide.createIcons();
+
+                if (abaAtiva === 'territorio') {
+                    inicializarBuscaTerritorios();
+                    renderizarGraficoTerritorio();
+                }
+            } catch (err) {
+                console.error("Erro interno:", err);
+                document.getElementById('painel-conteudo').innerHTML = `<div class="p-4 bg-red-100 text-red-700 rounded-lg">Erro ao carregar os dados: ${err.message}</div>`;
             }
         }
 
@@ -365,7 +369,6 @@
             renderizarConteudo(e.target.value);
         });
 
-        // Inicialização direta imediata
         inicializarAbas();
         renderizarConteudo();
     </script>
