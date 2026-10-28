@@ -72,7 +72,7 @@ footer{text-align:center;background:#172e4b;color:white;padding:25px}
 <small>SEMPRAS | RONDONÓPOLIS - MT</small>
 <h1>Biblioteca e Painel da Vigilância Socioassistencial</h1>
 <p>Diagnóstico Socioterritorial • Monitoramento • Gestão da Informação • PMAS 2026–2029</p>
-<small>Base documental consolidada até outubro de 2026 — VERSÃO PSE CORRIGIDA 28/10/2026</small>
+<small>Base documental consolidada até outubro de 2026 • VERSÃO SISC COMPLETO 28/10/2026 — VERSÃO PSE CORRIGIDA 28/10/2026</small>
 </header>
 
 <main>
@@ -754,6 +754,7 @@ function sisc(){
  const a1859=total-a17-a60;
  const acoes=SISC_ACOES.map(([titulo,itens])=>'<details><summary>'+siscEsc(titulo)+'</summary><ul>'+itens.map(t=>'<li>'+siscEsc(t)+'</li>').join('')+'</ul></details>').join('');
  conteudo.innerHTML=card('SISC / SCFV — Participação e Monitoramento 2026',
+ '<div id="siscVersaoConfirmada" style="background:#d9fbe8;border:1px solid #0f766e;color:#075345;padding:14px;border-radius:9px;font-weight:bold;margin-bottom:14px">✓ ABA 8 ATUALIZADA — 1.845 USUÁRIOS • 8 CRAS • DADOS SISC INTEGRADOS</div>'+ 
  '<div class="aviso"><b>Fonte:</b> capturas de relatórios estatísticos SISC fornecidas pela Vigilância Socioassistencial. <b>Data/período da extração não informado nas capturas:</b> validar antes de comparar com trimestres anteriores. A confirmação do registro e a resposta “sim”/“não” são conceitos diferentes.</div>'+indicadores([
  ['Usuários confirmados',formato(total)],['Respostas “sim”',formato(sim)+' ('+siscPct(sim,total)+')'],['Respostas “não”',formato(nao)+' ('+siscPct(nao,total)+')'],['Não confirmados','0'],['0–17 anos',formato(a17)],['60 anos ou mais',formato(a60)],['18–59 anos (diferença)',formato(a1859)],['Prioritários 0–17 e 60+',formato(p17+p60)]
  ])+'<p><b>Leitura:</b> 100% dos 1.845 registros estão confirmados no relatório, mas 513 têm resposta “não”. É necessário verificar o significado operacional dessa resposta na competência consultada; ela não deve ser interpretada como cadastro não confirmado.</p>')+
