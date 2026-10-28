@@ -10,7 +10,7 @@
     <style>
         .pmas-eixo summary { cursor: pointer; list-style-position: inside; }
         .pmas-oculto { display: none !important; }
-        .mapa-iframe { width: 100%; height: 460px; border: 0; border-radius: 12px; }
+        .mapa-iframe { width: 100%; height: 420px; border: 0; border-radius: 12px; }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
@@ -20,7 +20,7 @@
                 <div>
                     <span class="bg-blue-800 text-blue-200 text-xs font-semibold px-2.5 py-1 rounded uppercase tracking-wider">SEMPRAS · Rondonópolis-MT</span>
                     <h1 class="text-2xl md:text-3xl font-bold mt-1">Biblioteca e Painel da Vigilância Socioassistencial</h1>
-                    <p class="text-blue-200 text-sm mt-1">Portal analítico com gráficos interativos, dados abertos da API do IBGE, MDS e diretório da rede.</p>
+                    <p class="text-blue-200 text-sm mt-1">Portal analítico com Panorama Oficial do IBGE, gráficos em tempo real e diretório da rede.</p>
                 </div>
                 <div class="bg-blue-800/80 p-3 rounded-lg border border-blue-700 text-xs text-blue-100">
                     <p class="font-semibold">📊 Sincronização Ativa</p>
@@ -54,7 +54,6 @@
     <script>
         let dadosGlobais = {};
         let abaAtiva = '';
-        let ibgeDadosCache = null;
 
         const territoriosBairros = {
             "CRAS Alfredo de Castro": ["Alfredo de Castro I, II e III", "Jardim Arco Íris", "Residencial Celina Bezerra", "Vila Paulista", "Vila Naboreiro", "Acampamento Palmeiras", "Acampamento São Francisco", "Assentamento Primavera"],
@@ -70,14 +69,6 @@
                 const resposta = await fetch('dados.json?' + new Date().getTime());
                 dadosGlobais = await resposta.json();
                 document.getElementById('ultima-atualizacao').innerText = dadosGlobais.ultimaAtualizacao || 'Desconhecida';
-
-                try {
-                    const resIbge = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/municipios/5107602');
-                    ibgeDadosCache = await resIbge.json();
-                } catch(e) {
-                    console.error("Erro ao carregar API do IBGE:", e);
-                }
-
                 inicializarAbas();
                 renderizarConteudo();
             } catch (erro) {
@@ -115,97 +106,85 @@
             const cat = dadosGlobais.categorias[abaAtiva];
             let html = `<div class="mb-6"><h2 class="text-xl font-bold text-slate-900">${cat.titulo}</h2><p class="text-slate-600 text-sm">${cat.descricao}</p></div>`;
 
-            // ABA 1: TERRITÓRIO + API IBGE + GRÁFICO DE DEMOGRAFIA
-            if (abaAtiva === 'territorio') {
-                if (ibgeDadosCache) {
-                    html += `
-                        <div class="bg-gradient-to-r from-blue-900 to-slate-800 text-white p-6 rounded-xl shadow-md mb-8">
-                            <h3 class="text-lg font-bold mb-3 flex items-center gap-2"><i data-lucide="database" class="w-5 h-5 text-blue-400"></i> Dados Oficiais da API do IBGE (Rondonópolis-MT)</h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mt-4">
-                                <div class="bg-white/10 p-3 rounded-lg"><span class="block text-xs text-blue-200">Município</span><strong class="text-base">${ibgeDadosCache.nome}</strong></div>
-                                <div class="bg-white/10 p-3 rounded-lg"><span class="block text-xs text-blue-200">Código IBGE</span><strong class="text-base">${ibgeDadosCache.id}</strong></div>
-                                <div class="bg-white/10 p-3 rounded-lg"><span class="block text-xs text-blue-200">Microrregião</span><strong class="text-base">${ibgeDadosCache.microrregiao?.nome || 'N/A'}</strong></div>
-                                <div class="bg-white/10 p-3 rounded-lg"><span class="block text-xs text-blue-200">Estado (UF)</span><strong class="text-base">${ibgeDadosCache.microrregiao?.mesorregiao?.UF?.nome || 'Mato Grosso'} (${ibgeDadosCache.microrregiao?.mesorregiao?.UF?.sigla || 'MT'})</strong></div>
-                            </div>
-                        </div>
-                    `;
-                }
-
+            // RENDERIZAÇÃO ESPECIAL DA ABA 1: PANORAMA COMPLETO DO IBGE EM TABELAS E GRÁFICOS
+            if (abaAtiva === 'territorio' && cat.panoramaIbge) {
+                const p = cat.panoramaIbge;
+                
                 html += `
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                            <h3 class="text-lg font-bold text-slate-800 mb-2">Gráfico Interativo: Demografia e Indicadores</h3>
-                            <p class="text-xs text-slate-600 mb-4">Comparativo visual de métricas oficiais de Rondonópolis.</p>
-                            <canvas id="chartTerritorio" class="max-h-64 w-full"></canvas>
+                            <h3 class="text-base font-bold text-slate-800 mb-3">📊 Gráfico Demográfico (Censo vs Estimativa)</h3>
+                            <canvas id="chartTerritorio" class="max-h-60 w-full"></canvas>
                         </div>
                         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                            <h3 class="text-lg font-bold text-slate-800 mb-2">Mapa Geral Interativo dos Territórios</h3>
-                            <p class="text-xs text-slate-600 mb-4">Áreas de abrangência dos CRAS.</p>
+                            <h3 class="text-base font-bold text-slate-800 mb-2">🗺️ Mapa Geral dos Territórios (CRAS)</h3>
                             <iframe class="mapa-iframe mb-2" src="https://www.google.com/maps/d/embed?mid=1JiHgDzghrEuWZSaiy_uipJv7Rh3TUqQ&ehbc=2E312F" loading="lazy" allowfullscreen></iframe>
                         </div>
                     </div>
+
+                    <div class="space-y-6 mb-8">
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+                            <h4 class="font-bold text-blue-900 mb-3 text-sm uppercase tracking-wider">📌 Informações Gerais do Município</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                ${p.geral.map(g => `<div class="bg-slate-50 p-3 rounded-lg border border-slate-100"><span class="text-xs text-slate-500 block">${g.parametro}</span><strong class="text-slate-800 text-sm">${g.valor}</strong></div>`).join('')}
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                            <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">👥 População</h4>
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th><th class="p-3">No País</th><th class="p-3">No Estado</th></tr></thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    ${p.populacao.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td><td class="p-3 text-slate-500">${i.posicaoPais}</td><td class="p-3 text-slate-500">${i.posicaoEstado}</td></tr>`).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                            <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">💼 Trabalho e Rendimento</h4>
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th></tr></thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    ${p.trabalhoRendimento.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td></tr>`).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                            <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">🎓 Educação</h4>
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th></tr></thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    ${p.educacao.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td></tr>`).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                            <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">💰 Economia e IDH</h4>
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th></tr></thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    ${p.economia.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td></tr>`).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                            <h4 class="bg-slate-100 p-3 font-bold text-slate-800 text-sm uppercase tracking-wider">🏥 Saúde</h4>
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th></tr></thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    ${p.saude.map(i => `<tr class="hover:bg-slate-50"><td class="p-3 font-medium">${i.indicador}</td><td class="p-3 font-bold text-blue-600">${i.valor}</td></tr>`).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-8">
                         <h3 class="text-lg font-bold text-slate-800 mb-3">Pesquisar Bairros por Unidade de Referência</h3>
                         <input id="pesquisaBairro" type="search" placeholder="Digite o nome de um bairro..." class="w-full p-3 border border-slate-300 rounded-lg mb-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
                         <div id="listaTerritoriosGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                    </div>
-                `;
-            }
-
-            // ABA 2: CADASTRO ÚNICO + GRÁFICO MDS / BOLSA FAMÍLIA
-            if (abaAtiva === 'cadunico') {
-                html += `
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-8">
-                        <h3 class="text-lg font-bold text-slate-800 mb-2">Gráfico Interativo: Famílias Cadastradas e Beneficiários</h3>
-                        <p class="text-xs text-slate-600 mb-4">Proporção entre CadÚnico Geral e o Programa Bolsa Família.</p>
-                        <canvas id="chartCadUnico" class="max-h-64 w-full"></canvas>
-                    </div>
-                `;
-            }
-
-            // ABA 9: PMAS 2026-2029
-            if (abaAtiva === 'pmas_resumo') {
-                html += `
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-8">
-                        <h3 class="text-lg font-bold text-slate-800 mb-3">Pesquisar nos Eixos Estratégicos do PMAS</h3>
-                        <input id="pmasBusca" type="search" placeholder="Pesquisar por eixo ou palavra-chave (ex: proteção, gestão, controle, paif)..." class="w-full p-3 border border-slate-300 rounded-lg mb-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
-                        
-                        <div class="space-y-4" id="pmasListaEixos">
-                            <details class="bg-slate-50 border border-slate-200 rounded-lg p-4 pmas-eixo" data-termos="gestão suas planejamento gestão trabalho financiamento vigilância informação">
-                                <summary class="font-bold text-blue-900 cursor-pointer text-base">01 · Gestão do SUAS</summary>
-                                <div class="mt-3 text-sm text-slate-700">
-                                    <p class="mb-2 font-medium">Abrange o aprimoramento da gestão municipal e das condições necessárias à organização da política de assistência social.</p>
-                                    <ul class="list-disc pl-5 space-y-1"><li>Planejamento e organização da gestão;</li><li>Gestão do trabalho e educação permanente;</li><li>Vigilância Socioassistencial e produção de informações;</li><li>Monitoramento, avaliação e aprimoramento da gestão.</li></ul>
-                                </div>
-                            </details>
-                            <details class="bg-slate-50 border border-slate-200 rounded-lg p-4 pmas-eixo" data-termos="proteção social básica cras paif scfv prevenção território famílias">
-                                <summary class="font-bold text-blue-900 cursor-pointer text-base">02 · Proteção Social Básica</summary>
-                                <div class="mt-3 text-sm text-slate-700">
-                                    <p class="mb-2 font-medium">Busca prevenir situações de vulnerabilidade e risco social, fortalecer vínculos familiares e comunitários e ampliar o acesso aos direitos.</p>
-                                    <ul class="list-disc pl-5 space-y-1"><li>Serviço de Proteção e Atendimento Integral à Família (PAIF);</li><li>Serviço de Convivência (SCFV);</li><li>Atuação territorial dos CRAS.</li></ul>
-                                </div>
-                            </details>
-                            <details class="bg-slate-50 border border-slate-200 rounded-lg p-4 pmas-eixo" data-termos="proteção social especial creas média alta complexidade violência violação direitos acolhimento">
-                                <summary class="font-bold text-blue-900 cursor-pointer text-base">03 · Proteção Social Especial</summary>
-                                <div class="mt-3 text-sm text-slate-700">
-                                    <p class="mb-2 font-medium">Reúne ações destinadas a indivíduos e famílias que vivenciam situações de risco pessoal ou social e violações de direitos.</p>
-                                    <ul class="list-disc pl-5 space-y-1"><li>Atendimento especializado (PAEFI);</li><li>Enfrentamento das violações de direitos;</li><li>Acolhimento Institucional.</li></ul>
-                                </div>
-                            </details>
-                            <details class="bg-slate-50 border border-slate-200 rounded-lg p-4 pmas-eixo" data-termos="benefícios socioassistenciais benefício eventual bpc transferência renda segurança renda">
-                                <summary class="font-bold text-blue-900 cursor-pointer text-base">04 · Benefícios Socioassistenciais</summary>
-                                <div class="mt-3 text-sm text-slate-700">
-                                    <p class="mb-2 font-medium">Compreende a organização do acesso aos benefícios socioassistenciais e sua articulação com os serviços.</p>
-                                    <ul class="list-disc pl-5 space-y-1"><li>Concessão e gestão de Benefícios Eventuais;</li><li>Orientação sobre o BPC;</li><li>Articulação com programas de transferência de renda.</li></ul>
-                                </div>
-                            </details>
-                            <details class="bg-slate-50 border border-slate-200 rounded-lg p-4 pmas-eixo" data-termos="controle social cmas conselho municipal participação social conferência transparência">
-                                <summary class="font-bold text-blue-900 cursor-pointer text-base">05 · Controle Social</summary>
-                                <div class="mt-3 text-sm text-slate-700">
-                                    <p class="mb-2 font-medium">Envolve a participação ativa da sociedade na formulação, acompanhamento e fiscalização.</p><ul class="list-disc pl-5 space-y-1"><li>Atuação e fortalecimento do CMAS;</li><li>Participação de usuários e trabalhadores;</li><li>Acompanhamento da execução e monitoramento do Plano.</li></ul>
-                                </div>
-                            </details>
-                        </div>
                     </div>
                 `;
             }
@@ -256,7 +235,7 @@
             }
 
             // Indicadores Consolidados
-            if (cat.indicadores && cat.indicadores.length > 0) {
+            if (cat.indicadores && cat.indicadores.length > 0 && abaAtiva !== 'territorio') {
                 html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="bar-chart-3" class="w-5 h-5 text-blue-600"></i> Indicadores e Resumo Analítico</h3>`;
                 html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto"><table class="w-full text-left border-collapse text-sm">`;
                 html += `<thead class="bg-slate-100 text-slate-700 text-xs uppercase"><tr><th class="p-3">Indicador / Descrição</th><th class="p-3">Valor / Dado</th><th class="p-3">Período</th><th class="p-3">Fonte</th></tr></thead><tbody class="divide-y divide-slate-100">`;
@@ -269,16 +248,9 @@
             painel.innerHTML = html;
             lucide.createIcons();
 
-            // Renderizar Gráficos Interativos Dinâmicos
             if (abaAtiva === 'territorio') {
                 inicializarBuscaTerritorios();
                 renderizarGraficoTerritorio();
-            }
-            if (abaAtiva === 'cadunico') {
-                renderizarGraficoCadUnico();
-            }
-            if (abaAtiva === 'pmas_resumo') {
-                inicializarBuscaPMAS();
             }
         }
 
@@ -288,32 +260,15 @@
             new Chart(ctx.getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: ['Censo 2022', 'Estimativa 2026', 'Área (mil km²)'],
+                    labels: ['População Censo 2022', 'População Estimada 2026'],
                     datasets: [{
-                        label: 'Métricas IBGE - Rondonópolis',
-                        data: [244.911, 268.202, 4.82],
-                        backgroundColor: ['#2563eb', '#1d4ed8', '#3b82f6'],
+                        label: 'Habitantes',
+                        data: [244911, 268202],
+                        backgroundColor: ['#2563eb', '#10b981'],
                         borderRadius: 6
                     }]
                 },
                 options: { responsive: true, plugins: { legend: { display: false } } }
-            });
-        }
-
-        function renderizarGraficoCadUnico() {
-            const ctx = document.getElementById('chartCadUnico');
-            if(!ctx) return;
-            new Chart(ctx.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Famílias Cadastradas no CadÚnico', 'Beneficiários do Bolsa Família'],
-                    datasets: [{
-                        data: [42180, 18340],
-                        backgroundColor: ['#2563eb', '#10b981'],
-                        borderWidth: 1
-                    }]
-                },
-                options: { responsive: true }
             });
         }
 
@@ -336,20 +291,6 @@
             }
             render();
             input.addEventListener('input', (e) => render(e.target.value));
-        }
-
-        function inicializarBuscaPMAS() {
-            const input = document.getElementById('pmasBusca');
-            const eixos = document.querySelectorAll('#pmasListaEixos .pmas-eixo');
-            if(!input || !eixos) return;
-
-            input.addEventListener('input', function() {
-                const termo = this.value.toLowerCase();
-                eixos.forEach(eixo => {
-                    const texto = (eixo.innerText + " " + eixo.dataset.termos).toLowerCase();
-                    eixo.classList.toggle('pmas-oculto', !texto.includes(termo));
-                });
-            });
         }
 
         document.getElementById('busca-global').addEventListener('input', (e) => {
