@@ -130,6 +130,7 @@ document.querySelectorAll("#menu button").forEach(b=>
  b.classList.toggle("ativo",b.dataset.aba===id)
 );
 if(graficoAtivo){graficoAtivo.destroy();graficoAtivo=null;}
+if(typeof pseDestruir === "function")pseDestruir();
 const funcoes={
  municipio:municipio,
  cadsuas:cadsuas,
@@ -619,25 +620,81 @@ basica=function(){basicaAntesDoAprofundamento();rmaAnaliseAprofundada();rmaLeitu
 // ==========================================
 // 6. PROTEÇÃO SOCIAL ESPECIAL
 // ==========================================
+const PSE_MESES=["Janeiro","Fevereiro","Março","Abril"];
+// CREAS: A1,A2,M1,M2,M3,M4,J1,J2,J3 — Fonte RMA/SNAS 2026
+const PSE_CREAS=[
+[76,19,241,0,10,33,38,28,10],
+[73,18,175,0,10,29,37,27,10],
+[77,43,226,0,23,25,38,29,9],
+[92,25,205,1,14,49,45,37,8]
+];
+// Centro POP: A1,B1,B2,B3,C1,C2,D1,E1,F1 — Fonte RMA/SNAS 2026
+const PSE_POP=[
+[182,80,52,50,5,0,3166,79,89],
+[174,82,47,32,2,0,2178,20,20],
+[184,80,37,42,0,0,3151,146,211],
+[234,110,51,54,10,8,2759,200,319]
+];
+const PSE_URLS={
+creas:["1PZqtxfFOwCYVcWWfUnxg0U8Xq6izeugu","17kdFML67JfplqkUhTc7ZZy9AtEdYXGqF","1ZRh1IuNNe-A2nRubyDVaXF-l5HgghtOK","1NeUp6eA6rDI2kor0df9YV_qZ9pKDZZuV"],
+pop:["15FjI_ZWZ0-_BsMpICuHfJ65xKJbP-8G1","1jKeNFwwtfazuPheFSTBHtWuABYjsfe9y","1nAKZQ2GR0pEq2r7CrGsAra86y1yWmGQ7","1gJaBm_oBkxKD_7mduFJfqWFHoFMzLCVG"]
+};
+let pseGraficos=[];
+function pseDestruir(){pseGraficos.forEach(x=>x.destroy());pseGraficos=[]}
+function pseGrafico(id,serie,cor){
+ if(typeof Chart==='undefined')return;
+ const el=document.getElementById(id);if(!el)return;
+ pseGraficos.push(new Chart(el,{type:'line',data:{labels:PSE_MESES,datasets:[{label:serie.label,data:serie.values,borderColor:cor,backgroundColor:cor,tension:.2}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}}));
+}
+function pseSoma(arr,idx){return arr.reduce((t,r)=>t+r[idx],0)}
+function pseFmt(n){return n.toLocaleString('pt-BR')}
+function pseLinks(tipo){return PSE_URLS[tipo].map((id,i)=>`<a target="_blank" rel="noopener noreferrer" href="https://drive.google.com/file/d/${id}/view">${PSE_MESES[i]}/2026 — formulário</a>`).join(' &nbsp; | &nbsp; ')}
+function psePainel(){
+ const c=PSE_CREAS,p=PSE_POP;
+ return card('Proteção Social Especial — RMA 2026 | CREAS e Centro POP',
+ `<p><b>Período documental:</b> janeiro a abril de 2026. Análise baseada em oito formulários oficiais de RMA/SNAS. Dados agregados, sem identificação de usuários.</p>`+
+ indicadores([
+ ['CREAS — casos em PAEFI (abril)',pseFmt(c[3][0])],
+ ['CREAS — novos casos no quadrimestre',pseFmt(pseSoma(c,1))],
+ ['CREAS — atendimentos individualizados',pseFmt(pseSoma(c,2))],
+ ['Centro POP — pessoas atendidas em abril',pseFmt(p[3][0])],
+ ['Centro POP — atendimentos no quadrimestre',pseFmt(pseSoma(p,6))],
+ ['Centro POP — abordagens realizadas',pseFmt(pseSoma(p,8))]
+ ])+aviso('Critérios de leitura: PAEFI A.1 é estoque de casos, não soma de pessoas únicas; Centro POP A.1 é quantidade de pessoas distintas DENTRO do mês, mas a soma entre meses pode repetir pessoas. D.1 e M.1 são volumes de atendimentos, não indivíduos únicos.'))+
+ card('CREAS — Análise técnica do PAEFI, violações de direitos e medidas socioeducativas',
+ `<div class="controles"><label for="pseMesCreas">Mês de análise:</label><select id="pseMesCreas">${PSE_MESES.map((m,i)=>`<option value="${i}">${m}/2026</option>`).join('')}</select></div><div id="pseCreasResumo"></div>`+
+ `<h3>Evolução do acompanhamento PAEFI (A.1)</h3><div class="grafico"><canvas id="psePAEFI"></canvas></div>`+
+ `<h3>Atendimentos individualizados (M.1)</h3><div class="grafico"><canvas id="pseAtendCreas"></canvas></div>`+
+ tabela(['Mês','PAEFI A.1','Novos casos A.2','Atendimentos M.1','Visitas M.4','Encaminhamentos CRAS M.3','MSE J.1'],c.map((v,i)=>[PSE_MESES[i],v[0],v[1],v[2],v[5],v[4],v[6]]))+
+ `<details><summary>Parecer SUAS — CREAS/PAEFI</summary><p><b>Proteção social especial de média complexidade:</b> acompanhar situações de ameaça ou violação de direitos e o fortalecimento da função protetiva das famílias, conforme Tipificação Nacional e orientações técnicas do PAEFI. Não associar automaticamente maior número de atendimentos a maior resolutividade.</p><p><b>Achados:</b> casos em acompanhamento variaram de 76 (janeiro) para 92 (abril); houve 105 novos registros de casos no quadrimestre. A evolução requer análise dos desligamentos e da duração do acompanhamento. Há 847 atendimentos individualizados, 136 visitas e 57 encaminhamentos ao CRAS no período, exigindo verificação da referência/contrarreferência e do resultado dos encaminhamentos.</p><p><b>Medidas socioeducativas:</b> 38 adolescentes em janeiro, 37 em fevereiro, 38 em março e 45 em abril no indicador J.1. Conferir a compatibilidade do bloco MSE com o campo do formulário que declara a situação da oferta do serviço. Não concluir que há oferta regular apenas a partir de números preenchidos.</p><p><b>Qualidade:</b> os registros de perfis de violação podem se sobrepor e não devem ser somados para representar pessoas únicas. Revisar coerência com prontuários, fluxos de saúde/educação/Conselho Tutelar e sigilo dos casos.</p></details>`+
+ `<p><b>Formulários de origem:</b> ${pseLinks('creas')}</p>`)+
+ card('Centro POP — Serviço Especializado para Pessoas em Situação de Rua',
+ `<div class="controles"><label for="pseMesPop">Mês de análise:</label><select id="pseMesPop">${PSE_MESES.map((m,i)=>`<option value="${i}">${m}/2026</option>`).join('')}</select></div><div id="psePopResumo"></div>`+
+ `<h3>Pessoas atendidas por mês (A.1)</h3><div class="grafico"><canvas id="psePessoasPop"></canvas></div>`+
+ `<h3>Atendimentos realizados (D.1)</h3><div class="grafico"><canvas id="pseAtendPop"></canvas></div>`+
+ tabela(['Mês','Pessoas A.1','Atendimentos D.1','Pessoas abordadas E.1','Abordagens F.1','Inclusões CadÚnico C.1','Atualizações C.2'],p.map((v,i)=>[PSE_MESES[i],v[0],v[6],v[7],v[8],v[4],v[5]]))+
+ `<details><summary>Parecer SUAS — Centro POP e Abordagem Social</summary><p><b>Oferta especializada:</b> observar acolhida, escuta, atendimento individual, construção de vínculos, acesso à documentação, CadÚnico, serviços de saúde e oportunidades de proteção, conforme a Tipificação Nacional. Não interpretar o volume de acolhidas como saída da situação de rua.</p><p><b>Achados:</b> 182 pessoas atendidas em janeiro, 174 em fevereiro, 184 em março e 234 em abril (A.1). O volume de atendimentos (D.1) totalizou 11.254, com 639 abordagens registradas (F.1). Os indicadores têm unidades de medida distintas e não devem ser divididos como se medissem famílias distintas acompanhadas.</p><p><b>Intersetorialidade:</b> foram registradas 17 inclusões e 8 atualizações do CadÚnico no quadrimestre. Avaliar barreiras de documentação, saúde mental, redução de danos e acesso à rede de proteção, sem produzir diagnósticos clínicos a partir dos registros do RMA.</p><p><b>Consistência:</b> os formulários trazem dados de abordagem social, mas também indicação textual sobre oferta do serviço. A gestão deve verificar o arranjo local, a unidade efetivamente executora e a correta atribuição do registro.</p><p><b>Sigilo:</b> não divulgar combinações de características que permitam identificar indivíduos em situação de rua ou vítimas de violação.</p></details>`+
+ `<p><b>Formulários de origem:</b> ${pseLinks('pop')}</p>`)+
+ card('Unidades de Acolhimento — Integração posterior',
+ `<p>Espaço reservado para análises de acolhimento institucional, vagas, entradas, desligamentos, tempo de permanência, reintegração familiar, encaminhamentos e condições da oferta, conforme a modalidade de serviço.</p>`+
+ aviso('Ainda não foram fornecidos os dados das unidades de acolhimento. Nenhum quantitativo foi presumido ou lançado como zero. Quando disponíveis, serão analisados separadamente e conforme as respectivas orientações do SUAS.'));
+}
+function pseAtualizar(){
+ const a=document.getElementById('pseMesCreas'),b=document.getElementById('pseMesPop');if(!a||!b)return;
+ const c=PSE_CREAS[+a.value],p=PSE_POP[+b.value];
+ document.getElementById('pseCreasResumo').innerHTML=indicadores([['Casos PAEFI em acompanhamento',c[0]],['Novos casos PAEFI no mês',c[1]],['Atendimentos individualizados',c[2]],['Visitas domiciliares',c[5]],['Encaminhamentos para CRAS',c[4]],['Adolescentes em MSE (J.1)',c[6]]]);
+ document.getElementById('psePopResumo').innerHTML=indicadores([['Pessoas atendidas no mês',p[0]],['Atendimentos no mês',p[6]],['Pessoas abordadas no mês',p[7]],['Abordagens realizadas',p[8]],['Inclusões no CadÚnico',p[4]],['Atualizações do CadÚnico',p[5]]]);
+}
 function especial(){
-conteudo.innerHTML=
-card("Proteção Social Especial",
-indicadores([
-["CREAS / PAEFI","Monitoramento"],
-["Centro POP","Monitoramento"],
-["Acolhimento Institucional","Monitoramento"]
-]))+
-card("RMA e Indicadores da Proteção Especial",
-modulo("CREAS / PAEFI",
-"Atendimento e acompanhamento de famílias e indivíduos em situações de violações de direitos.",
-["Casos em acompanhamento","Novos casos","Atendimentos","Encaminhamentos"])+
-modulo("Centro POP",
-"Monitoramento do atendimento à população em situação de rua.",
-["Pessoas atendidas","Atendimentos individualizados","Encaminhamentos","Acompanhamento"])+
-modulo("Acolhimento Institucional",
-"Acompanhamento de vagas, acolhimentos, desligamentos e permanência.",
-["Vagas disponíveis","Pessoas acolhidas","Novos acolhimentos","Desligamentos"])
-);
+ pseDestruir();
+ conteudo.innerHTML=psePainel();
+ document.getElementById('pseMesCreas').addEventListener('change',pseAtualizar);
+ document.getElementById('pseMesPop').addEventListener('change',pseAtualizar);
+ pseAtualizar();
+ pseGrafico('psePAEFI',{label:'Casos em acompanhamento',values:PSE_CREAS.map(x=>x[0])},'#2563eb');
+ pseGrafico('pseAtendCreas',{label:'Atendimentos',values:PSE_CREAS.map(x=>x[2])},'#0f766e');
+ pseGrafico('psePessoasPop',{label:'Pessoas atendidas',values:PSE_POP.map(x=>x[0])},'#9333ea');
+ pseGrafico('pseAtendPop',{label:'Atendimentos',values:PSE_POP.map(x=>x[6])},'#d97706');
 }
 
 // ==========================================
