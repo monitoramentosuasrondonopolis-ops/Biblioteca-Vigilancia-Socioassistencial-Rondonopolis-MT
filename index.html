@@ -6,6 +6,7 @@
     <title>Biblioteca de Dados VSA - Rondonópolis-MT</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
     <header class="bg-blue-900 text-white shadow-md">
@@ -13,11 +14,11 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <span class="bg-blue-800 text-blue-200 text-xs font-semibold px-2.5 py-1 rounded uppercase tracking-wider">SEMPRAS · Rondonópolis-MT</span>
-                    <h1 class="text-2xl md:text-3xl font-bold mt-1">Biblioteca de Dados da Vigilância Socioassistencial</h1>
-                    <p class="text-blue-200 text-sm mt-1">Repositório de fontes, links oficiais e indicadores do município.</p>
+                    <h1 class="text-2xl md:text-3xl font-bold mt-1">Portal e Biblioteca da Vigilância Socioassistencial</h1>
+                    <p class="text-blue-200 text-sm mt-1">Análises socioterritoriais, contatos da rede, gráficos e indicadores oficiais.</p>
                 </div>
                 <div class="bg-blue-800/60 p-3 rounded-lg border border-blue-700 text-xs text-blue-100">
-                    <p class="font-semibold">🔄 Atualização do Sistema</p>
+                    <p class="font-semibold">🔄 Sincronização em Tempo Real</p>
                     <p class="mt-0.5">Última atualização: <span id="ultima-atualizacao">Carregando...</span></p>
                 </div>
             </div>
@@ -30,7 +31,7 @@
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
                     <i data-lucide="search" class="w-5 h-5"></i>
                 </span>
-                <input type="text" id="busca-global" placeholder="Pesquisar sistemas, links ou indicadores de Rondonópolis..." class="w-full pl-10 pr-4 py-3 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition">
+                <input type="text" id="busca-global" placeholder="Pesquisar contatos, CRAS, escolas, indicadores, RMA, PMAS..." class="w-full pl-10 pr-4 py-3 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition">
             </div>
         </div>
     </div>
@@ -42,7 +43,7 @@
 
     <footer class="bg-slate-800 text-slate-400 py-6 mt-auto text-center text-sm">
         <p>Prefeitura Municipal de Rondonópolis - SEMPRAS</p>
-        <p class="mt-1 text-xs">Vigilância Socioassistencial</p>
+        <p class="mt-1 text-xs">Vigilância Socioassistencial · Gestão e Monitoramento do SUAS</p>
     </footer>
 
     <script>
@@ -58,7 +59,7 @@
                 renderizarConteudo();
             } catch (erro) {
                 console.error("Erro ao carregar dados:", erro);
-                document.getElementById('painel-conteudo').innerHTML = '<div class="p-4 bg-red-100 text-red-700 rounded-lg">Erro ao carregar o arquivo dados.json.</div>';
+                document.getElementById('painel-conteudo').innerHTML = '<div class="p-4 bg-red-100 text-red-700 rounded-lg">Erro ao carregar os dados.</div>';
             }
         }
 
@@ -91,7 +92,40 @@
             const cat = dadosGlobais.categorias[abaAtiva];
             let html = `<div class="mb-6"><h2 class="text-xl font-bold text-slate-900">${cat.titulo}</h2><p class="text-slate-600 text-sm">${cat.descricao}</p></div>`;
 
-            html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="link" class="w-5 h-5 text-blue-600"></i> Sistemas e Links de Consulta</h3>`;
+            // Renderizar Tabela de Contatos (se existir)
+            if (cat.tabelaContatos && cat.tabelaContatos.length > 0) {
+                let contatosFiltrados = cat.tabelaContatos.filter(c => 
+                    c.unidade.toLowerCase().includes(filtroBusca.toLowerCase()) || 
+                    c.responsavel.toLowerCase().includes(filtroBusca.toLowerCase()) ||
+                    c.endereco.toLowerCase().includes(filtroBusca.toLowerCase())
+                );
+
+                html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="address-book" class="w-5 h-5 text-blue-600"></i> Guia Oficial de Telefones, E-mails e Endereços</h3>`;
+                html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto mb-8"><table class="w-full text-left border-collapse text-sm">`;
+                html += `<thead class="bg-slate-100 text-slate-700 text-xs uppercase"><tr><th class="p-3">Unidade / Equipamento</th><th class="p-3">Responsável</th><th class="p-3">Telefone</th><th class="p-3">E-mail</th><th class="p-3">Endereço</th></tr></thead><tbody class="divide-y divide-slate-100">`;
+
+                contatosFiltrados.forEach(c => {
+                    html += `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-bold text-slate-900">${c.unidade}</td>
+                            <td class="p-3 text-slate-700">${c.responsavel}</td>
+                            <td class="p-3 font-medium text-blue-600">${c.telefone}</td>
+                            <td class="p-3 text-slate-600">${c.email}</td>
+                            <td class="p-3 text-slate-600 text-xs">${c.endereco}</td>
+                        </tr>
+                    `;
+                });
+                html += `</tbody></table></div>`;
+            }
+
+            // Renderizar Gráfico de Barras do IDCRAS (se houver dados de gráfico)
+            if (cat.graficos && cat.graficos.idcras) {
+                html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="bar-chart" class="w-5 h-5 text-blue-600"></i> Dashboard do IDCRAS Rondonópolis (Pontuação Geral)</h3>`;
+                html += `<div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-8"><canvas id="chartIDCRAS" class="max-h-72 w-full"></canvas></div>`;
+            }
+
+            // Renderizar Links e Fontes
+            html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="link" class="w-5 h-5 text-blue-600"></i> Acessos Rápidos e Arquivos Integrados</h3>`;
             html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">`;
 
             let linksFiltrados = cat.links.filter(l => 
@@ -114,7 +148,7 @@
                             </div>
                             <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs text-slate-500">
                                 <span>Fonte: <strong>${link.orgao || 'Oficial'}</strong></span>
-                                <a href="${link.url}" target="_blank" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-semibold">Acessar <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
+                                <a href="${link.url}" target="_blank" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-semibold">Acessar / Abrir <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
                             </div>
                         </div>
                     `;
@@ -122,10 +156,11 @@
             }
             html += `</div>`;
 
+            // Renderizar Indicadores Resumidos
             if (cat.indicadores && cat.indicadores.length > 0) {
-                html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="bar-chart-3" class="w-5 h-5 text-blue-600"></i> Indicadores do Município (Rondonópolis-MT)</h3>`;
+                html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="table" class="w-5 h-5 text-blue-600"></i> Indicadores Analíticos Consolidados</h3>`;
                 html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto"><table class="w-full text-left border-collapse text-sm">`;
-                html += `<thead class="bg-slate-100 text-slate-700 text-xs uppercase"><tr><th class="p-3">Indicador</th><th class="p-3">Valor</th><th class="p-3">Período</th><th class="p-3">Fonte</th></tr></thead><tbody class="divide-y divide-slate-100">`;
+                html += `<thead class="bg-slate-100 text-slate-700 text-xs uppercase"><tr><th class="p-3">Indicador</th><th class="p-3">Valor / Dado</th><th class="p-3">Período</th><th class="p-3">Fonte</th></tr></thead><tbody class="divide-y divide-slate-100">`;
 
                 cat.indicadores.forEach(ind => {
                     html += `
@@ -142,6 +177,27 @@
 
             painel.innerHTML = html;
             lucide.createIcons();
+
+            // Desenhar Gráfico se o elemento existir
+            if (cat.graficos && cat.graficos.idcras) {
+                const ctx = document.getElementById('chartIDCRAS').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: cat.graficos.idcras.map(d => d.unidade),
+                        datasets: [{
+                            label: 'Pontuação IDCRAS (1 a 5)',
+                            data: cat.graficos.idcras.map(d => d.score),
+                            backgroundColor: '#2563eb',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { y: { beginAtZero: true, max: 5 } }
+                    }
+                });
+            }
         }
 
         document.getElementById('busca-global').addEventListener('input', (e) => {
