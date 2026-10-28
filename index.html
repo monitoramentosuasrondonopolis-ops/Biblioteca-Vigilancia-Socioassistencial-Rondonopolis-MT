@@ -52,6 +52,19 @@ footer{text-align:center;background:#172e4b;color:white;padding:25px}
 <style>
 .vsa-result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.vsa-result-grid details{background:#f8fbff;min-width:0;overflow-wrap:anywhere}.vsa-result-grid p{white-space:pre-line;font-size:13px;line-height:1.55}#vsaMetaLista details,#vsaSetLista details{background:#f8fbff;overflow-wrap:anywhere}#vsaBairroTable{max-height:560px;overflow:auto}#vsaBairroTable table th{position:sticky;top:0}
 </style>
+<style>
+#vsaRedeTerritorial .vsa-territorios{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:15px;margin-top:18px}
+#vsaRedeTerritorial .vsa-ter-card{background:#f8fafc;border:1px solid #dbe4ee;border-radius:10px;padding:17px;max-height:410px;overflow:auto}
+#vsaRedeTerritorial .vsa-ter-card h3{font-size:17px;border-bottom:1px solid #dbe4ee;padding-bottom:9px;margin:0 0 10px}
+#vsaRedeTerritorial .vsa-ter-card ul{padding-left:19px;line-height:1.7;font-size:13px}
+#vsaRedeTerritorial .vsa-note{color:#536b86;font-size:12px}
+#vsaRedeTerritorial .vsa-tbl-scroll{max-height:650px;overflow:auto;margin:12px 0}
+#vsaRedeTerritorial .vsa-table{min-width:1030px;width:100%;border-collapse:collapse}
+#vsaRedeTerritorial .vsa-table th{font-size:12px;color:#193967;background:#eff3f9;top:0;z-index:1}
+#vsaRedeTerritorial .vsa-table td{font-size:12px;line-height:1.55;min-width:130px;vertical-align:top;overflow-wrap:anywhere}
+#vsaRedeTerritorial .vsa-table td:first-child{min-width:220px}
+#vsaRedeTerritorial .vsa-table small{display:block;color:#637b94;font-size:11px}
+</style>
 </head>
 
 <body>
@@ -711,17 +724,47 @@ function vsaFiltrarSet(){const q=vsaNorm(document.getElementById('vsaSetBusca').
 // REDE SOCIOASSISTENCIAL NA ABA MUNICÍPIO — 13 ABAS
 // ==========================================================
 function vsaRedeNoMunicipio(){
- conteudo.insertAdjacentHTML("beforeend",`
- <div class="card"><h2>Rede Socioassistencial e Intersetorial</h2>
- <p>Diretório de unidades, serviços, OSCs, conselhos e órgãos públicos. Dados informados no levantamento institucional; confirme responsáveis e contatos periodicamente.</p>
- <div class="cards">${[['Registros institucionais',VSA_UNIDADES.length],['Organizações da sociedade civil',VSA_OSCS.filter(x=>!x.nome.startsWith('SEMPRAS')).length],['Setores SEMPRAS listados com OSCs',VSA_OSCS.filter(x=>x.nome.startsWith('SEMPRAS')).length],['CRAS ativos',8],['Portais municipais',VSA_LINKS.length]].map(x=>`<div class="kpi"><small>${vsaEsc(x[0])}</small><strong>${x[1]}</strong></div>`).join('')}</div></div>
- <div class="card"><h3>Rede municipal de Educação, Saúde e Prefeitura</h3><div class="links">${VSA_LINKS.map(x=>`<a href="${vsaEsc(x[1])}" target="_blank" rel="noopener noreferrer">${vsaEsc(x[0])}</a>`).join('')}</div></div>
- <div class="card"><h3>Consultar unidades e OSCs</h3><div class="controles"><input id="vsaBuscaRede" placeholder="Buscar unidade, bairro, telefone, responsável, e-mail ou serviço"><select id="vsaTipoRede"><option value="">Todos os registros</option><option value="Institucional">Rede institucional</option><option value="OSC">Organizações da sociedade civil</option><option value="Setor SEMPRAS">Setores SEMPRAS da lista OSC</option></select></div><p id="vsaContagemRede"></p><div id="vsaResultadoRede"></div>
- <div class="aviso">Relação informativa de OSCs: a inclusão não comprova inscrição no CMAS nem parceria formal. Endereços protegidos de unidades de acolhimento não devem ser divulgados. CNPJs não foram informados na base.</div></div>`);
- document.getElementById('vsaBuscaRede').addEventListener('input',vsaFiltrarRede);
- document.getElementById('vsaTipoRede').addEventListener('change',vsaFiltrarRede);
- vsaFiltrarRede();
-};
+ const crasDados=VSA_UNIDADES.filter(u=>/^(CRAS )/i.test(u.nome));
+ const unidadesPublicas=VSA_UNIDADES.filter(u=>!/^UNIDADE DE ACOLHIMENTO MULHERES|CASA ABRIGO ROTATIVA/i.test(u.nome));
+ const oscs=VSA_OSCS.filter(u=>!/^SEMPRAS/i.test(u.nome));
+ const cartaoTabela=(arr,osc=false)=>`<div class="vsa-tbl-scroll"><table class="vsa-table"><thead><tr><th>${osc?'INSTITUIÇÃO / OSC':'UNIDADE / EQUIPAMENTO'}</th><th>RESPONSÁVEL</th><th>CONTATO / TELEFONE</th><th>E-MAIL / SITE</th><th>ENDEREÇO / ATENDIMENTO</th>${osc?'<th>SERVIÇO / ATENDIMENTO</th>':''}</tr></thead><tbody>${arr.map(u=>`<tr><td><b>${vsaEsc(u.nome)}</b></td><td>${vsaEsc(u.responsavel||'Não informado')}</td><td>${vsaEsc(u.telefone||'—')}</td><td>${vsaEsc(u.email||'—')}</td><td><b>${vsaEsc(u.endereco||'Não informado')}</b>${osc?'':`<small>${vsaEsc((u.servicos||'').split('\n')[0]).slice(0,160)}</small>`}</td>${osc?`<td>${vsaEsc(u.servicos||'—')}</td>`:''}</tr>`).join('')}</tbody></table></div>`;
+ conteudo.insertAdjacentHTML('beforeend',`
+ <section id="vsaRedeTerritorial">
+ <div class="card"><h2>Área de Abrangência Territorial dos CRAS (Bairros Referenciados)</h2><p>Pesquise o bairro para identificar o CRAS responsável. Listagens conforme a base institucional fornecida.</p>
+ <input id="vsaTerrBusca" type="search" placeholder="Digite o nome de um bairro (ex.: Celina Bezerra, Sagrada Família, Vila Operária)..." style="width:100%;max-width:none">
+ <p id="vsaTerrStatus" class="vsa-note"></p><div id="vsaTerrCards" class="vsa-territorios"></div></div>
+ <div class="card"><h3>🗺️ Mapa Geral dos Territórios (CRAS)</h3><p>Mapa interativo do Google My Maps. A visualização depende da permissão de compartilhamento do mapa original.</p><iframe title="Mapa Geral dos Territórios dos CRAS de Rondonópolis" src="https://www.google.com/maps/d/embed?mid=1JiHgDzghrEuWZSaiy_uipJv7Rh3TUqQ" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="width:100%;height:480px;border:0;border-radius:12px;background:#eef2f7"></iframe><p><a href="https://www.google.com/maps/d/viewer?mid=1JiHgDzghrEuWZSaiy_uipJv7Rh3TUqQ" target="_blank" rel="noopener noreferrer">Abrir mapa territorial em outra janela</a></p></div>
+ <div class="card"><h2>Rede Socioassistencial Pública e Órgãos de Controle</h2><p>Gestão, CRAS, CREAS, conselhos e unidades de atendimento. Contatos do levantamento institucional.</p><div class="controles"><input id="vsaRedePubBusca" placeholder="Pesquisar unidade, responsável, bairro ou telefone..."></div><p id="vsaPubTotal" class="vsa-note"></p><div id="vsaRedePubTabela"></div><details><summary>Contatos de serviços com endereço protegido</summary><p>Os endereços das unidades de acolhimento protegido não são publicados. Consulte os canais institucionais da SEMPRAS para orientação.</p></details></div>
+ <div class="card"><h2>Organizações da Sociedade Civil (OSCs)</h2><p>Entidades e projetos relacionados no levantamento, com responsáveis, contatos, endereços e serviços.</p><div class="controles"><input id="vsaOscBusca" placeholder="Pesquisar entidade, serviço, responsável ou bairro..."></div><p id="vsaOscTotal" class="vsa-note"></p><div id="vsaOscTabela"></div><div class="aviso">Relação informativa, incluindo OSCs com e sem inscrição no CMAS. A inclusão não comprova inscrição ou parceria formal.</div></div>
+ <div class="card"><h2>Rede Intersetorial — Educação, Saúde e Prefeitura</h2><div class="links">${VSA_LINKS.map(u=>`<a href="${vsaEsc(u[1])}" target="_blank" rel="noopener noreferrer">${vsaEsc(u[0])}</a>`).join('')}</div></div>
+ </section>`);
+ function desenharTerr(){
+  const busca=vsaNorm(document.getElementById('vsaTerrBusca').value);
+  let total=0;
+  const html=crasDados.map(u=>{
+    const lista=(u.servicos||'').split(/\r?\n/).map(x=>x.trim()).filter(x=>x&&!/hor[aá]rio|segunda|07h|17h|atendimento/i.test(x));
+    const achados=busca?lista.filter(x=>vsaNorm(x).includes(busca)):lista;
+    if(busca&&!achados.length&&!vsaNorm(u.nome).includes(busca))return '';
+    total+=achados.length;
+    return `<article class="vsa-ter-card"><h3>${vsaEsc(u.nome)}</h3><p class="vsa-note">${lista.length} localidades relacionadas</p><ul>${(busca?achados:lista).map(b=>`<li>${vsaEsc(b)}</li>`).join('')}</ul></article>`;
+  }).join('');
+  document.getElementById('vsaTerrCards').innerHTML=html||'<p>Nenhum território encontrado. Confira a grafia ou tente outro termo.</p>';
+  document.getElementById('vsaTerrStatus').textContent=busca?`${total} correspondências encontradas.`:'Exibindo as listas de abrangência dos oito CRAS.';
+ }
+ function desenharTabela(id,alvo,total,rows,osc){
+  const q=vsaNorm(document.getElementById(id).value);
+  const result=rows.filter(u=>!q||vsaNorm([u.nome,u.responsavel,u.telefone,u.email,u.endereco,u.servicos].join(' ')).includes(q));
+  document.getElementById(alvo).innerHTML=cartaoTabela(result,osc);
+  document.getElementById(total).textContent=result.length+' registros encontrados.';
+ }
+ document.getElementById('vsaTerrBusca').addEventListener('input',desenharTerr);
+ document.getElementById('vsaRedePubBusca').addEventListener('input',()=>desenharTabela('vsaRedePubBusca','vsaRedePubTabela','vsaPubTotal',unidadesPublicas,false));
+ document.getElementById('vsaOscBusca').addEventListener('input',()=>desenharTabela('vsaOscBusca','vsaOscTabela','vsaOscTotal',oscs,true));
+ desenharTerr();
+ desenharTabela('vsaRedePubBusca','vsaRedePubTabela','vsaPubTotal',unidadesPublicas,false);
+ desenharTabela('vsaOscBusca','vsaOscTabela','vsaOscTotal',oscs,true);
+}
+
 function cadsuas(){
  conteudo.innerHTML=`
  <div class="card"><h2>CadSUAS e Gestão do Trabalho — NOB-RH SUAS</h2><p>Monitoramento do quadro de pessoal, vínculos e lotações. Dados do levantamento enviado, não de consulta automática ao CadSUAS.</p>
