@@ -2,29 +2,25 @@
   "ultimaAtualizacao": "Outubro de 2026",
   "categorias": {
     "territorio": {
-      "titulo": "1. Município, Território e Abrangência",
+      "titulo": "1. Município, Território e API IBGE",
       "icone": "map-pin",
-      "descricao": "Mapa interativo, bairros de abrangência, dados demográficos e cartografia social de Rondonópolis-MT.",
+      "descricao": "Dados oficiais integrados via API do IBGE em tempo real, mapa interativo dos CRAS e bairros de abrangência.",
       "links": [
         {
-          "nome": "Abrir Mapa Completo dos Territórios",
-          "descricao": "Visualização oficial no Google My Maps das áreas de abrangência dos CRAS.",
+          "nome": "Abrir Mapa Completo no Google My Maps",
+          "descricao": "Visualização geoespacial das áreas de abrangência dos CRAS.",
           "url": "https://www.google.com/maps/d/edit?mid=1JiHgDzghrEuWZSaiy_uipJv7Rh3TUqQ&usp=drive_link",
           "orgao": "VSA / SEMPRAS",
-          "restrito": false
-        },
-        {
-          "nome": "IBGE Cidades - Rondonópolis",
-          "descricao": "Panorama geral, infográficos e dados demográficos oficiais.",
-          "url": "https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama",
-          "orgao": "IBGE",
           "restrito": false
         }
       ],
       "indicadores": [
-        { "nome": "População Residente (Censo 2022)", "valor": "244.897 hab.", "periodo": "2022", "fonte": "IBGE" },
-        { "nome": "Estimativa Populacional", "valor": "260.150 hab.", "periodo": "2025/2026", "fonte": "IBGE" },
-        { "nome": "Unidades Territoriais de Referência", "valor": "8 CRAS estruturados", "periodo": "2026", "fonte": "SEMPRAS" }
+        { "nome": "População Residente (Censo IBGE)", "valor": "244.911 hab.", "periodo": "2022", "fonte": "IBGE" },
+        { "nome": "Estimativa Populacional", "valor": "268.202 hab.", "periodo": "2026", "fonte": "IBGE" },
+        { "nome": "Área Territorial Oficial", "valor": "4.824,5 km²", "periodo": "2025/2026", "fonte": "IBGE" },
+        { "nome": "Densidade Demográfica", "valor": "50,77 hab/km²", "periodo": "2022", "fonte": "IBGE" },
+        { "nome": "IDH-M (Desenvolvimento Humano)", "valor": "0,755", "periodo": "Último Censo", "fonte": "PNUD / IBGE" },
+        { "nome": "Mortalidade Infantil", "valor": "12,17 óbitos/mil", "periodo": "2025", "fonte": "DATASUS / IBGE" }
       ]
     },
     "cadunico": {
@@ -45,13 +41,6 @@
           "url": "https://cecad.cidadania.gov.br/",
           "orgao": "MDS",
           "restrito": true
-        },
-        {
-          "nome": "Painel de Análise do Cadastro Único",
-          "descricao": "Plataforma interativa com indicadores do CadÚnico em Rondonópolis.",
-          "url": "https://sites.google.com/d/1t3RlVnuzcvTOnjJTyobw7NnEANTVZmZ8/p/1S2z-8cISCXaf4QuUj0_z8Wz-c1kOAJqk/edit",
-          "orgao": "SEMPRAS",
-          "restrito": false
         }
       ],
       "indicadores": [
@@ -142,11 +131,11 @@
     "gestao": {
       "titulo": "7. FMAS, Orçamento e SICOM",
       "icone": "file-text",
-      "descricao": "Fundo Municipal de Assistência Social (coleta dia 01 e divulgação dia 15) e controle contábil via SICOM (TCE-MT).",
+      "descricao": "Fundo Municipal de Assistência Social e controle contábil via SICOM (TCE-MT).",
       "links": [
         {
           "nome": "SICOM - Tribunal de Contas (TCE-MT)",
-          "descricao": "Sistema de Informações Municipais para controle contábil, fiscal e execução orçamentária.",
+          "descricao": "Sistema de Informações Municipais para controle contábil e fiscal.",
           "url": "https://www.tce.mt.gov.br/",
           "orgao": "TCE-MT",
           "restrito": true
@@ -168,13 +157,6 @@
           "url": "https://datasus.saude.gov.br/",
           "orgao": "Ministério da Saúde",
           "restrito": false
-        },
-        {
-          "nome": "INEP - Censo Escolar",
-          "descricao": "Indicadores educacionais e distorção idade-série.",
-          "url": "https://www.gov.br/inep/pt-br",
-          "orgao": "MEC",
-          "restrito": false
         }
       ],
       "indicadores": [
@@ -189,7 +171,7 @@
       "links": [
         {
           "nome": "Documento Oficial do PMAS (PDF)",
-          "descricao": "Texto integral aprovado pelo CMAS e publicado no Diário Oficial.",
+          "descricao": "Texto integral aprovado pelo CMAS e publicado no Diário Oficial (Edição nº 6.201, de 27/05/2026).",
           "url": "https://drive.google.com/file/d/1s1s9cW6N_q5bfokcVKc_5fUWIb_3z2Ez/view",
           "orgao": "SEMPRAS",
           "restrito": false
@@ -206,17 +188,13 @@
         { "nome": "Eixo 1 - Proteção Social Básica (Metas Executadas)", "valor": "78%", "periodo": "2026", "fonte": "PMAS 2026-2029" },
         { "nome": "Eixo 2 - Proteção Social Especial de Média e Alta Complexidade", "valor": "70%", "periodo": "2026", "fonte": "PMAS 2026-2029" },
         { "nome": "Eixo 3 - Gestão do SUAS, Trabalho e Educação Permanente", "valor": "85%", "periodo": "2026", "fonte": "PMAS 2026-2029" },
-        { "nome": "Eixo 4 - Vigilância Socioassistencial e Gestão da Informação", "valor": "82%", "periodo": "2026", "fonte": "PMAS 2026-2029" },
-        { "nome": "Taxa de Atualização Cadastral do Cadastro Único (MACRO)", "valor": "84,5%", "periodo": "Mensal", "fonte": "CECAD / MDS" },
-        { "nome": "Percentual de Famílias com Condicionalidades de Saúde Acompanhadas", "valor": "91%", "periodo": "Vigência Atual", "fonte": "SIGPBF / SICON" },
-        { "nome": "Percentual de Acompanhamento Escolar (Frequência PBF)", "valor": "89%", "periodo": "Vigência Atual", "fonte": "MEC / SICON" },
-        { "nome": "Taxa de Ocupação e Atendimento nos CRAS", "valor": "92%", "periodo": "Mensal", "fonte": "RMA / SEMPRAS" }
+        { "nome": "Eixo 4 - Vigilância Socioassistencial e Gestão da Informação", "valor": "82%", "periodo": "2026", "fonte": "PMAS 2026-2029" }
       ]
     },
     "publicacoes": {
-      "titulo": "10. Boletins, Notas Técnicas e Ações 2026",
+      "titulo": "10. Boletins e Notas Técnicas 2026",
       "icone": "presentation",
-      "descricao": "Boletins socioterritoriais, notas técnicas operacionais e painel de ações no Canva.",
+      "descricao": "Boletins socioterritoriais, notas técnicas operacionais e painel de ações.",
       "links": [
         {
           "nome": "Painel de Ações 2026 (Canva)",
