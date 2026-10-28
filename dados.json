@@ -2,9 +2,9 @@
   "ultimaAtualizacao": "Outubro de 2026",
   "categorias": {
     "territorio": {
-      "titulo": "1. Município, Território e API IBGE",
+      "titulo": "1. Município, Território e Gráficos API IBGE",
       "icone": "map-pin",
-      "descricao": "Dados oficiais integrados via API do IBGE em tempo real, mapa interativo dos CRAS e bairros de abrangência.",
+      "descricao": "Dados demográficos oficiais integrados via API do IBGE, gráficos estatísticos, mapa interativo dos CRAS e bairros de abrangência.",
       "links": [
         {
           "nome": "Abrir Mapa Completo no Google My Maps",
@@ -19,14 +19,13 @@
         { "nome": "Estimativa Populacional", "valor": "268.202 hab.", "periodo": "2026", "fonte": "IBGE" },
         { "nome": "Área Territorial Oficial", "valor": "4.824,5 km²", "periodo": "2025/2026", "fonte": "IBGE" },
         { "nome": "Densidade Demográfica", "valor": "50,77 hab/km²", "periodo": "2022", "fonte": "IBGE" },
-        { "nome": "IDH-M (Desenvolvimento Humano)", "valor": "0,755", "periodo": "Último Censo", "fonte": "PNUD / IBGE" },
-        { "nome": "Mortalidade Infantil", "valor": "12,17 óbitos/mil", "periodo": "2025", "fonte": "DATASUS / IBGE" }
+        { "nome": "IDH-M (Desenvolvimento Humano)", "valor": "0,755", "periodo": "Último Censo", "fonte": "PNUD / IBGE" }
       ]
     },
     "cadunico": {
-      "titulo": "2. Cadastro Único, RI Social e Condicionalidades",
+      "titulo": "2. Cadastro Único, RI Social e Gráficos MDS",
       "icone": "users",
-      "descricao": "RI Social, CECAD, IVCAD, Bolsa Família e monitoramento de condicionalidades (Saúde e Educação).",
+      "descricao": "RI Social, CECAD, Bolsa Família e gráficos comparativos de perfil socioeconômico e condicionalidades.",
       "links": [
         {
           "nome": "RI Social (Rede de Informações do SUAS)",
@@ -175,13 +174,6 @@
           "url": "https://drive.google.com/file/d/1s1s9cW6N_q5bfokcVKc_5fUWIb_3z2Ez/view",
           "orgao": "SEMPRAS",
           "restrito": false
-        },
-        {
-          "nome": "Planilha de Monitoramento de Metas",
-          "descricao": "Acompanhamento detalhado de execução física e financeira.",
-          "url": "https://docs.google.com/spreadsheets/d/1fscH1mGpvCAo1NLQ8McYfv-NwcnVdx_p/edit#gid=1357319561",
-          "orgao": "VSA",
-          "restrito": false
         }
       ],
       "indicadores": [
@@ -197,7 +189,7 @@
       "descricao": "Boletins socioterritoriais, notas técnicas operacionais e painel de ações.",
       "links": [
         {
-          "nome": "Painel de Ações 2026 (Canva)",
+          "nome": "Painel de Actions 2026 (Canva)",
           "descricao": "Apresentação visual das entregas da Vigilância Socioassistencial.",
           "url": "https://www.canva.com/",
           "orgao": "SEMPRAS",
