@@ -1,6 +1,7 @@
+
 <!-- =====================================================
-GESTÃO DO TRABALHO / CADSUAS / NOB-RH SUAS & REDE MUNICIPAL
-RONDONÓPOLIS-MT — PAINEL INTERATIVO COMPLETO
+GESTÃO DO TRABALHO / CADSUAS / NOB-RH SUAS
+RONDONÓPOLIS-MT — PAINEL INTERATIVO
 COLE ANTES DE </body> NO INDEX.HTML
 ===================================================== -->
 
@@ -26,7 +27,7 @@ COLE ANTES DE </body> NO INDEX.HTML
  display:block;color:#1d4ed8;
  font-size:27px;margin-top:8px
 }
-#cad-rh h2,#cad-rh h3,#cad-rh h4{color:#173b75}
+#cad-rh h2,#cad-rh h3{color:#173b75}
 #cad-rh .rh-tools{
  display:flex;gap:10px;flex-wrap:wrap;margin:16px 0
 }
@@ -40,7 +41,7 @@ COLE ANTES DE </body> NO INDEX.HTML
  background:#e7eef8;padding:11px;
  text-align:left;position:sticky;top:0;white-space:nowrap
 }
-#cad-rh td{padding:10px;border-bottom:1px solid #e2e8f0;vertical-align:top}
+#cad-rh td{padding:10px;border-bottom:1px solid #e2e8f0}
 #cad-rh tr:hover td{background:#f8fafc}
 #cad-rh .rh-chart{height:380px;position:relative}
 #cad-rh .rh-alert{
@@ -61,14 +62,6 @@ COLE ANTES DE </body> NO INDEX.HTML
  border:0;background:#1d4ed8;color:white;
  border-radius:8px;padding:11px 15px;cursor:pointer
 }
-#cad-rh .rh-links-grid{
- display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:14px 0
-}
-#cad-rh .rh-link-card{
- background:#f8fafc;border:1px solid #cbd5e1;border-radius:10px;padding:14px;text-decoration:none;color:inherit;display:block;transition:0.2s
-}
-#cad-rh .rh-link-card:hover{background:#f1f5f9;border-color:#1d4ed8}
-#cad-rh .rh-link-card strong{color:#1d4ed8;display:block;margin-bottom:6px}
 @media(max-width:600px){
  #cad-rh .rh-chart{height:330px}
 }
@@ -172,6 +165,9 @@ const RH={
 
 /* ==========================================
    QUADRO POR LOTAÇÃO REAL
+   Unidade, tipo, ativos, efetivos,
+   contratados, comissionados,
+   terceirizados e horas semanais
 ========================================== */
 
 const LOTACOES=[
@@ -190,7 +186,7 @@ const LOTACOES=[
 ["CREAS","CREAS",14,3,8,1,2,488],
 ["Educação Permanente","Não classificado",0,0,0,0,0,40],
 ["Escritório Social","Núcleo de Conselhos",1,0,0,1,0,40],
-["Família Acolhendora","Acolhimento",1,0,0,1,0,40],
+["Família Acolhedora","Acolhimento",1,0,0,1,0,40],
 ["Núcleo dos Conselhos","Órgão Gestor",7,3,1,1,2,268],
 ["Parcerias com OSC","Órgão Gestor",2,0,0,2,0,84],
 ["Posto do Cadastro Único","Cadastro Único",3,0,0,3,0,120],
@@ -212,6 +208,7 @@ const LOTACOES=[
 
 /* ==========================================
    EFETIVOS CONCURSADOS DA REDE
+   Superior, médio, apoio e total
 ========================================== */
 
 const EFETIVOS=[
@@ -235,6 +232,8 @@ const EFETIVOS=[
 
 /* ==========================================
    DIMENSIONAMENTO DA REDE
+   Famílias, mínimo total, mínimo superior,
+   AS, psicólogo, pedagogo, coordenação
 ========================================== */
 
 const DIMENS=[
@@ -257,43 +256,18 @@ const DIMENS=[
 ];
 
 /* ==========================================
-   ORGANIZAÇÕES DA SOCIEDADE CIVIL (OSCS)
-========================================== */
-
-const OSCS=[
-["SEMPRAS - Setor Parcerias com OSC", "66 98413 7220", "parceriassempras@gmail.com", "Mayara Ap. Nunes / Wanessa Keller", "Av. Getúlio Vargas, 729 - Vila Aurora I", "Horário: 07h às 11h - 13h às 17h"],
-["SEMPRAS - Setor Política do Trabalho (Cursos)", "(66) 3439-9100", "politicasdotrabalhosempras@gmail.com", "Eunice Helen / Stephani Caroline", "Av. Getúlio Vargas, 729 - Vila Aurora I", "Segunda a Sexta: 07h às 11h e das 13h às 17h"],
-["Assoc. Beneficente N. Sra. de Fátima - Casa Esperança Feminina", "66 3022-4316 / 98436-3391", "casaespcontato@hotmail.com", "Abadia Rosa Miranda", "Av. Raimundo de Matos, 3093 - Santa Cruz", "Acolhimento institucional para mulheres em situação de rua / dependência química."],
-["Assoc. Beneficente N. Sra. de Fátima - Casa Esperança Masculina", "66 3421-3931 / 99613-7087", "casaespcontato@hotmail.com", "Abadia Rosa Miranda", "Rua 15 de Novembro, 350 - Centro", "Acolhimento institucional de homens adultos em situação de rua e vulnerabilidade."],
-["Associação Boa Semente", "66 3423-4500 / 99644-5272", "cbomsamaritano_roomt@hotmail.com", "Rosana Aparecida Leite", "Av. Bandeirantes, 1190 - Centro", "Alimentação (café da manhã, almoço e jantar) para pessoas em extrema vulnerabilidade."],
-["APAE - Associação de Pais e Amigos dos Excepcionais", "66 3422-2985 / 99603-9310", "apaeroo@terra.com.br", "Adriana Freitas Guimarães Ram", "Av. Padre Anchieta, 890 - Vila Aurora", "Apoio às famílias e melhoria da qualidade de vida de pessoas com deficiência."],
-["ASSUROO - Associação de Surdos de Rondonópolis", "66 99967-2441 / 99914-8727", "assuroomt@gmail.com", "Sérgio Gonçalves", "Rua Dez, 2 - Residencial André Maggi", "Serviços voltados a deficientes auditivos, autonomia e inclusão social."],
-["AVROC - Assoc. de Combate ao Câncer", "66 99621-1374", "avroc.roo@hotmail.com", "Rita Valéria da Silva", "Rua Armando Fajardo, 262 - Vila Aurora I", "Atendimento psicossocial a famílias com membros diagnosticados com câncer."],
-["Associação Espírita A Caminho da Luz", "66 9997-5603 / 9987-5757", "rogerioazd75@gmail.com", "Rogerio de Azeredo", "Rua das Flores, 573 - Vila Rica", "Oficinas, rodas de conversa e apoio a mulheres e filhos em vulnerabilidade (120 famílias)."],
-["Associação Koblenz Brasil - KOBRA", "66 3425-2902 / 98436-4355", "associacaokobra@gmail.com", "Josyane Alves da Silva Santos", "Av. Dep. Emanuel Pinheiro, 2723 - Vila Operária", "Serviços socioassistenciais e contraturno escolar (Alfredo de Castro, Vila Operária, Vila Rica)."],
-["Associação Resgate Vidas - Projeto Jardim de Deus", "66 99991-8144", "resgatevidasmt@gmail.com", "Elias Marques de Oliveira", "Av. Projetada Q:07 LT: 20 - Res. Alfredo de Castro 2", "Atividades pedagógicas, culturais e esportivas para crianças e adolescentes de 6 a 17 anos."],
-["Associação Resgate Vidas - Casa de Apoio Talita Cumi", "66 99991-8144", "resgatevidasmt@gmail.com", "Elias Marques de Oliveira", "Rua Carlos Pereira Barbosa, 47 - Jd. Atlântico", "Acolhimento de mulheres em vulnerabilidade com moradia provisória e apoio psicossocial."],
-["Associação Resgate Vidas - Restaurante Comunitário Cinco Pães", "66 99991-8144", "resgatevidasmt@gmail.com", "Elias Marques de Oliveira", "Rua Rui Barbosa, 1023 - Centro", "Segurança alimentar e oferta diária de refeições a pessoas em vulnerabilidade."],
-["ARDV - Assoc. Rondonopolitana de Deficientes Visuais", "66 3421-8091 / 99956-7949", "ardvroo@hotmail.com", "Cristiano Garcia de Souza", "Rua João Pessoa, 845 - Centro", "Autonomia e atendimento especializado a deficientes visuais (~170 usuários)."],
-["Amigos do Oratório Filhos de Dom Bosco", "66 3421-2567 / 99617-0920", "administrativo.roo@missaosalesiana.org.br", "Rosinete de Souza da Silva", "Av. E, 410-480 - Jardim Universitário", "Atividades culturais, esportivas, educativas e fortalecimento de vínculos."],
-["Cáritas Diocesana - Recanto dos Idosos", "(66) 3421-4361", "caritasdiocesanaroo@terra.com.br", "Manoel Messias", "Av. João XXIII, 3324 - Vila Operária", "Acolhimento institucional na modalidade república para idosos com autonomia parcial."],
-["CASF - Casa do Adolescente Sagrada Família", "66 99644-3170", "casfroo@gmail.com", "Graziela Beltrame de Matos", "Av. Valter Farias Ribeiro, s/n - Pq. Sagrada Família", "Desenvolvimento integral, vínculos e preparação para o mundo do trabalho (6 a 15 anos)."],
-["Casa do Oleiro Rondonópolis", "66 99698-6148", "casadooleiromt@gmail.com", "Murilo de Carvalho Silva", "R. E, Q 11 L 16 - Chácara Estrela Dalva", "Acolhimento institucional de homens adultos, ofertando abrigo, alimentação e higiene."],
-["Casa Laura Vicunha", "66 99985-9794", "vicunhacasalauravicunha@gmail.com", "Maria Aparecida Rocha", "Rua Papa Evaristo, 1340 - Vila Cardoso", "Serviços socioeducativos e profissionalizantes para meninas de 7 a 16 anos."],
-["Casa São Domingos Sávio", "66 3423-2608 / 99636-3403", "casasaodomingos.savio@hotmail.com", "Irene Silva de Oliveira", "Av. Irma Orvalida F. de Carvalho, 301 - Jd. Brasília", "Serviço de convivência e contraturno escolar para crianças e adolescentes."],
-["Centro de Reabilitação Louis Braille", "(66) 3421-0598", "diretoria@louisbraille.com.br", "Luiz Antonio de Toledo", "Av. Dep. Emanuel Pinheiro, 2625 - Jd. Luz d'Iara", "Autonomia, reabilitação e articulação intersetorial para pessoas com deficiência."],
-["Diocese de Rondonópolis / Guiratinga", "66 3426-6757 / 99961-6610", "www.dioceseroogga.org.br", "Mauricio da Silva Jardim", "Av. Frei Servácio, 393 - La Salle I", "Ações socioassistenciais através de pastorais e movimentos sociais."],
-["Fundação Lar Cristão", "66 3426-3101 / 99937-3050", "larcristaoconta@gmail.com", "Ana Mariza Panes do Rego", "Rua Belém, 1370 - Jardim Tropical", "Acolhimento institucional de longa permanência para adultos e idosos com deficiência."],
-["Fundação Lar Espírita Nazaré", "66 99900-1065", "lardenazarerondonopolis@gmail.com", "Marcelo Suguiyama Galliazzi", "Rua Pedro Ferrer, 1633 - Jardim Mato Grosso", "Segurança alimentar, cozinhas comunitárias e ações de convivência."]
-];
-
-/* ==========================================
    FUNÇÕES DE APRESENTAÇÃO
 ========================================== */
 
 const fmtRH=n=>Number(n).toLocaleString("pt-BR");
-const percRH=(a,b)=>b?(100*a/b).toFixed(1).replace(".",",")+"%":"—";
-const escapeRH=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const percRH=(a,b)=>b?
+(100*a/b).toFixed(1).replace(".",",")+"%":"—";
+
+const escapeRH=v=>String(v??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;");
 
 function tabelaRH(id,cabecalhos,linhas){
 const alvo=document.getElementById(id);
@@ -319,7 +293,9 @@ alvo.appendChild(table);
 }
 
 function tabelaSimplesRH(id,cab,arr){
-tabelaRH(id,cab,arr.map(r=>r.map((v,i)=>typeof v==="number"&&Number.isInteger(v)?fmtRH(v):v)));
+tabelaRH(id,cab,arr.map(r=>r.map((v,i)=>
+typeof v==="number"&&Number.isInteger(v)?fmtRH(v):v
+)));
 }
 
 function graficoRH(id,labels,dados,horizontal=true){
@@ -330,7 +306,10 @@ const anterior=Chart.getChart(canvas);
 if(anterior)anterior.destroy();
 new Chart(canvas,{
 type:"bar",
-data:{labels,datasets:dados},
+data:{
+labels,
+datasets:dados
+},
 options:{
 responsive:true,
 maintainAspectRatio:false,
@@ -349,13 +328,26 @@ const anterior=Chart.getChart(canvas);
 if(anterior)anterior.destroy();
 new Chart(canvas,{
 type:"doughnut",
-data:{labels,datasets:[{data:valores,backgroundColor:["#2563eb","#0d9488","#f59e0b","#a855f7","#64748b"]}]},
-options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom"}}}
+data:{
+labels,
+datasets:[{
+data:valores,
+backgroundColor:[
+"#2563eb","#0d9488","#f59e0b",
+"#a855f7","#64748b"
+]
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+plugins:{legend:{position:"bottom"}}
+}
 });
 }
 
 /* ==========================================
-   HTML DO MÓDULO INTEGRADO
+   HTML DO MÓDULO
 ========================================== */
 
 function htmlGestaoRH(){
@@ -363,13 +355,14 @@ return `
 <div id="cad-rh">
 
 <div class="rh-card">
-<h2>Gestão do Trabalho — SUAS / NOB-RH SUAS & Rede Municipal</h2>
-<p>Monitoramento integrado do quadro de profissionais, vínculos, lotações, dimensionamento e rede parceira (OSCs).</p>
+<h2>Gestão do Trabalho — SUAS / NOB-RH SUAS</h2>
+<p>Monitoramento do quadro de profissionais, vínculos,
+lotações e dimensionamento das equipes.</p>
 
 <div class="rh-grid">
  <div class="rh-kpi"><small>Servidores cadastrados</small><strong>289</strong></div>
  <div class="rh-kpi"><small>Servidores ativos</small><strong>284</strong></div>
- <div class="rh-kpi"><small>Inativos / cedidos</small><strong>5</strong></div>
+ <div class="rh-kpi"><small>Inativos / cedidos / afastados</small><strong>5</strong></div>
  <div class="rh-kpi"><small>Lotações informadas</small><strong>32</strong></div>
  <div class="rh-kpi"><small>Efetivos ativos</small><strong>44</strong></div>
  <div class="rh-kpi"><small>Contratados ativos</small><strong>53</strong></div>
@@ -378,49 +371,14 @@ return `
 </div>
 
 <div class="rh-alert">
-<b>Controle de consistência:</b> O resumo por categoria profissional e vínculo apresenta 287 registros, enquanto o consolidado informa 284 ativos. O quadro de gênero totaliza 289 cadastrados.
+<b>Controle de consistência:</b>
+o resumo por categoria profissional e vínculo apresenta
+287 registros, enquanto o consolidado informa 284 ativos.
+O quadro de gênero totaliza 289 cadastrados.
+Os quadros possuem classificações e abrangências distintas
+e devem ser reconciliados antes de utilização para decisões
+administrativas ou cálculo de déficit.
 </div>
-</div>
-
-<div class="rh-card">
-<h3>Redes Municipais e Portais Oficiais (Links de Apoio)</h3>
-<p>Acesse rapidamente os painéis e ramais oficiais da Prefeitura Municipal de Rondonópolis:</p>
-<div class="rh-links-grid">
- <a class="rh-link-card" href="https://www.rondonopolis.mt.gov.br/informacoes-da-rede-municipal-de-educacao/" target="_blank">
-  <strong>Rede Municipal de Educação</strong>
-  <span>Consulte informações e dados da rede de ensino municipal.</span>
- </a>
- <a class="rh-link-card" href="https://www.rondonopolis.mt.gov.br/rede-basica/" target="_blank">
-  <strong>Rede Básica de Saúde</strong>
-  <span>Unidades Básicas de Saúde e cobertura de atendimento.</span>
- </a>
- <a class="rh-link-card" href="https://www.rondonopolis.mt.gov.br/rede-hospitalar/" target="_blank">
-  <strong>Rede Hospitalar</strong>
-  <span>Hospitais, leitos e serviços de urgência e emergência.</span>
- </a>
- <a class="rh-link-card" href="https://www.rondonopolis.mt.gov.br/ramais/" target="_blank">
-  <strong>Ramais da Prefeitura</strong>
-  <span>Diretório de ramais e contatos dos setores administrativos.</span>
- </a>
- <a class="rh-link-card" href="https://www.rondonopolis.mt.gov.br/ramais/?q=&unit=5" target="_blank">
-  <strong>Ramais — Unidade Específica</strong>
-  <span>Consulta direta a ramais vinculados à unidade setorial.</span>
- </a>
- <a class="rh-link-card" href="https://www.rondonopolis.mt.gov.br/orgaos-municipais/?p=2" target="_blank">
-  <strong>Órgãos Municipais</strong>
-  <span>Secretarias, autarquias e estruturas de governança.</span>
- </a>
-</div>
-</div>
-
-<div class="rh-card">
-<h3>Organizações da Sociedade Civil (OSCs) Parceiras e Afins</h3>
-<p>Relação de OSCs cadastradas e informadas (com e sem inscrição no CMAS de caráter informativo).</p>
-<div class="rh-tools">
- <input id="rhBuscaOSC" placeholder="Pesquisar OSC ou responsável...">
-</div>
-<div id="rhTotalOSC" class="rh-small" style="margin-bottom:10px;font-weight:bold;"></div>
-<div class="rh-table" id="rhTabelaOSC"></div>
 </div>
 
 <div class="rh-card">
@@ -452,11 +410,15 @@ return `
 <div class="rh-grid">
  <div>
   <h4>Distribuição por gênero</h4>
-  <div class="rh-chart"><canvas id="rhGraficoGenero"></canvas></div>
+  <div class="rh-chart">
+   <canvas id="rhGraficoGenero"></canvas>
+  </div>
  </div>
  <div>
   <h4>Período de ingresso</h4>
-  <div class="rh-chart"><canvas id="rhGraficoIngresso"></canvas></div>
+  <div class="rh-chart">
+   <canvas id="rhGraficoIngresso"></canvas>
+  </div>
  </div>
 </div>
 <details>
@@ -467,16 +429,17 @@ return `
 
 <div class="rh-card">
 <h3>Quadro por lotação real</h3>
+<p>Pesquisa por unidade e tipo de serviço.</p>
 <div class="rh-tools">
- <input id="rhBuscaLotacao" placeholder="Pesquisar unidade...">
- <select id="rhTipoLotacao">
-  <option value="">Todos os tipos de unidade</option>
- </select>
- <select id="rhOrdenacao">
-  <option value="ativos">Mais servidores ativos</option>
-  <option value="efetivos">Mais efetivos</option>
-  <option value="terceirizados">Mais terceirizados</option>
- </select>
+<input id="rhBuscaLotacao" placeholder="Pesquisar unidade...">
+<select id="rhTipoLotacao">
+<option value="">Todos os tipos de unidade</option>
+</select>
+<select id="rhOrdenacao">
+<option value="ativos">Mais servidores ativos</option>
+<option value="efetivos">Mais efetivos</option>
+<option value="terceirizados">Mais terceirizados</option>
+</select>
 </div>
 <div id="rhTotalLotacao"></div>
 <div class="rh-table" id="rhTabelaLotacao"></div>
@@ -484,18 +447,47 @@ return `
 
 <div class="rh-card">
 <h3>Efetivos concursados nas unidades</h3>
+<div class="rh-grid">
+ <div class="rh-kpi">
+  <small>Efetivos concursados no recorte da rede</small>
+  <strong>28</strong>
+ </div>
+ <div class="rh-kpi">
+  <small>Efetivos de nível superior</small>
+  <strong>17</strong>
+ </div>
+ <div class="rh-kpi">
+  <small>Efetivos nível médio de referência</small>
+  <strong>5</strong>
+ </div>
+ <div class="rh-kpi">
+  <small>Efetivos apoio/administração</small>
+  <strong>6</strong>
+ </div>
+</div>
 <div class="rh-table" id="rhTabelaEfetivos"></div>
 </div>
 
 <div class="rh-card">
 <h3>Dimensionamento e equipes de referência</h3>
+<p>Comparação do quantitativo informado por unidade com
+os parâmetros apresentados no quadro técnico.</p>
 <div class="rh-tools">
- <input id="rhBuscaDimens" placeholder="Pesquisar unidade...">
- <select id="rhTipoDimens">
-  <option value="">Todos os serviços</option>
- </select>
+<input id="rhBuscaDimens" placeholder="Pesquisar unidade...">
+<select id="rhTipoDimens">
+<option value="">Todos os serviços</option>
+</select>
 </div>
 <div class="rh-table" id="rhTabelaDimens"></div>
+
+<div class="rh-alert">
+<b>Atenção metodológica:</b>
+os parâmetros do quadro NOB-RH devem ser conferidos
+por porte, capacidade, tipificação e regulamentação
+aplicável. A quantidade de trabalhadores por categoria
+não comprova, isoladamente, conformidade de equipes,
+vínculos, carga horária e habilitação profissional.
+</div>
 </div>
 
 <div class="rh-card">
@@ -506,68 +498,86 @@ return `
 <div class="rh-card">
 <h3>Análises e alertas da Vigilância</h3>
 <div id="rhAnalises"></div>
+<p class="rh-small">
+Fonte: Painel de Gestão do Trabalho SUAS / NOB-RH SUAS
+enviado para consolidação. Referência temporal da base
+não especificada no quadro apresentado.
+</p>
 </div>
 
 </div>`;
 }
 
 /* ==========================================
-   PREENCHIMENTO E FILTROS
+   PREENCHIMENTO DOS PAINÉIS
 ========================================== */
 
 function carregarGraficosRH(){
-graficoRH("rhGraficoTipo", RH.tipos.map(x=>x[0]), [
- {label:"Ativos",data:RH.tipos.map(x=>x[1]),backgroundColor:"#2563eb"},
- {label:"Cadastrados",data:RH.tipos.map(x=>x[2]),backgroundColor:"#94a3b8"}
+
+graficoRH("rhGraficoTipo",
+RH.tipos.map(x=>x[0]),[
+{label:"Ativos",data:RH.tipos.map(x=>x[1]),backgroundColor:"#2563eb"},
+{label:"Cadastrados",data:RH.tipos.map(x=>x[2]),backgroundColor:"#94a3b8"}
 ]);
 
-graficoRH("rhGraficoProf", RH.categorias.map(x=>x[0]), [
- {label:"Ativos",data:RH.categorias.map(x=>x[1]),backgroundColor:"#0d9488"},
- {label:"Cadastrados",data:RH.categorias.map(x=>x[2]),backgroundColor:"#94a3b8"}
+graficoRH("rhGraficoProf",
+RH.categorias.map(x=>x[0]),[
+{label:"Ativos",data:RH.categorias.map(x=>x[1]),backgroundColor:"#0d9488"},
+{label:"Cadastrados",data:RH.categorias.map(x=>x[2]),backgroundColor:"#94a3b8"}
 ]);
 
-graficoRH("rhGraficoVinculo", RH.vinculos.map(x=>x[0]), [
- {label:"Ativos",data:RH.vinculos.map(x=>x[1]),backgroundColor:"#2563eb"},
- {label:"Cadastrados",data:RH.vinculos.map(x=>x[2]),backgroundColor:"#f59e0b"}
+graficoRH("rhGraficoVinculo",
+RH.vinculos.map(x=>x[0]),[
+{label:"Ativos",data:RH.vinculos.map(x=>x[1]),backgroundColor:"#2563eb"},
+{label:"Cadastrados",data:RH.vinculos.map(x=>x[2]),backgroundColor:"#f59e0b"}
 ]);
 
-graficoPizzaRH("rhGraficoGenero", RH.genero.map(x=>x[0]), RH.genero.map(x=>x[1]));
-graficoPizzaRH("rhGraficoIngresso", RH.ingresso.map(x=>x[0]), RH.ingresso.map(x=>x[1]));
+graficoPizzaRH("rhGraficoGenero",
+RH.genero.map(x=>x[0]),RH.genero.map(x=>x[1]));
+
+graficoPizzaRH("rhGraficoIngresso",
+RH.ingresso.map(x=>x[0]),RH.ingresso.map(x=>x[1]));
+
 }
 
 function preencherTabelasRH(){
-tabelaSimplesRH("rhTabelaTipo", ["Tipo de unidade","Ativos","Total cadastrado"], RH.tipos);
-tabelaSimplesRH("rhTabelaProf", ["Categoria profissional","Ativos","Total cadastrado"], RH.categorias);
-tabelaSimplesRH("rhTabelaVinculo", ["Vínculo","Ativos","Total cadastrado"], RH.vinculos);
-tabelaRH("rhFaixaEtaria", ["Faixa etária","Quantidade","Participação"], RH.faixaEtaria.map(x=>[x[0],x[1],percRH(x[1],47)]));
-tabelaSimplesRH("rhTabelaEfetivos", ["Unidade","Superior","Médio de referência","Apoio","Total"], EFETIVOS);
-tabelaSimplesRH("rhTabelaCatVinculo", ["Categoria / Vínculo","Quantidade informada"], RH.categoriaVinculo);
 
-filtrarOSCS();
-}
+tabelaSimplesRH("rhTabelaTipo",
+["Tipo de unidade","Ativos","Total cadastrado"],RH.tipos);
 
-function filtrarOSCS(){
-const busca = document.getElementById("rhBuscaOSC").value.toLocaleLowerCase("pt-BR");
-const lista = OSCS.filter(r => 
- r[0].toLocaleLowerCase("pt-BR").includes(busca) || 
- r[3].toLocaleLowerCase("pt-BR").includes(busca) ||
- r[5].toLocaleLowerCase("pt-BR").includes(busca)
-);
+tabelaSimplesRH("rhTabelaProf",
+["Categoria profissional","Ativos","Total cadastrado"],RH.categorias);
 
-document.getElementById("rhTotalOSC").textContent = lista.length + " instituições listadas.";
+tabelaSimplesRH("rhTabelaVinculo",
+["Vínculo","Ativos","Total cadastrado"],RH.vinculos);
 
-tabelaRH("rhTabelaOSC", 
- ["Instituição / Unidade", "Telefone", "Email / Site", "Responsável", "Endereço", "Atendimento / Serviços"],
- lista
-);
+tabelaRH("rhFaixaEtaria",
+["Faixa etária","Quantidade","Participação"],
+RH.faixaEtaria.map(x=>[
+x[0],x[1],percRH(x[1],47)
+]));
+
+tabelaSimplesRH("rhTabelaEfetivos",
+["Unidade","Superior","Médio de referência","Apoio","Total"],
+EFETIVOS);
+
+tabelaSimplesRH("rhTabelaCatVinculo",
+["Categoria / Vínculo","Quantidade informada"],
+RH.categoriaVinculo);
+
 }
 
 function prepararFiltrosRH(){
+
 const tipos=[...new Set(LOTACOES.map(x=>x[1]))].sort();
-document.getElementById("rhTipoLotacao").innerHTML='<option value="">Todos os tipos de unidade</option>'+tipos.map(x=>`<option value="${escapeRH(x)}">${escapeRH(x)}</option>`).join("");
+document.getElementById("rhTipoLotacao").innerHTML=
+'<option value="">Todos os tipos de unidade</option>'+
+tipos.map(x=>`<option value="${escapeRH(x)}">${escapeRH(x)}</option>`).join("");
 
 const grupos=[...new Set(DIMENS.map(x=>x[1]))].sort();
-document.getElementById("rhTipoDimens").innerHTML='<option value="">Todos os serviços</option>'+grupos.map(x=>`<option value="${escapeRH(x)}">${escapeRH(x)}</option>`).join("");
+document.getElementById("rhTipoDimens").innerHTML=
+'<option value="">Todos os serviços</option>'+
+grupos.map(x=>`<option value="${escapeRH(x)}">${escapeRH(x)}</option>`).join("");
 
 ["rhBuscaLotacao","rhTipoLotacao","rhOrdenacao"].forEach(id=>{
 document.getElementById(id).addEventListener("input",filtrarLotacoesRH);
@@ -577,14 +587,15 @@ document.getElementById(id).addEventListener("input",filtrarLotacoesRH);
 document.getElementById(id).addEventListener("input",filtrarDimensRH);
 });
 
-document.getElementById("rhBuscaOSC").addEventListener("input",filtrarOSCS);
-
 filtrarLotacoesRH();
 filtrarDimensRH();
 }
 
 function filtrarLotacoesRH(){
-const busca=document.getElementById("rhBuscaLotacao").value.toLocaleLowerCase("pt-BR");
+
+const busca=document.getElementById("rhBuscaLotacao").value
+.toLocaleLowerCase("pt-BR");
+
 const tipo=document.getElementById("rhTipoLotacao").value;
 const ordem=document.getElementById("rhOrdenacao").value;
 const col=ordem==="efetivos"?3:ordem==="terceirizados"?6:2;
@@ -595,35 +606,91 @@ const lista=LOTACOES
 .sort((a,b)=>b[col]-a[col]||a[0].localeCompare(b[0],"pt-BR"));
 
 const total=lista.reduce((a,r)=>a+r[2],0);
-document.getElementById("rhTotalLotacao").textContent=lista.length+" lotações exibidas — "+fmtRH(total)+" registros ativos somados.";
 
-tabelaRH("rhTabelaLotacao", ["Unidade","Tipo","Ativos","Efetivos","Contratados","Comissionados","Terceirizados","Horas semanais"], lista.map(r=>r.map((v,i)=>i>=2?fmtRH(v):v)));
+document.getElementById("rhTotalLotacao").textContent=
+lista.length+" lotações exibidas — "+fmtRH(total)+
+" registros ativos somados no recorte.";
+
+tabelaRH("rhTabelaLotacao",
+["Unidade","Tipo","Ativos","Efetivos",
+"Contratados","Comissionados","Terceirizados","Horas semanais"],
+lista.map(r=>r.map((v,i)=>i>=2?fmtRH(v):v))
+);
+
 }
 
 function filtrarDimensRH(){
-const busca=document.getElementById("rhBuscaDimens").value.toLocaleLowerCase("pt-BR");
+
+const busca=document.getElementById("rhBuscaDimens").value
+.toLocaleLowerCase("pt-BR");
 const tipo=document.getElementById("rhTipoDimens").value;
 
-const lista=DIMENS.filter(r=>r[0].toLocaleLowerCase("pt-BR").includes(busca)&&(!tipo||r[1]===tipo));
-tabelaRH("rhTabelaDimens", ["Unidade","Serviço","Famílias ref. 2026","Equipe mínima (quadro)","Superior exigido","Assistentes Sociais","Psicólogos","Pedagogos/outros","Coordenação"], lista.map(r=>r.map((v,i)=>i===2?(v===null?"—":fmtRH(v)):v)));
+const lista=DIMENS.filter(r=>
+r[0].toLocaleLowerCase("pt-BR").includes(busca)&&
+(!tipo||r[1]===tipo)
+);
+
+tabelaRH("rhTabelaDimens",
+["Unidade","Serviço","Famílias ref. 2026",
+"Equipe mínima (quadro)","Superior exigido",
+"Assistentes Sociais","Psicólogos","Pedagogos/outros",
+"Coordenação"],
+lista.map(r=>r.map((v,i)=>
+i===2?(v===null?"—":fmtRH(v)):v
+))
+);
+
 }
 
 function analisesRH(){
-const unidadesSemEfetivos=EFETIVOS.filter(r=>r[4]===0).map(r=>r[0]);
-const maiores=LOTACOES.slice().sort((a,b)=>b[2]-a[2]).slice(0,5);
+
+const unidadesSemEfetivos=EFETIVOS
+.filter(r=>r[4]===0).map(r=>r[0]);
+
+const maiores=LOTACOES.slice()
+.sort((a,b)=>b[2]-a[2])
+.slice(0,5);
 
 document.getElementById("rhAnalises").innerHTML=`
+
 <div class="rh-alert">
-<b>1. Conferência do quadro de pessoal:</b> o consolidado informa 284 ativos e 289 cadastrados. Recomenda-se conciliação com a base nominal interna.
+<b>1. Conferência do quadro de pessoal:</b>
+o consolidado informa 284 ativos e 289 cadastrados.
+O total da tabela de categoria profissional × vínculo
+não é idêntico ao consolidado de ativos.
+Recomenda-se conciliação com a base nominal interna
+antes de publicação de indicadores de efetividade.
 </div>
+
 <div class="rh-alert">
-<b>2. Unidades sem efetivos no recorte específico:</b> ${escapeRH(unidadesSemEfetivos.join("; "))}.
+<b>2. Unidades sem efetivos no recorte específico:</b>
+${escapeRH(unidadesSemEfetivos.join("; "))}.
+Esse recorte não deve ser confundido com o total de
+efetivos de toda a SEMPRAS.
 </div>
+
 <div class="rh-alert">
-<b>3. Maiores lotações por número de ativos:</b> ${maiores.map(x=>escapeRH(x[0])+" ("+x[2]+")").join("; ")}.
+<b>3. Maiores lotações por número de ativos:</b>
+${maiores.map(x=>escapeRH(x[0])+" ("+x[2]+")").join("; ")}.
+A avaliação da suficiência das equipes deve considerar
+a demanda territorial, jornada e composição profissional.
 </div>
+
 <div class="rh-ok">
-<b>4. Recomendação de monitoramento:</b> manter atualização periódica integrada entre Gestão do Trabalho, CadSUAS, Censo SUAS e OSCs parceiras.
+<b>4. Recomendação de monitoramento:</b>
+manter atualização periódica de lotação, vínculo,
+carga horária, afastamentos e equipe de referência
+por unidade, articulando Gestão do Trabalho,
+CadSUAS, Censo SUAS e Vigilância Socioassistencial.
+</div>
+
+<div class="rh-alert">
+<b>5. Qualidade da informação:</b>
+a tabela original contém classificação inconsistente
+para algumas lotações (por exemplo, CRAS registrados
+como tipo Cadastro Único), além de Educação Permanente
+com zero ativos e 40 horas informadas.
+Os registros foram preservados e sinalizados para revisão.
 </div>
 `;
 }
@@ -633,7 +700,9 @@ document.getElementById("rhAnalises").innerHTML=`
 ========================================== */
 
 function montarGestaoRH(){
+
 const alvo=document.getElementById("conteudo");
+
 if(!alvo)return;
 if(document.getElementById("cad-rh"))return;
 
@@ -643,18 +712,31 @@ preencherTabelasRH();
 prepararFiltrosRH();
 analisesRH();
 carregarGraficosRH();
+
 }
 
+// Mantém a função original da aba Rede SUAS
+// e acrescenta o módulo após seu conteúdo.
+
 if(typeof window.rede==="function"){
+
 const redeOriginal=window.rede;
+
 window.rede=function(){
 redeOriginal();
 montarGestaoRH();
 };
+
 }else{
-console.warn("Módulo Gestão do Trabalho: função rede() não encontrada.");
+
+console.warn(
+"Módulo Gestão do Trabalho: função rede() não encontrada. "+
+"Verifique se este script foi inserido após o código principal."
+);
+
 }
 
 })();
 </script>
-<!-- FIM DO MÓDULO GESTÃO DO TRABALHO E REDE COMPLETA -->
+
+<!-- FIM DO MÓDULO GESTÃO DO TRABALHO -->
