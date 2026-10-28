@@ -19,7 +19,7 @@
                 <div>
                     <span class="bg-blue-800 text-blue-200 text-xs font-semibold px-2.5 py-1 rounded uppercase tracking-wider">SEMPRAS · Rondonópolis-MT</span>
                     <h1 class="text-2xl md:text-3xl font-bold mt-1">Biblioteca e Painel da Vigilância Socioassistencial</h1>
-                    <p class="text-blue-200 text-sm mt-1">Portal analítico, diretório da rede, monitoramento do PMAS, territórios e indicadores do SUAS.</p>
+                    <p class="text-blue-200 text-sm mt-1">Portal analítico com integração em tempo real via API do IBGE, diretório da rede e monitoramento do PMAS.</p>
                 </div>
                 <div class="bg-blue-800/80 p-3 rounded-lg border border-blue-700 text-xs text-blue-100">
                     <p class="font-semibold">📊 Sincronização Ativa</p>
@@ -53,8 +53,8 @@
     <script>
         let dadosGlobais = {};
         let abaAtiva = '';
+        let ibgeDadosCache = null;
 
-        // Banco de dados de bairros por território para a Aba 1
         const territoriosBairros = {
             "CRAS Alfredo de Castro": ["Alfredo de Castro I, II e III", "Jardim Arco Íris", "Residencial Celina Bezerra", "Vila Paulista", "Vila Naboreiro", "Acampamento Palmeiras", "Acampamento São Francisco", "Assentamento Primavera"],
             "CRAS Ana Carla": ["Jardim Ana Carla I, II e III", "Jardim das Paineiras", "Jardim Rui Barbosa", "Parque Rosa Bororo", "Residencial Pedra 90", "Residencial Maria Amélia", "Vale Encantado", "Vila Olinda I, II e III"],
@@ -69,6 +69,14 @@
                 const resposta = await fetch('dados.json?' + new Date().getTime());
                 dadosGlobais = await resposta.json();
                 document.getElementById('ultima-atualizacao').innerText = dadosGlobais.ultimaAtualizacao || 'Desconhecida';
+
+                try {
+                    const resIbge = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/municipios/5107602');
+                    ibgeDadosCache = await resIbge.json();
+                } catch(e) {
+                    console.error("Erro ao carregar API do IBGE:", e);
+                }
+
                 inicializarAbas();
                 renderizarConteudo();
             } catch (erro) {
@@ -106,8 +114,22 @@
             const cat = dadosGlobais.categorias[abaAtiva];
             let html = `<div class="mb-6"><h2 class="text-xl font-bold text-slate-900">${cat.titulo}</h2><p class="text-slate-600 text-sm">${cat.descricao}</p></div>`;
 
-            // RENDERIZAÇÃO ESPECIAL PARA A ABA 1 (TERRITÓRIOS E MAPA DO GOOGLE MY MAPS)
+            // ABA 1: TERRITÓRIO + API IBGE + MAPA
             if (abaAtiva === 'territorio') {
+                if (ibgeDadosCache) {
+                    html += `
+                        <div class="bg-gradient-to-r from-blue-900 to-slate-800 text-white p-6 rounded-xl shadow-md mb-8">
+                            <h3 class="text-lg font-bold mb-3 flex items-center gap-2"><i data-lucide="database" class="w-5 h-5 text-blue-400"></i> Informações Oficiais Consumidas Diretamente da API do IBGE</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mt-4">
+                                <div class="bg-white/10 p-3 rounded-lg"><span class="block text-xs text-blue-200">Município</span><strong class="text-base">${ibgeDadosCache.nome}</strong></div>
+                                <div class="bg-white/10 p-3 rounded-lg"><span class="block text-xs text-blue-200">Código IBGE</span><strong class="text-base">${ibgeDadosCache.id}</strong></div>
+                                <div class="bg-white/10 p-3 rounded-lg"><span class="block text-xs text-blue-200">Microrregião</span><strong class="text-base">${ibgeDadosCache.microrregiao?.nome || 'N/A'}</strong></div>
+                                <div class="bg-white/10 p-3 rounded-lg"><span class="block text-xs text-blue-200">Estado (UF)</span><strong class="text-base">${ibgeDadosCache.microrregiao?.mesorregiao?.UF?.nome || 'Mato Grosso'} (${ibgeDadosCache.microrregiao?.mesorregiao?.UF?.sigla || 'MT'})</strong></div>
+                            </div>
+                        </div>
+                    `;
+                }
+
                 html += `
                     <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-8">
                         <h3 class="text-lg font-bold text-slate-800 mb-2">Mapa Geral Interativo dos Territórios</h3>
@@ -123,32 +145,77 @@
                 `;
             }
 
-            // RENDERIZAÇÃO ESPECIAL PARA A ABA 9 (PMAS 2026-2029)
+            // ABA 9: PMAS 2026-2029 (COM TODOS OS 5 EIXOS DETALHADOS RESTAURADOS)
             if (abaAtiva === 'pmas_resumo') {
                 html += `
                     <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-8">
                         <h3 class="text-lg font-bold text-slate-800 mb-3">Pesquisar nos Eixos Estratégicos do PMAS</h3>
-                        <input id="pmasBusca" type="search" placeholder="Pesquisar por eixo ou palavra-chave (ex: proteção, gestão, controle)..." class="w-full p-3 border border-slate-300 rounded-lg mb-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="pmasListaEixos">
+                        <input id="pmasBusca" type="search" placeholder="Pesquisar por eixo ou palavra-chave (ex: proteção, gestão, controle, paif)..." class="w-full p-3 border border-slate-300 rounded-lg mb-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
+                        
+                        <div class="space-y-4" id="pmasListaEixos">
                             <details class="bg-slate-50 border border-slate-200 rounded-lg p-4 pmas-eixo" data-termos="gestão suas planejamento gestão trabalho financiamento vigilância informação">
-                                <summary class="font-bold text-blue-900 cursor-pointer">01 · Gestão do SUAS</summary>
-                                <div class="mt-3 text-sm text-slate-700"><p class="mb-2">Abrange o aprimoramento da gestão municipal e das condições necessárias à organização da política.</p><ul class="list-disc pl-5 space-y-1"><li>Planejamento e organização da gestão;</li><li>Gestão do trabalho e educação permanente;</li><li>Vigilância Socioassistencial e produção de informações.</li></ul></div>
+                                <summary class="font-bold text-blue-900 cursor-pointer text-base">01 · Gestão do SUAS</summary>
+                                <div class="mt-3 text-sm text-slate-700">
+                                    <p class="mb-2 font-medium">Abrange o aprimoramento da gestão municipal e das condições necessárias à organização da política de assistência social.</p>
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        <li>Planejamento e organização da gestão;</li>
+                                        <li>Gestão do trabalho e educação permanente;</li>
+                                        <li>Vigilância Socioassistencial e produção de informações;</li>
+                                        <li>Monitoramento, avaliação e aprimoramento da gestão.</li>
+                                    </ul>
+                                </div>
                             </details>
+
                             <details class="bg-slate-50 border border-slate-200 rounded-lg p-4 pmas-eixo" data-termos="proteção social básica cras paif scfv prevenção território famílias">
-                                <summary class="font-bold text-blue-900 cursor-pointer">02 · Proteção Social Básica</summary>
-                                <div class="mt-3 text-sm text-slate-700"><p class="mb-2">Busca prevenir situações de vulnerabilidade e fortalecer vínculos familiares e comunitários.</p><ul class="list-disc pl-5 space-y-1"><li>Serviço de Proteção e Atendimento Integral à Família (PAIF);</li><li>Serviço de Convivência (SCFV);</li><li>Atuação territorial dos CRAS.</li></ul></div>
+                                <summary class="font-bold text-blue-900 cursor-pointer text-base">02 · Proteção Social Básica</summary>
+                                <div class="mt-3 text-sm text-slate-700">
+                                    <p class="mb-2 font-medium">Busca prevenir situações de vulnerabilidade e risco social, fortalecer vínculos familiares e comunitários e ampliar o acesso aos direitos socioassistenciais.</p>
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        <li>Serviço de Proteção e Atendimento Integral à Família (PAIF);</li>
+                                        <li>Serviço de Convivência e Fortalecimento de Vínculos (SCFV);</li>
+                                        <li>Atuação territorial dos CRAS;</li>
+                                        <li>Prevenção de vulnerabilidades sociais.</li>
+                                    </ul>
+                                </div>
                             </details>
+
                             <details class="bg-slate-50 border border-slate-200 rounded-lg p-4 pmas-eixo" data-termos="proteção social especial creas média alta complexidade violência violação direitos acolhimento">
-                                <summary class="font-bold text-blue-900 cursor-pointer">03 · Proteção Social Especial</summary>
-                                <div class="mt-3 text-sm text-slate-700"><p class="mb-2">Destinada a indivíduos e famílias que vivenciam situações de risco e violações de direitos.</p><ul class="list-disc pl-5 space-y-1"><li>Atendimento especializado (PAEFI);</li><li>Enfrentamento das violações de direitos;</li><li>Acolhimento Institucional.</li></ul></div>
+                                <summary class="font-bold text-blue-900 cursor-pointer text-base">03 · Proteção Social Especial</summary>
+                                <div class="mt-3 text-sm text-slate-700">
+                                    <p class="mb-2 font-medium">Reúne ações destinadas a indivíduos e famílias que vivenciam situações de risco pessoal ou social e violações de direitos, conforme as ofertas de média e alta complexidade.</p>
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        <li>Atendimento especializado (PAEFI);</li>
+                                        <li>Enfrentamento das violações de direitos;</li>
+                                        <li>Proteção a pessoas e famílias em situações de risco;</li>
+                                        <li>Articulação com a rede de proteção e Acolhimento Institucional.</li>
+                                    </ul>
+                                </div>
                             </details>
+
                             <details class="bg-slate-50 border border-slate-200 rounded-lg p-4 pmas-eixo" data-termos="benefícios socioassistenciais benefício eventual bpc transferência renda segurança renda">
-                                <summary class="font-bold text-blue-900 cursor-pointer">04 · Benefícios Socioassistenciais</summary>
-                                <div class="mt-3 text-sm text-slate-700"><p class="mb-2">Compreende a organização do acesso aos benefícios eventuais e transferência de renda.</p><ul class="list-disc pl-5 space-y-1"><li>Benefícios eventuais;</li><li>Orientação sobre o BPC;</li><li>Articulação com programas de transferência de renda.</li></ul></div>
+                                <summary class="font-bold text-blue-900 cursor-pointer text-base">04 · Benefícios Socioassistenciais</summary>
+                                <div class="mt-3 text-sm text-slate-700">
+                                    <p class="mb-2 font-medium">Compreende a organização do acesso aos benefícios socioassistenciais e sua articulação com os serviços da rede de assistência social.</p>
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        <li>Concessão e gestão de Benefícios Eventuais;</li>
+                                        <li>Orientação e acompanhamento sobre o Benefício de Prestação Continuada (BPC);</li>
+                                        <li>Articulação com programas de transferência de renda;</li>
+                                        <li>Garantia de acesso a direitos e seguranças socioassistenciais.</li>
+                                    </ul>
+                                </div>
                             </details>
+
                             <details class="bg-slate-50 border border-slate-200 rounded-lg p-4 pmas-eixo" data-termos="controle social cmas conselho municipal participação social conferência transparência">
-                                <summary class="font-bold text-blue-900 cursor-pointer">05 · Controle Social</summary>
-                                <div class="mt-3 text-sm text-slate-700"><p class="mb-2">Envolve a participação da sociedade na formulação, acompanhamento e fiscalização.</p><ul class="list-disc pl-5 space-y-1"><li>Atuação do CMAS;</li><li>Participação de usuários e trabalhadores;</li><li>Acompanhamento da execução do Plano.</li></ul></div>
+                                <summary class="font-bold text-blue-900 cursor-pointer text-base">05 · Controle Social</summary>
+                                <div class="mt-3 text-sm text-slate-700">
+                                    <p class="mb-2 font-medium">Envolve a participação ativa da sociedade na formulação, acompanhamento e fiscalização da política de assistência social no município.</p>
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        <li>Atuação e fortalecimento do Conselho Municipal de Assistência Social (CMAS);</li>
+                                        <li>Participação de usuários, trabalhadores e entidades;</li>
+                                        <li>Acompanhamento da execução e monitoramento do Plano Municipal;</li>
+                                        <li>Transparência, conferências e participação social.</li>
+                                    </ul>
+                                </div>
                             </details>
                         </div>
                     </div>
@@ -191,7 +258,7 @@
                                 <p class="text-xs text-slate-600 mt-1">${link.descricao}</p>
                             </div>
                             <div class="mt-4 pt-3 border-t flex justify-between items-center text-xs">
-                                <span class="text-slate-500">Orgão: <strong>${link.orgao}</strong></span>
+                                <span class="text-slate-500">Órgão: <strong>${link.orgao}</strong></span>
                                 <a href="${link.url}" target="_blank" class="text-blue-600 font-semibold flex items-center gap-1">Acessar <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
                             </div>
                         </div>
@@ -214,7 +281,6 @@
             painel.innerHTML = html;
             lucide.createIcons();
 
-            // Ativar scripts interativos específicos caso estejam visíveis na tela
             if (abaAtiva === 'territorio') {
                 inicializarBuscaTerritorios();
             }
