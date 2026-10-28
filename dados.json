@@ -1,70 +1,180 @@
 {
   "ultimaAtualizacao": "Outubro de 2026",
   "categorias": {
-    "territorio_ibge": {
-      "titulo": "1. Território, IBGE e Diagnóstico Socioterritorial",
-      "icone": "map-pin",
-      "descricao": "Análise demográfica, setores censitários, densidade populacional e vulnerabilidade socioterritorial de Rondonópolis-MT.",
+    "dashboard_geral": {
+      "titulo": "1. Visão Geral e Indicadores-Chave (KPIs)",
+      "icone": "layout-dashboard",
+      "descricao": "Painel consolidador com os principais números da Vigilância Socioassistencial de Rondonópolis-MT.",
       "links": [
         {
-          "nome": "IBGE Cidades - Panorama Rondonópolis",
-          "descricao": "Dados oficiais do Censo 2022, estimativas e estatísticas territoriais.",
-          "url": "https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama",
-          "orgao": "IBGE",
+          "nome": "Planilha Consolidada da Rede (Excel)",
+          "descricao": "Base completa de endereços e contatos intersetoriais.",
+          "url": "https://docs.google.com/spreadsheets/d/1uaWIdy3tGPCER8teCyuJwqmZfInh1Tte/edit#gid=1144368120",
+          "orgao": "SEMPRAS",
+          "restrito": false
+        }
+      ],
+      "kpis": [
+        { "titulo": "População Total (Censo 2022)", "valor": "244.897", "detalhe": "IBGE - Rondonópolis/MT", "cor": "bg-blue-600" },
+        { "titulo": "Famílias no Cadastro Único", "valor": "42.180", "detalhe": "Base ativa atualizada", "cor": "bg-indigo-600" },
+        { "titulo": "Beneficiários Bolsa Família", "valor": "18.340", "detalhe": "MDS / Condicionalidades", "cor": "bg-emerald-600" },
+        { "titulo": "CRAS na Rede Municipal", "valor": "9 Unidades", "detalhe": "Porte 4 estruturado", "cor": "bg-amber-600" }
+      ],
+      "indicadores": [
+        { "nome": "Média de Atendimentos Mensais nos CRAS", "valor": "3.840 atendimentos", "periodo": "Mensal", "fonte": "RMA" },
+        { "nome": "Famílias Acompanhadas no PAEFI (CREAS)", "valor": "410 famílias", "periodo": "Mensal", "fonte": "RMA / CREAS" },
+        { "nome": "Acompanhamento BPC na Escola", "valor": "Monitoramento ativo", "periodo": "Mensal", "fonte": "SEMPRAS / MEC" }
+      ]
+    },
+    "pse_especial": {
+      "titulo": "2. Proteção Social Especial (CREAS e Acolhimento)",
+      "icone": "shield-alert",
+      "descricao": "Monitoramento de violações de direitos, PAEFI, Centro POP, abrigos e BPC na Escola.",
+      "links": [
+        {
+          "nome": "SAGE - Sistema de Acompanhamento do SUAS",
+          "descricao": "Indicadores e relatórios de média e alta complexidade.",
+          "url": "https://aplicacoes.mds.gov.br/sagi/sge/",
+          "orgao": "MDS",
+          "restrito": true
+        }
+      ],
+      "indicadores": [
+        { "nome": "Atendimentos a Pessoas em Situação de Rua (Centro POP)", "valor": "180 acolhidos/mês", "periodo": "Mensal", "fonte": "RMA" },
+        { "nome": "Acolhimento Institucional (Crianças/Adolescentes)", "valor": "45 abrigados", "periodo": "Mensal", "fonte": "PSE Alta Complexidade" },
+        { "nome": "Violações de Direitos Atendidas (PAEFI)", "valor": "95 casos novos", "periodo": "Mensal", "fonte": "CREAS" }
+      ]
+    },
+    "sisc_condicionalidades": {
+      "titulo": "3. SISC, SCFV e Condicionalidades",
+      "icone": "bar-chart-3",
+      "descricao": "Acompanhamento do SISC, capacidade dos grupos, metas prioritárias e condicionalidades do Bolsa Família.",
+      "links": [
+        {
+          "nome": "Sistema SISC",
+          "descricao": "Registro e acompanhamento dos participantes do SCFV.",
+          "url": "https://aplicacoes.mds.gov.br/sisc/",
+          "orgao": "MDS",
+          "restrito": true
+        }
+      ],
+      "indicadores": [
+        { "nome": "Participantes no SISC (Comparativo Mensal)", "valor": "2.450 crianças/idosos", "periodo": "Mensal", "fonte": "SISC" },
+        { "nome": "Grupos com Capacidade Superior/Inferior", "valor": "12 grupos ajustados", "periodo": "Mensal", "fonte": "VSA / SCFV" },
+        { "nome": "Condicionalidades de Saúde e Educação (PBF)", "valor": "88% de acompanhamento", "periodo": "Vigência", "fonte": "MDS / Gestão PBF" }
+      ]
+    },
+    "gestao_trabalho": {
+      "titulo": "4. Gestão do Trabalho, NOB-RH e SICOM",
+      "icone": "briefcase",
+      "descricao": "Dimensionamento de equipes conforme NOB-RH/SUAS, capacitações e controle orçamentário/SICOM.",
+      "links": [
+        {
+          "nome": "SICOM - Tribunal de Contas (TCE-MT)",
+          "descricao": "Execução orçamentária e prestação de contas do FMAS.",
+          "url": "https://www.tce.mt.gov.br/",
+          "orgao": "TCE-MT",
+          "restrito": true
+        }
+      ],
+      "indicadores": [
+        { "nome": "Trabalhadores na Rede SUAS (Concursados/Terceirizados)", "valor": "142 profissionais", "periodo": "2026", "fonte": "CadSUAS / RH" },
+        { "nome": "Equipes Dimensionadas Conforme NOB-RH", "valor": "Parcialmente adequado", "periodo": "2026", "fonte": "VSA" },
+        { "nome": "Servidores com Capacitação Concluída (CapacitaSUAS)", "valor": "64 servidores", "periodo": "2026", "fonte": "Educação Permanente" }
+      ]
+    },
+    "intersetorial": {
+      "titulo": "5. Articulação Intersetorial (Saúde, Educação e Justiça)",
+      "icone": "book-open",
+      "descricao": "Cruzamento com DATASUS/SINAN, Censo Escolar/INEP e medidas protetivas do Sistema de Justiça.",
+      "links": [
+        {
+          "nome": "DATASUS / SINAN",
+          "descricao": "Notificações de violência interpessoal e autoprovocada por território.",
+          "url": "https://datasus.saude.gov.br/",
+          "orgao": "Ministério da Saúde",
           "restrito": false
         },
         {
-          "nome": "Google Drive - Diagnóstico e Mapas do Território",
-          "descricao": "Pasta de arquivos com mapas e estatísticas de vulnerabilidade dos territórios.",
-          "url": "https://drive.google.com/drive/folders/1rFHycqnatAOGIleBCNcEwgjp4CrxYT13",
-          "orgao": "VSA / SEMPRAS",
+          "nome": "INEP - Censo Escolar",
+          "descricao": "Taxas de evasão e distorção idade-série nos territórios dos CRAS.",
+          "url": "https://www.gov.br/inep/pt-br",
+          "orgao": "MEC / INEP",
           "restrito": false
         }
       ],
       "indicadores": [
-        { "nome": "População Residente (Censo IBGE 2022)", "valor": "244.897 hab.", "periodo": "2022", "fonte": "IBGE" },
-        { "nome": "Estimativa Populacional 2025/2026", "valor": "260.150 hab.", "periodo": "2026", "fonte": "IBGE" },
-        { "nome": "Área Territorial Oficial", "valor": "4.602,7 km²", "periodo": "2024", "fonte": "IBGE" }
+        { "nome": "Notificações de Violência (SINAN)", "valor": "Monitoramento contínuo", "periodo": "2026", "fonte": "SMS / DATASUS" },
+        { "nome": "Articulação com Conselho Tutelar e Justiça", "valor": "120 encaminhamentos", "periodo": "Mensal", "fonte": "CREAS / CRAS" }
       ]
     },
-    "contatos_rede": {
-      "titulo": "2. Endereços, Telefones e E-mails da Rede Intersetorial",
-      "icone": "phone-call",
-      "descricao": "Contatos oficiais atualizados das unidades da Assistência Social, Conselhos, OSCs, Saúde e Educação.",
+    "pmas_resumo": {
+      "titulo": "6. Resumo Visual do PMAS (2026–2029)",
+      "icone": "target",
+      "descricao": "Painel resumido e visual das diretrizes, eixos estratégicos e metas do Plano Municipal de Assistência Social.",
       "links": [
         {
-          "nome": "Planilha Oficial de Contatos da Rede",
-          "descricao": "Acesso direto à planilha online com contatos atualizados da rede socioassistencial e intersetorial.",
+          "nome": "Baixar Documento Completo do PMAS (PDF)",
+          "descricao": "Texto integral aprovado pelo CMAS.",
+          "url": "https://drive.google.com/file/d/1s1s9cW6N_q5bfokcVKc_5fUWIb_3z2Ez/view",
+          "orgao": "SEMPRAS",
+          "restrito": false
+        }
+      ],
+      "indicadores": [
+        { "nome": "Eixo 1 - Universalização da Proteção Básica", "valor": "78% Cumprido", "periodo": "2026-2029", "fonte": "PMAS" },
+        { "nome": "Eixo 2 - Qualificação da Média e Alta Complexidade", "valor": "70% Cumprido", "periodo": "2026-2029", "fonte": "PMAS" },
+        { "nome": "Eixo 3 - Aperfeiçoamento da Gestão, Controle e VSA", "valor": "82% Cumprido", "periodo": "2026-2029", "fonte": "PMAS" }
+      ]
+    },
+    "boletins_notas": {
+      "titulo": "7. Boletins, Notas Técnicas e Publicações",
+      "icone": "file-text",
+      "descricao": "Boletins socioterritoriais, notas orientativas aos CRAS/CREAS e painel de ações no Canva.",
+      "links": [
+        {
+          "nome": "Painel de Ações 2026 (Canva)",
+          "descricao": "Apresentação visual das entregas da Vigilância Socioassistencial.",
+          "url": "https://www.canva.com/",
+          "orgao": "SEMPRAS",
+          "restrito": false
+        }
+      ],
+      "indicadores": [
+        { "nome": "Boletins Socioterritoriais Publicados", "valor": "4 Edições no ano", "periodo": "2026", "fonte": "VSA" },
+        { "nome": "Notas Técnicas Emitidas para a Rede", "valor": "6 Notas Operacionais", "periodo": "2026", "fonte": "VSA / Gestão" }
+      ]
+    },
+    "rede_contatos": {
+      "titulo": "8. Diretório da Rede Intersetorial (Contatos)",
+      "icone": "users",
+      "descricao": "Lista de telefones, e-mails e endereços da Assistência, Conselhos, OSCs, Saúde e Educação.",
+      "links": [
+        {
+          "nome": "Planilha Original no Drive",
+          "descricao": "Base completa de contatos.",
           "url": "https://docs.google.com/spreadsheets/d/1uaWIdy3tGPCER8teCyuJwqmZfInh1Tte/edit#gid=1144368120",
           "orgao": "SEMPRAS",
           "restrito": false
         }
       ],
       "tabelaContatos": [
-        { "unidade": "SEMPRAS - Recepção Principal", "responsavel": "Fabiana Frederico Rizati Perez", "telefone": "(66) 3439-9100", "email": "assistenciasocialroo@gmail.com", "endereco": "Av. Getúlio Vargas, 1439 - Vila Aurora" },
-        { "unidade": "Vigilância Socioassistencial", "responsavel": "Alessandra dos Santos Oliveira Silva", "telefone": "(66) 99664-4164", "email": "monitoramento.suas.rondonopolis@gmail.com", "endereco": "Av. Getúlio Vargas, 729 - Vila Aurora" },
-        { "unidade": "CRAS Alfredo de Castro", "responsavel": "Roberta Gobes de Barros", "telefone": "(66) 3411-5796", "email": "crasalfredodecastro@gmail.com", "endereco": "Rua Projetada s/n - Bairro Alfredo de Castro" },
-        { "unidade": "CRAS Cidade Alta", "responsavel": "Elizabeth Marmo de Souza Resende", "telefone": "(66) 3411-5740 / 99616-1860", "email": "crasiguacu@outlook.com", "endereco": "Av. Jussara, 1700 - Parque Res. Cidade Alta" },
-        { "unidade": "CRAS Ana Carla", "responsavel": "Daiani Rodrigues Neto", "telefone": "(66) 3411-5755 / 99642-6969", "email": "crasanacarla2025@gmail.com", "endereco": "Rua D, s/n - Jardim Ana Carla II" },
-        { "unidade": "CRAS Luz D'Yara", "responsavel": "José da Silva Barros", "telefone": "(66) 3411-4392 / 98412-7167", "email": "crasluzdaiara@gmail.com", "endereco": "Rua Claudemiro Justino Anjos, 99 - Bairro Jardim Modelo" }
+        { "unidade": "SEMPRAS - Gestão Superior", "responsavel": "Fabiana Frederico Rizati Perez", "telefone": "(66) 3439-9100", "email": "assistenciasocialroo@gmail.com", "endereco": "Av. Getúlio Vargas, 1439 - Vila Aurora I" },
+        { "unidade": "Vigilância Socioassistencial", "responsavel": "Alessandra dos Santos Oliveira Silva", "telefone": "(66) 99664-4164", "email": "monitoramento.suas.rondonopolis@gmail.com", "endereco": "Av. Getúlio Vargas, 729 - Vila Aurora I" },
+        { "unidade": "CRAS Alfredo de Castro", "responsavel": "Roberta Gobes de Barros", "telefone": "(66) 3411-5796", "email": "crasalfredodecastro@gmail.com", "endereco": "Rua Projetada s/n - Alfredo de Castro" },
+        { "unidade": "CRAS Ana Carla", "responsavel": "Daiani Rodrigues Neto", "telefone": "(66) 3411-5755", "email": "crasanacarla2025@gmail.com", "endereco": "Rua D, s/n - Jardim Ana Carla II" },
+        { "unidade": "CRAS Conjunto São José", "responsavel": "Monica Gomes Silveiro", "telefone": "(66) 3411-5786", "email": "crasconjunto@gmail.com", "endereco": "Rua F, s/n - Conjunto São José" }
       ]
     },
-    "cadsuas_dash": {
-      "titulo": "3. CadSUAS, Censo SUAS e RegistraSUAS",
-      "icone": "pie-chart",
-      "descricao": "Dashboards de desempenho do IDCRAS/IDCREAS, recursos humanos, estrutura física e serviços da rede.",
+    "dash_idcras": {
+      "titulo": "9. Desempenho CadSUAS e IDCRAS",
+      "icone": "bar-chart-3",
+      "descricao": "Gráfico interativo avaliando a infraestrutura e serviços das unidades de Rondonópolis.",
       "links": [
         {
-          "nome": "Planilha Consolidada do CadSUAS (Excel)",
-          "descricao": "Base de dados com estatísticas de RH, equipamentos e infraestrutura das unidades.",
+          "nome": "Planilha Consolidada CadSUAS",
+          "descricao": "Dados do Censo SUAS.",
           "url": "https://docs.google.com/spreadsheets/d/1W7dkItsOgPb0REDGkdFwIQh5ku3Vr9c6/edit",
-          "orgao": "MDS / VSA",
-          "restrito": false
-        },
-        {
-          "nome": "Manual e Orientações CadSUAS",
-          "descricao": "Orientações operacionais e diretrizes técnicas do CadSUAS.",
-          "url": "https://drive.google.com/drive/folders/1BDErbFHiS_GnIo749vcbp_A_VQw-KI8j",
           "orgao": "MDS",
           "restrito": false
         }
@@ -82,70 +192,6 @@
           { "unidade": "Luz D'Yara", "score": 2.00 }
         ]
       }
-    },
-    "pmas_metas": {
-      "titulo": "4. PMAS 2026–2029 e Acompanhamento de Metas",
-      "icone": "target",
-      "descricao": "Monitoramento do Plano Municipal de Assistência Social: percentual de execução de metas por eixo.",
-      "links": [
-        {
-          "nome": "Documento Oficial do PMAS (PDF)",
-          "descricao": "Texto completo do Plano Municipal de Assistência Social de Rondonópolis.",
-          "url": "https://drive.google.com/file/d/1s1s9cW6N_q5bfokcVKc_5fUWIb_3z2Ez/view",
-          "orgao": "SEMPRAS",
-          "restrito": false
-        },
-        {
-          "nome": "Planilha de Monitoramento de Metas do PMAS",
-          "descricao": "Acompanhamento detalhado das metas e indicadores do plano.",
-          "url": "https://docs.google.com/spreadsheets/d/1fscH1mGpvCAo1NLQ8McYfv-NwcnVdx_p/edit#gid=1357319561",
-          "orgao": "VSA / SEMPRAS",
-          "restrito": false
-        }
-      ],
-      "indicadores": [
-        { "nome": "Metas da Proteção Social Básica executadas", "valor": "78%", "periodo": "2026", "fonte": "PMAS" },
-        { "nome": "Metas da Proteção Social Especial executadas", "valor": "65%", "periodo": "2026", "fonte": "PMAS" },
-        { "nome": "Ações de Gestão do SUAS e Vigilância", "valor": "82%", "periodo": "2026", "fonte": "PMAS" }
-      ]
-    },
-    "rma_analise": {
-      "titulo": "5. Análise do RMA (Registro Mensal de Atendimentos)",
-      "icone": "bar-chart-2",
-      "descricao": "Série histórica e volume comparativo mensal de atendimentos individuais e coletivos nos CRAS, CREAS e Centro POP.",
-      "links": [
-        {
-          "nome": "Pasta do Drive com Análises de RMA",
-          "descricao": "Relatórios mensais de atendimentos coletivos e individuais por unidade.",
-          "url": "https://drive.google.com/drive/folders/1rFHycqnatAOGIleBCNcEwgjp4CrxYT13",
-          "orgao": "VSA / SEMPRAS",
-          "restrito": false
-        }
-      ],
-      "indicadores": [
-        { "nome": "Atendimentos Individuais nos CRAS (Mês Atual)", "valor": "3.840", "periodo": "Mensal", "fonte": "RMA / MDS" },
-        { "nome": "Famílias em Acompanhamento pelo PAIF", "valor": "1.250", "periodo": "Mensal", "fonte": "RMA / MDS" },
-        { "nome": "Atendimentos Especializados no CREAS (PAEFI)", "valor": "410", "periodo": "Mensal", "fonte": "RMA / MDS" }
-      ]
-    },
-    "cadunico_base": {
-      "titulo": "6. Base Analítica do Cadastro Único",
-      "icone": "database",
-      "descricao": "Portal analítico de acompanhamento de famílias cadastradas, extrema pobreza, Bolsa Família e perfil socioeconômico.",
-      "links": [
-        {
-          "nome": "Painel de Análise do Cadastro Único (Google Sites)",
-          "descricao": "Plataforma interativa com indicadores do CadÚnico em Rondonópolis.",
-          "url": "https://sites.google.com/d/1t3RlVnuzcvTOnjJTyobw7NnEANTVZmZ8/p/1S2z-8cISCXaf4QuUj0_z8Wz-c1kOAJqk/edit",
-          "orgao": "Gestão CadÚnico / SEMPRAS",
-          "restrito": false
-        }
-      ],
-      "indicadores": [
-        { "nome": "Total de Famílias no CadÚnico Rondonópolis", "valor": "42.180", "periodo": "2026", "fonte": "CECAD / MDS" },
-        { "nome": "Famílias Beneficiárias do Bolsa Família", "valor": "18.340", "periodo": "2026", "fonte": "MDS" },
-        { "nome": "Famílias em Situação de Extrema Pobreza", "valor": "11.200", "periodo": "2026", "fonte": "CECAD" }
-      ]
     }
   }
 }
