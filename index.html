@@ -440,30 +440,81 @@ percentual(100*x[3]/x[1])
 // ==========================================
 // 5. PROTEÇÃO SOCIAL BÁSICA
 // ==========================================
-function basica(){
-conteudo.innerHTML=
-card("Proteção Social Básica — RMA e Monitoramento",
-indicadores([
-["Unidades CRAS","8"],
-["Serviço de referência","PAIF"],
-["RMA","Monitoramento mensal"],
-["Base territorial","CRAS e famílias"]
-]))+
-card("Monitoramento PAIF / CRAS",
-modulo("RMA — Registro Mensal de Atendimentos",
-"Consolidar mensalmente volume de atendimentos, acompanhamento familiar e atividades.",
-["Famílias em acompanhamento","Novas famílias inseridas","Atendimentos individualizados","Visitas domiciliares","Atendimentos coletivos"])+
-modulo("Busca ativa e diagnóstico territorial",
-"Comparar listas do Cadastro Único, demandas territoriais e registros de atendimento.",
-["Famílias identificadas","Famílias convocadas","Visitas realizadas","Famílias acompanhadas"])+
-modulo("Acompanhamento por Unidade",
-"Analisar produtividade, cobertura do PAIF e necessidades de equipe.")+
-aviso("Os quantitativos mensais de RMA não foram disponibilizados para preenchimento automático."))+
-card("Quadro de Famílias Referenciadas — PMAS 2026",
-tabela(["CRAS","Famílias","IVCAD"],
-cras.slice(0,8).map(x=>[x[0],fmt(x[4]),indice(x[5])])));
-}
 
+// RMA 2026: formulários oficiais por CRAS, janeiro a maio.
+// Campos na sequência: A1, A2, C1, C2, C3, C4, C5, C6, C7, C8, C9, D1.
+const RMA_DADOS = [{"mes":"Jan","cras":"Padre Lothar","v":[245,22,617,22,171,5,0,139,0,6,123,29],"url":"https://drive.google.com/file/d/1ixHZyPYbreg4ZT6oe3gZV7gX-BuHMkS8/view"},{"mes":"Jan","cras":"Sagrada Família","v":[191,20,888,82,287,18,1,107,0,5,124,6],"url":"https://drive.google.com/file/d/12rNP5zt2_nIhj0f1cRQvdXy-IRys6AR0/view"},{"mes":"Jan","cras":"Alfredo de Castro","v":[478,19,725,17,162,19,0,59,0,2,290,0],"url":"https://drive.google.com/file/d/1mJcRZ0v9dm0WPwqxsRvsPmLGitoLIV_U/view"},{"mes":"Jan","cras":"Luz D'Yara","v":[227,34,828,107,353,13,0,234,0,7,86,39],"url":"https://drive.google.com/file/d/1qW4DTZtLTOTQyxpvXbgJrqt5jkTqlT0o/view"},{"mes":"Jan","cras":"Rio Vermelho","v":[567,11,464,39,97,16,0,85,0,2,65,0],"url":"https://drive.google.com/file/d/1ymE8JX28fPMOO93Qjk7Pfp_LVbWluJtZ/view"},{"mes":"Jan","cras":"Ana Carla","v":[746,287,1508,40,282,9,2,153,0,4,331,36],"url":"https://drive.google.com/file/d/1kgw1eHANuoQCoEeLhQM5sfHcWYyHyS6B/view"},{"mes":"Jan","cras":"Cidade Alta","v":[44,5,577,6,29,0,0,121,0,5,100,0],"url":"https://drive.google.com/file/d/1gTOydHwLu8jsV7ZDq1waoEdyBv8vfWDl/view"},{"mes":"Jan","cras":"Conjunto São José","v":[541,6,1079,92,440,3,0,148,0,3,148,0],"url":"https://drive.google.com/file/d/1zQ4Yu30ik3Ify-v8K-UsxKolu3aCD-UE/view"},{"mes":"Fev","cras":"Padre Lothar","v":[255,10,462,42,187,4,0,86,0,5,57,17],"url":"https://drive.google.com/file/d/175z3UrllvXlq93cjKo1c4RuoqvL_40fl/view"},{"mes":"Fev","cras":"Sagrada Família","v":[195,5,627,130,162,26,0,114,0,8,11,8],"url":"https://drive.google.com/file/d/1A4-0k_KbPqZ1MBFFFIr-Iq_VANgxt7b3/view"},{"mes":"Fev","cras":"Alfredo de Castro","v":[478,17,498,101,10,21,0,120,0,0,207,103],"url":"https://drive.google.com/file/d/1cOM6ExmFTAfzVZmrVkvMJiRHwLvwLQj_/view"},{"mes":"Fev","cras":"Luz D'Yara","v":[241,22,1060,52,258,14,0,126,0,6,59,12],"url":"https://drive.google.com/file/d/1WZmOE2CtUmEWGS0WPbHKhTdz5VsUDTBS/view"},{"mes":"Fev","cras":"Rio Vermelho","v":[573,6,653,26,156,22,0,45,0,5,91,0],"url":"https://drive.google.com/file/d/1Nd2ho1ZCzMQ-O967tfCvP9A_8nPy5cMu/view"},{"mes":"Fev","cras":"Ana Carla","v":[688,487,1410,38,169,10,2,199,0,6,9,65],"url":"https://drive.google.com/file/d/17mK-DDn-fNhuvmjppmxuWN_oB4PsuDm9/view"},{"mes":"Fev","cras":"Cidade Alta","v":[39,3,506,16,33,4,0,87,0,2,100,13],"url":"https://drive.google.com/file/d/1LJDqIGBJnZKt2tXSmOVYOxKIc3cyzIhW/view"},{"mes":"Fev","cras":"Conjunto São José","v":[548,9,840,47,291,27,0,122,0,12,82,44],"url":"https://drive.google.com/file/d/1Hvia_qIv991bL-hwxeJxd-apOHyIOSOc/view"},{"mes":"Mar","cras":"Padre Lothar","v":[271,36,910,55,214,11,2,119,0,7,196,63],"url":"https://drive.google.com/file/d/1mAmm70itI75XAbCoNmAKuUNKs16THmd6/view"},{"mes":"Mar","cras":"Sagrada Família","v":[224,28,1345,106,255,27,1,336,0,4,196,0],"url":"https://drive.google.com/file/d/1JMULRjnDU7_rWcw7B0NNPQ_wyBR_vdkO/view"},{"mes":"Mar","cras":"Alfredo de Castro","v":[495,4,886,39,217,8,0,68,0,1,436,0],"url":"https://drive.google.com/file/d/1vSywpfKooh2zleTIF8f6sSgb0b2tFFlP/view"},{"mes":"Mar","cras":"Luz D'Yara","v":[264,24,1277,90,245,16,1,156,0,4,235,17],"url":"https://drive.google.com/file/d/1iGzeC6d5zmh86xlEtE7W5JdiDD2-9uGi/view"},{"mes":"Mar","cras":"Rio Vermelho","v":[575,3,800,76,184,23,0,173,0,13,214,0],"url":"https://drive.google.com/file/d/1pCu57X4w6JkRxGcPmWSEsWXUs6nbDNnz/view"},{"mes":"Mar","cras":"Ana Carla","v":[688,26,1285,43,271,47,1,97,0,14,333,50],"url":"https://drive.google.com/file/d/1SK3--dOOf7Z-LZjRQ5GncTDTQzoD3Prl/view"},{"mes":"Mar","cras":"Cidade Alta","v":[48,12,422,19,31,10,0,64,0,5,135,39],"url":"https://drive.google.com/file/d/1OKJbO3nXf5fUhDpA26JWH8ZjUVbJPOu-/view"},{"mes":"Mar","cras":"Conjunto São José","v":[545,24,1994,72,441,85,1,347,0,15,233,59],"url":"https://drive.google.com/file/d/1p7pAXdgr-3Zr5Kv6466-0P2_NsvSqR-d/view"},{"mes":"Abr","cras":"Padre Lothar","v":[279,13,800,34,134,9,2,121,4,7,84,20],"url":"https://drive.google.com/file/d/1D6EEkf3IRAn_iuQ0LgrSTN6FYdO4aatG/view"},{"mes":"Abr","cras":"Sagrada Família","v":[252,6,445,50,150,10,1,142,1,5,68,0],"url":"https://drive.google.com/file/d/1xA30ubHUYBuhjGkpL-NMI_8jWQXr7Lze/view"},{"mes":"Abr","cras":"Alfredo de Castro","v":[493,2,756,40,200,0,0,107,0,0,203,0],"url":"https://drive.google.com/file/d/1zNMdZvUR4kWeLQNn-JlZ6DWhrhGUejKH/view"},{"mes":"Abr","cras":"Luz D'Yara","v":[281,26,900,76,176,8,0,144,1,6,100,35],"url":"https://drive.google.com/file/d/1WMHe7LzRwHaikElYheFSzGto2KOITyof/view"},{"mes":"Abr","cras":"Rio Vermelho","v":[589,22,762,34,190,17,0,145,5,5,136,0],"url":"https://drive.google.com/file/d/1l0-b7nkwgA07o-J6yUOJSQ466cf5k6Oh/view"},{"mes":"Abr","cras":"Ana Carla","v":[688,58,1278,55,273,14,0,245,12,2,233,97],"url":"https://drive.google.com/file/d/1lxlZFev-krykw25wMfeRzjlXhfapgzD_/view"},{"mes":"Abr","cras":"Cidade Alta","v":[49,11,859,72,225,9,1,158,0,7,113,22],"url":"https://drive.google.com/file/d/10mJNsd_baj0Elm8YEHKjycRXK0Ymuwg8/view"},{"mes":"Abr","cras":"Conjunto São José","v":[555,16,1344,70,280,26,0,227,4,10,143,34],"url":"https://drive.google.com/file/d/1qbzvGl_4XkP6eyN6-RubwqaljBvlklFY/view"},{"mes":"Mai","cras":"Padre Lothar","v":[310,39,848,35,138,8,1,144,1,5,162,80],"url":"https://drive.google.com/file/d/1nYRpR6ORf0sbHJafFelXH5Z4i27_wiiO/view"},{"mes":"Mai","cras":"Sagrada Família","v":[252,7,527,1,12,2,1,137,3,3,171,0],"url":"https://drive.google.com/file/d/16Lzewjow2ubDJybgpVP6e6L1dgdiZ0p9/view"},{"mes":"Mai","cras":"Alfredo de Castro","v":[508,15,1308,29,162,15,0,105,15,2,380,71],"url":"https://drive.google.com/file/d/1SNZbuh0QzVJaRXQ-srJae1UsmDPxLc1t/view"},{"mes":"Mai","cras":"Luz D'Yara","v":[274,9,935,43,167,5,0,168,1,2,118,18],"url":"https://drive.google.com/file/d/1iqpWoVTIb2p7F1u56Ma1S4Z9YopLkOlo/view"},{"mes":"Mai","cras":"Rio Vermelho","v":[573,4,679,52,205,8,0,67,8,10,111,0],"url":"https://drive.google.com/file/d/12Iw5Ny80Qzm_i3MXiz_omTIYbFezsKt5/view"},{"mes":"Mai","cras":"Ana Carla","v":[688,27,1253,55,261,66,0,214,11,10,345,127],"url":"https://drive.google.com/file/d/1fYMrRKG2hec36LsZGt3p-yBJBcoC2Uh9/view"},{"mes":"Mai","cras":"Cidade Alta","v":[56,17,1028,98,264,10,1,117,3,5,91,35],"url":"https://drive.google.com/file/d/1NIjdV1TbwCbO9O_6CwnA95ImGLv3glbH/view"},{"mes":"Mai","cras":"Conjunto São José","v":[540,13,1534,60,278,29,0,255,7,8,179,54],"url":"https://drive.google.com/file/d/1LwOE2xnnTeaQ7R1Q9Mp4QC0ZtCSr_nDA/view"}];
+const RMA_MESES=['Jan','Fev','Mar','Abr','Mai'];
+const RMA_CRAS=["Padre Lothar", "Sagrada Família", "Alfredo de Castro", "Luz D'Yara", "Rio Vermelho", "Ana Carla", "Cidade Alta", "Conjunto São José"];
+const RMA_CAMPOS={
+ 0:['A.1','Famílias em acompanhamento PAIF (estoque mensal)'],
+ 1:['A.2','Novas famílias em acompanhamento PAIF'],
+ 2:['C.1','Atendimentos particularizados'],
+ 3:['C.2','Encaminhamentos à inclusão no CadÚnico'],
+ 4:['C.3','Encaminhamentos à atualização do CadÚnico'],
+ 5:['C.4','Encaminhamentos ao BPC'],
+ 6:['C.5','Encaminhamentos ao CREAS'],
+ 7:['C.6','Visitas domiciliares'],
+ 8:['C.7','Auxílios-natalidade'],
+ 9:['C.8','Auxílios-funeral'],
+ 10:['C.9','Outros benefícios eventuais'],
+ 11:['D.1','Famílias participando regularmente de grupos PAIF']
+};
+let RMA_CHARTS=[];
+function rmaDestruir(){RMA_CHARTS.forEach(x=>{try{x.destroy()}catch(e){}});RMA_CHARTS=[]}
+function basica(){
+ rmaDestruir();
+ conteudo.innerHTML=card('RMA — Análise da Proteção Social Básica | CRAS — 2026',
+ `<p>Dados extraídos dos formulários do <b>Registro Mensal de Atendimentos (SNAS)</b>, para os oito CRAS de Rondonópolis, entre janeiro e maio de 2026. Indicadores por competência, com comparação entre unidades, evolução mensal e acesso aos documentos originais.</p>
+ <div class="controles"><label>Mês <select id="rmaMes"><option value="Todos">Janeiro a maio</option>${RMA_MESES.map(x=>`<option value="${x}">${x}/2026</option>`).join('')}</select></label>
+ <label>CRAS <select id="rmaCras"><option value="Todos">Todos os CRAS</option>${RMA_CRAS.map(x=>`<option>${x}</option>`).join('')}</select></label>
+ <label>Indicador <select id="rmaIndicador">${Object.entries(RMA_CAMPOS).map(([i,v])=>`<option value="${i}" ${i==='2'?'selected':''}>${v[0]} — ${v[1]}</option>`).join('')}</select></label></div>
+ <div id="rmaKpis" class="cards"></div>
+ <div id="rmaLeitura" class="aviso"></div>`)+
+ card('Evolução mensal do RMA 2026',`<div class="grafico"><canvas id="rmaSerie"></canvas></div>`)+
+ card('Comparação entre os CRAS',`<div class="grafico"><canvas id="rmaBarras"></canvas></div>`)+
+ card('Detalhamento por unidade e competência',`<div class="tabela"><table><thead><tr><th>Mês</th><th>CRAS</th><th>A.1 PAIF</th><th>A.2 Novas</th><th>C.1 Atendimentos</th><th>C.3 Atualização CadÚnico</th><th>C.6 Visitas</th><th>D.1 Grupos PAIF</th><th>Fonte</th></tr></thead><tbody id="rmaTabela"></tbody></table></div>`)+
+ card('Metodologia e análise técnica',
+ `<div class="aviso"><b>Cuidados de interpretação:</b> A.1 representa um estoque mensal de famílias em acompanhamento e não deve ser somado para obter famílias distintas no período. A.2 e C.1 são fluxos por competência; somam-se para atividade acumulada, mas não devem ser interpretados automaticamente como pessoas ou famílias únicas. Os perfis B.1 a B.6 podem se sobrepor.</div>
+ <p><b>Pontos para conferência técnica:</b> há variações elevadas nas novas famílias do CRAS Ana Carla em janeiro e fevereiro e redução nos encaminhamentos para atualização do CadÚnico no CRAS Sagrada Família em maio. Esses valores constam dos formulários e devem ser conferidos antes de inferir mudança na demanda.</p>
+ <p><b>Limite temporal:</b> consolidação de janeiro a maio/2026; períodos posteriores e arquivos de 2025 não estão incluídos nesta análise. Os registros não se atualizam automaticamente com alterações posteriores no Drive.</p>
+ <p><a target="_blank" rel="noopener noreferrer" href="https://drive.google.com/drive/folders/1rFHycqnatAOGIleBCNcEwgjp4CrxYT13?usp=drive_link">Abrir pasta oficial dos documentos RMA no Google Drive</a></p>`);
+ ['rmaMes','rmaCras','rmaIndicador'].forEach(id=>document.getElementById(id).addEventListener('change',rmaAtualizar));
+ rmaAtualizar();
+}
+function rmaAtualizar(){
+ const mes=document.getElementById('rmaMes').value;
+ const cras=document.getElementById('rmaCras').value;
+ const k=Number(document.getElementById('rmaIndicador').value);
+ const sel=RMA_DADOS.filter(r=>(mes==='Todos'||mes===r.mes)&&(cras==='Todos'||cras===r.cras));
+ const somar=(a,ind)=>a.reduce((n,r)=>n+r.v[ind],0);
+ const unicos=sel.length;
+ const total=somar(sel,k);
+ const totalAtend=somar(sel,2),totalVis=somar(sel,7),totalNovas=somar(sel,1);
+ const ult=RMA_MESES.filter(m=>sel.some(r=>r.mes===m)).at(-1);
+ const estoque=ult?somar(sel.filter(r=>r.mes===ult),0):0;
+ document.getElementById('rmaKpis').innerHTML=indicadores([
+ ['Registros CRAS/mês',fmt(unicos)],
+ ['C.1 — Atendimentos no recorte',fmt(totalAtend)],
+ ['C.6 — Visitas realizadas',fmt(totalVis)],
+ ['A.2 — Novas famílias no PAIF',fmt(totalNovas)],
+ ['A.1 — Em acompanhamento no último mês selecionado',fmt(estoque)],
+ [RMA_CAMPOS[k][0]+' — Indicador selecionado',fmt(k===0?estoque:total)]
+ ]);
+ const valores=sel.map(r=>r.v[k]);
+ const min=valores.length?Math.min(...valores):0,max=valores.length?Math.max(...valores):0;
+ document.getElementById('rmaLeitura').textContent=`Leitura: ${RMA_CAMPOS[k][1]}. ${unicos} formulários selecionados. Intervalo observado por CRAS e mês: ${fmt(min)} a ${fmt(max)}. ${k===0?'No indicador A.1, o cartão e a comparação usam o último mês selecionado; o gráfico de série mostra cada estoque mensal.':'Para indicadores de fluxo, os totais representam a soma dos registros no recorte.'}`;
+ const meses=mes==='Todos'?RMA_MESES:[mes];
+ const linhas=meses.map(m=>sel.filter(r=>r.mes===m));
+ const serie=linhas.map(lista=>somar(lista,k));
+ const comparar=RMA_CRAS.filter(n=>cras==='Todos'||n===cras).map(n=>({nome:n,valor:k===0?somar(sel.filter(r=>r.cras===n&&r.mes===ult),k):somar(sel.filter(r=>r.cras===n),k)}));
+ rmaDestruir();
+ if(typeof Chart!=='undefined'){
+ RMA_CHARTS.push(new Chart(document.getElementById('rmaSerie'),{type:'line',data:{labels:meses.map(m=>m+'/2026'),datasets:[{label:RMA_CAMPOS[k][1],data:serie,borderColor:'#1d4ed8',backgroundColor:'rgba(37,99,235,.12)',fill:true,tension:.2}]},options:{responsive:true,maintainAspectRatio:false}}));
+ RMA_CHARTS.push(new Chart(document.getElementById('rmaBarras'),{type:'bar',data:{labels:comparar.map(x=>x.nome),datasets:[{label:RMA_CAMPOS[k][1],data:comparar.map(x=>x.valor),backgroundColor:'#0e7490'}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',scales:{x:{beginAtZero:true}}}}));
+ }
+ document.getElementById('rmaTabela').innerHTML=sel.map(r=>`<tr><td>${r.mes}/2026</td><td>${r.cras}</td><td>${fmt(r.v[0])}</td><td>${fmt(r.v[1])}</td><td>${fmt(r.v[2])}</td><td>${fmt(r.v[4])}</td><td>${fmt(r.v[7])}</td><td>${fmt(r.v[11])}</td><td><a target="_blank" rel="noopener noreferrer" href="${r.url}">Formulário</a></td></tr>`).join('');
+}
 // ==========================================
 // 6. PROTEÇÃO SOCIAL ESPECIAL
 // ==========================================
@@ -855,7 +906,7 @@ municipio=function(){
 
 // Evita acumulacão de gráficos ao trocar de aba
 const abrirAnterior=abrir;
-abrir=function(id){vsaClear();abrirAnterior(id)};
+abrir=function(id){vsaClear();rmaDestruir();abrirAnterior(id)};
 
 abrir("municipio");
 </script>
