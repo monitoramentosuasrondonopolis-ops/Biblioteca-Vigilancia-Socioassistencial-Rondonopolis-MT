@@ -3,234 +3,190 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Biblioteca e Painel VSA | Rondonópolis-MT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel da Vigilância Socioassistencial | Rondonópolis</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-:root{--azul:#173b75;--azul2:#2563eb;--fundo:#f1f5f9;--texto:#243247;--borda:#dbe3ee}
+:root{
+ --azul:#123c71;
+ --destaque:#2463bb;
+ --fundo:#f1f5fa;
+ --borda:#dbe4ee;
+ --texto:#26364a;
+}
 *{box-sizing:border-box}
 body{margin:0;background:var(--fundo);font-family:Arial,sans-serif;color:var(--texto)}
-header{background:linear-gradient(120deg,#102c59,#2254a0);padding:30px 5%;color:white}
+header{background:linear-gradient(120deg,#102d55,#2363ae);color:white;padding:30px 5%}
 header h1{margin:10px 0;font-size:27px}
 header p{color:#dbeafe}
-main{max-width:1300px;margin:auto;padding:22px}
-nav{display:flex;gap:9px;overflow-x:auto;padding:13px 0}
-nav button,.botao{border:0;border-radius:9px;padding:13px 17px;background:white;color:var(--azul);cursor:pointer;font-weight:bold;white-space:nowrap}
+main{max-width:1400px;margin:auto;padding:20px}
+nav{display:flex;gap:8px;overflow-x:auto;padding:15px 0}
+nav button{border:1px solid var(--borda);background:white;color:var(--azul);padding:13px;border-radius:9px;font-weight:bold;cursor:pointer;white-space:nowrap}
 nav button.ativo{background:var(--azul);color:white}
-.aba{display:none}.aba.ativa{display:block}
-.card{background:white;border:1px solid var(--borda);border-radius:14px;padding:20px;margin:15px 0;box-shadow:0 2px 7px #1e293b0a}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
-.kpi{background:#eff6ff;padding:19px;border-radius:12px;border:1px solid #dbeafe}
-.kpi small{display:block;color:#475569;line-height:1.5}
-.kpi strong{display:block;color:#1d4ed8;font-size:27px;margin-top:7px}
-h2{color:var(--azul)}h3{color:#254c80}
-.controles{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
-input,select{padding:12px;border:1px solid #cbd5e1;border-radius:8px;background:white;max-width:100%;flex:1;min-width:180px}
-.grafico{height:400px;position:relative}
-.tabela{overflow-x:auto}
+.aba{display:none}
+.aba.ativa{display:block}
+.card{background:white;border:1px solid var(--borda);padding:22px;border-radius:14px;margin-bottom:17px;box-shadow:0 2px 8px #172c4510}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.kpi{background:#edf5ff;border:1px solid #d9eaff;padding:19px;border-radius:12px}
+.kpi small{display:block;color:#52657e}
+.kpi strong{display:block;font-size:27px;color:#1855a5;margin-top:8px}
+h2,h3{color:var(--azul)}
+.controles{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}
+input,select,textarea{padding:12px;border:1px solid #cad6e5;border-radius:8px;background:white;max-width:100%}
+input,select{flex:1;min-width:180px}
+button.acao{background:#1855a5;color:white;padding:11px 15px;border:0;border-radius:8px;cursor:pointer}
+.grafico{height:380px;position:relative}
+.tabela{overflow-x:auto;max-height:560px}
 table{border-collapse:collapse;width:100%;font-size:13px}
-th{background:#e8eef8;text-align:left;padding:11px;white-space:nowrap}
-td{border-bottom:1px solid #e2e8f0;padding:10px}
-tr:hover td{background:#f8fafc}
-a{color:#1d4ed8}
+th{background:#e7eef8;text-align:left;padding:11px;position:sticky;top:0}
+td{padding:10px;border-bottom:1px solid #e2e8f0}
+tr:hover td{background:#f8fbff}
+.aviso{background:#fffae8;border-left:4px solid #e8a82d;padding:14px;margin:15px 0;line-height:1.6}
 .links{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-.link{border:1px solid #dbe3ee;padding:16px;border-radius:10px;text-decoration:none;background:#f8fbff;font-weight:bold}
-.nota{background:#fffbeb;border-left:4px solid #f59e0b;padding:13px;line-height:1.6;font-size:13px}
-.verde{background:#dcfce7;padding:5px;border-radius:6px}
-.amarelo{background:#fef3c7;padding:5px;border-radius:6px}
-.vermelho{background:#fee2e2;padding:5px;border-radius:6px}
-footer{background:#1e293b;color:white;text-align:center;padding:25px;margin-top:25px}
-@media(max-width:600px){header h1{font-size:21px}main{padding:10px}.grafico{height:330px}}
+.links a{display:block;padding:18px;background:#eff6ff;border-radius:10px;color:#1855a5;text-decoration:none;font-weight:bold}
+details{border:1px solid var(--borda);padding:14px;border-radius:9px;margin:10px 0}
+summary{cursor:pointer;font-weight:bold;color:var(--azul)}
+footer{text-align:center;background:#172e4b;color:white;padding:25px}
+@media(max-width:600px){header h1{font-size:22px}.grafico{height:320px}main{padding:10px}}
 </style>
 </head>
-<body>
 
+<body>
 <header>
-<small>SEMPRAS • RONDONÓPOLIS-MT</small>
+<small>SEMPRAS | RONDONÓPOLIS - MT</small>
 <h1>Biblioteca e Painel da Vigilância Socioassistencial</h1>
-<p>Cadastro Único • Rede SUAS • IVCAD • Bolsa Família • PMAS • Diagnóstico Territorial</p>
-<small>Atualização documental: Outubro de 2026</small>
+<p>Diagnóstico Socioterritorial • Monitoramento • Gestão da Informação • PMAS 2026–2029</p>
+<small>Base documental consolidada até outubro de 2026</small>
 </header>
 
 <main>
-<nav id="menu">
-<button class="ativo" onclick="abrir('panorama',this)">Panorama IBGE e Rede SUAS</button>
-<button onclick="abrir('cadastro',this)">Cadastro Único e RI Social</button>
-<button onclick="abrir('territorial',this)">IVCAD e PMAS</button>
-<button onclick="abrir('bairros',this)">Ranking por Bairros</button>
-<button onclick="abrir('fontes',this)">Fontes Oficiais</button>
-</nav>
-
-<section id="panorama" class="aba ativa">
-<div class="card">
-<h2>Panorama de Rondonópolis</h2>
-<p>Informações demográficas e estrutura da proteção social do município.</p>
-<div class="cards">
-<div class="kpi"><small>Estimativa populacional IBGE 2026</small><strong>268.202</strong></div>
-<div class="kpi"><small>CRAS ativos</small><strong>8</strong></div>
-<div class="kpi"><small>Famílias no CadÚnico — set/2026</small><strong>50.941</strong></div>
-<div class="kpi"><small>Pessoas no CadÚnico — set/2026</small><strong>114.463</strong></div>
-</div>
-</div>
-<div class="card">
-<h3>Rede Socioassistencial</h3>
-<div id="lista-rede"></div>
-<p class="nota">O CRAS Central foi reordenado em 2026. Cidade Alta/Jardim Iguaçu e Sagrada Família/CEU são identificações territoriais associadas às respectivas unidades.</p>
-<a href="https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama" target="_blank" rel="noopener">Consultar panorama oficial do IBGE</a>
-</div>
-</section>
-
-<section id="cadastro" class="aba">
-<div class="card">
-<h2>Cadastro Único — Painel Municipal</h2>
-<p>Última referência documental utilizada: setembro de 2026.</p>
-<div class="cards">
-<div class="kpi"><small>Famílias cadastradas</small><strong>50.941</strong></div>
-<div class="kpi"><small>Pessoas cadastradas</small><strong>114.463</strong></div>
-<div class="kpi"><small>Famílias em pobreza</small><strong>9.534</strong></div>
-<div class="kpi"><small>Famílias em baixa renda</small><strong>12.973</strong></div>
-<div class="kpi"><small>Famílias acima de ½ salário mínimo per capita</small><strong>28.434</strong></div>
-<div class="kpi"><small>Percentual de famílias em pobreza</small><strong>18,72%</strong></div>
-</div>
-</div>
-<div class="card">
-<h3>Evolução do Cadastro Único — 2024 a 2026</h3>
-<div class="grafico"><canvas id="grafico-evolucao"></canvas></div>
-</div>
-<div class="card">
-<h3>Famílias por faixa de renda</h3>
-<div class="grafico"><canvas id="grafico-renda"></canvas></div>
-</div>
-<div class="card">
-<h3>Série histórica consolidada</h3>
-<div class="tabela"><table id="tabela-historica"></table></div>
-</div>
-<div class="card">
-<h3>Análise da Vigilância Socioassistencial</h3>
-<p>Entre setembro de 2025 e setembro de 2026, houve crescimento de aproximadamente 2,48% no número de famílias cadastradas, passando de 49.707 para 50.941.</p>
-<p>No mesmo período, as famílias na faixa de pobreza passaram de 9.693 para 9.534, redução de aproximadamente 1,64%. Essa variação deve ser interpretada considerando atualização cadastral, mudanças de renda declarada, ingresso e saída de famílias e eventuais alterações metodológicas.</p>
-<p>A quantidade de famílias cadastradas não equivale ao total de famílias vulneráveis existentes fora do Cadastro Único.</p>
-</div>
-</section>
-
-<section id="territorial" class="aba">
-<div class="card">
-<h2>IVCAD — Diagnóstico Territorial por CRAS</h2>
-<p>Comparativo PMAS 2025 e 2026, com prioridade informada no quadro técnico.</p>
-<div class="cards">
-<div class="kpi"><small>Famílias referenciadas PMAS 2025</small><strong>49.273</strong></div>
-<div class="kpi"><small>Famílias referenciadas PMAS 2026</small><strong>50.604</strong></div>
-<div class="kpi"><small>IVCAD médio informado 2025</small><strong>0,258</strong></div>
-<div class="kpi"><small>IVCAD médio informado 2026</small><strong>0,252</strong></div>
-</div>
-<p class="nota">Os totais do PMAS são de uma base territorial distinta dos totais mensais do RI Social. O IVCAD médio de 0,252 foi mantido conforme o quadro enviado; a média simples dos nove índices listados é aproximadamente 0,251. Recomenda-se conferir a metodologia e o arredondamento.</p>
-</div>
-<div class="card">
-<h3>Comparação dos índices de vulnerabilidade</h3>
-<div class="grafico"><canvas id="grafico-ivcad"></canvas></div>
-</div>
-<div class="card">
-<h3>Famílias referenciadas por unidade</h3>
-<div class="grafico"><canvas id="grafico-cras"></canvas></div>
-</div>
-<div class="card">
-<h3>Tabela territorial e prioridades</h3>
-<div class="tabela"><table id="tabela-territorial"></table></div>
-</div>
-<div class="card">
-<h3>Bolsa Família e Benefícios Eventuais — PMAS 2025</h3>
-<div class="cards">
-<div class="kpi"><small>Famílias beneficiárias (total informado)</small><strong>10.972</strong></div>
-<div class="kpi"><small>Benefícios eventuais concedidos</small><strong>10.963</strong></div>
-</div>
-<div class="tabela"><table id="tabela-beneficios"></table></div>
-<p class="nota">Os valores por CRAS de 2026 não foram apresentados no quadro enviado. Não foram estimados. Benefícios eventuais concedidos representam concessões, não necessariamente famílias distintas.</p>
-</div>
-<div class="card">
-<h3>Dimensões do IVCAD</h3>
-<div id="legenda-ivcad"></div>
-</div>
-</section>
-
-<section id="bairros" class="aba">
-<div class="card">
-<h2>Ranking de Bairros — Cadastro Único</h2>
-<p>Rondonópolis/MT • Referência: junho de 2026</p>
-<div class="cards">
-<div class="kpi"><small>Famílias no Cadastro Único</small><strong>50.514</strong></div>
-<div class="kpi"><small>Pessoas cadastradas</small><strong>113.524</strong></div>
-<div class="kpi"><small>Famílias em pobreza</small><strong>9.427</strong></div>
-</div>
-<p class="nota">Este ranking apresenta as 50 primeiras localidades da extração consolidada, sem unificação de grafias semelhantes. O número de famílias corresponde à contagem distinta de famílias, não à contagem de pessoas. Os demais bairros do CSV original não estão incorporados nesta versão de código.</p>
-<div class="controles">
-<input id="pesquisa-bairro" placeholder="Pesquisar bairro ou localidade..." oninput="ranking()">
-<select id="ordenacao-bairro" onchange="ranking()">
-<option value="1">Mais famílias cadastradas</option>
-<option value="2">Mais pessoas cadastradas</option>
-<option value="3">Mais famílias em pobreza</option>
-<option value="4">Maior percentual em pobreza (mín. 30 famílias)</option>
-</select>
-</div>
-<div class="grafico"><canvas id="grafico-bairros"></canvas></div>
-<h3>Ranking pesquisável</h3>
-<div class="tabela"><table id="tabela-bairros"></table></div>
-<p id="total-bairros"></p>
-</div>
-<div class="card">
-<h3>Como interpretar o ranking</h3>
-<p><b>Concentração cadastral:</b> um bairro com muitas famílias cadastradas pode demandar maior capacidade de atendimento, mas isso não significa necessariamente maior intensidade de vulnerabilidade.</p>
-<p><b>Pobreza:</b> a quantidade de famílias em pobreza pode orientar ações de busca ativa, acompanhamento pelo PAIF e articulação com o Programa Bolsa Família.</p>
-<p><b>IVCAD:</b> para classificar efetivamente a vulnerabilidade por bairro, é necessária base territorializada do índice. Não se deve atribuir automaticamente o IVCAD médio de um CRAS a todos os bairros de sua abrangência.</p>
-</div>
-</section>
-
-<section id="fontes" class="aba">
-<div class="card">
-<h2>Fontes Oficiais e Plataformas</h2>
-<div class="links">
-<a class="link" href="https://cadunico.dataprev.gov.br/" target="_blank" rel="noopener">Portal do Cadastro Único</a>
-<a class="link" href="https://aplicacoes.cidadania.gov.br/ri/ri/" target="_blank" rel="noopener">RI Social — Relatórios</a>
-<a class="link" href="https://cecad.cidadania.gov.br/" target="_blank" rel="noopener">CECAD — Consulta de Dados</a>
-<a class="link" href="https://aplicacoes.cidadania.gov.br/vis/data3/" target="_blank" rel="noopener">VIS DATA — Séries Históricas</a>
-<a class="link" href="https://observatoriocadunico.mds.gov.br/" target="_blank" rel="noopener">Observatório do Cadastro Único</a>
-<a class="link" href="https://www.gov.br/mds/" target="_blank" rel="noopener">Ministério do Desenvolvimento Social</a>
-<a class="link" href="https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama" target="_blank" rel="noopener">IBGE Cidades — Rondonópolis</a>
-</div>
-<p class="nota">Os endereços são atalhos de consulta e podem ser alterados pelos órgãos responsáveis. O RI Social foi relatado como em manutenção; isso não significa que esteja permanentemente indisponível. Acesse a plataforma para verificar seu estado atual.</p>
-</div>
-<div class="card">
-<h3>Notas metodológicas</h3>
-<p>Dados de 2024, 2025 e 2026 provenientes dos relatórios de informações apresentados. O ranking territorial utiliza consolidação da base de junho de 2026. Os quadros de IVCAD e famílias referenciadas seguem a referência PMAS informada no material enviado.</p>
-<p>Não são disponibilizados dados nominais, CPF, NIS ou identificadores familiares neste painel público.</p>
-</div>
-</section>
+<nav id="menu"></nav>
+<div id="conteudo"></div>
 </main>
 
 <footer>
 Prefeitura Municipal de Rondonópolis — SEMPRAS
-<p>Vigilância Socioassistencial • Painel técnico de indicadores</p>
+<p>Vigilância Socioassistencial | Painel de Apoio à Gestão</p>
 </footer>
 
 <script>
 "use strict";
 
-const fmt=n=>Number(n).toLocaleString("pt-BR");
-const dec=n=>Number(n).toFixed(3).replace(".",",");
-const porcento=n=>Number(n).toFixed(1).replace(".",",")+"%";
+// ==========================================
+// CONFIGURAÇÕES GERAIS
+// ==========================================
+const formato = n => Number(n).toLocaleString("pt-BR");
+const indice = n => Number(n).toFixed(3).replace(".",",");
+const percentual = n => Number(n).toFixed(1).replace(".",",")+"%";
 
-const rede=[
-"CRAS Ana Carla","CRAS Alfredo de Castro",
-"CRAS Cidade Alta / Jardim Iguaçu",
-"CRAS Conjunto São José","CRAS Luz D'Yara",
-"CRAS Padre Lothar","CRAS Rio Vermelho",
-"CRAS Sagrada Família / CEU",
-"CREAS","Centro POP","CRAI",
-"Serviços de Convivência e Fortalecimento de Vínculos",
-"Unidades de Acolhimento","Posto do Cadastro Único"
+const abas=[
+["municipio","Município, Território e IBGE"],
+["rede","Rede SUAS, CadSUAS e Contatos"],
+["mulher","Superintendência da Mulher"],
+["cadunico","Cadastro Único, RI Social e IVCAD"],
+["basica","Proteção Social Básica — RMA"],
+["especial","Proteção Social Especial"],
+["sisc","SISC, SCFV e Condicionalidades"],
+["cmas","CMAS — Conselho Municipal"],
+["fmas","FMAS e Orçamento"],
+["articulacao","Articulação Intersetorial"],
+["pmas","Resumo Visual PMAS 2026–2029"],
+["boletins","Boletins, Notas Técnicas e Ações 2026"]
 ];
-document.getElementById("lista-rede").innerHTML=
-"<div class='cards'>"+rede.map(x=>"<div class='kpi'>"+x+"</div>").join("")+"</div>";
 
+const menu=document.getElementById("menu");
+const conteudo=document.getElementById("conteudo");
+let graficoAtivo=null;
+let abaAtual="municipio";
+
+abas.forEach(([id,nome],i)=>{
+const botao=document.createElement("button");
+botao.textContent=(i+1)+". "+nome;
+botao.onclick=()=>abrir(id);
+botao.dataset.aba=id;
+menu.appendChild(botao);
+});
+
+function abrir(id){
+abaAtual=id;
+document.querySelectorAll("#menu button").forEach(b=>
+ b.classList.toggle("ativo",b.dataset.aba===id)
+);
+if(graficoAtivo){graficoAtivo.destroy();graficoAtivo=null;}
+const funcoes={
+ municipio:municipio,
+ rede:rede,
+ mulher:mulher,
+ cadunico:cadunico,
+ basica:basica,
+ especial:especial,
+ sisc:sisc,
+ cmas:cmas,
+ fmas:fmas,
+ articulacao:articulacao,
+ pmas:pmas,
+ boletins:boletins
+};
+funcoes[id]();
+}
+
+function card(titulo,corpo){
+return `<div class="card"><h2>${titulo}</h2>${corpo}</div>`;
+}
+
+function indicadores(itens){
+return `<div class="cards">${itens.map(x=>
+ `<div class="kpi"><small>${x[0]}</small><strong>${x[1]}</strong></div>`
+).join("")}</div>`;
+}
+
+function tabela(titulos,linhas){
+return `<div class="tabela"><table><thead><tr>${
+titulos.map(x=>`<th>${x}</th>`).join("")
+}</tr></thead><tbody>${
+linhas.map(l=>`<tr>${l.map(x=>`<td>${x}</td>`).join("")}</tr>`).join("")
+}</tbody></table></div>`;
+}
+
+function aviso(texto){return `<div class="aviso">${texto}</div>`;}
+
+function desenhar(id,tipo,labels,datasets,vertical=false){
+if(typeof Chart==="undefined")return;
+const elemento=document.getElementById(id);
+if(!elemento)return;
+graficoAtivo=new Chart(elemento,{
+ type:tipo,
+ data:{labels,datasets},
+ options:{
+ responsive:true,
+ maintainAspectRatio:false,
+ indexAxis:vertical?"y":"x",
+ plugins:{legend:{position:"top"}},
+ scales:tipo==="doughnut"?{}:{
+ x:{ticks:{autoSkip:false,maxRotation:50}},
+ y:{beginAtZero:tipo==="bar"}
+ }
+ }
+});
+}
+
+function modulo(titulo,descricao,campos=[]){
+return `<details>
+<summary>${titulo}</summary>
+<p>${descricao}</p>
+${campos.length?tabela(["Indicador","Situação"],campos.map(x=>[x,"A validar"])):""}
+</details>`;
+}
+
+function links(lista){
+return `<div class="links">${lista.map(x=>
+ `<a href="${x[1]}" target="_blank" rel="noopener noreferrer">${x[0]}</a>`
+).join("")}</div>`;
+}
+
+// ==========================================
+// BASES DE DADOS
+// ==========================================
 const historico=[
 ["Set/2024",50983,113615,10472,12726,27785],
 ["Dez/2024",52336,116116,10104,12713,29519],
@@ -245,211 +201,408 @@ const historico=[
 
 // CRAS, famílias 2025, IVCAD 2025, prioridade 2025,
 // famílias 2026, IVCAD 2026, prioridade 2026,
-// Bolsa Família 2025, participação informada, benefícios eventuais 2025.
+// Bolsa Família 2025, benefícios eventuais 2025
 const cras=[
-["Ana Carla",7232,.271,"Alta",7071,.259,"Alta",1927,17.37,1285],
-["Cidade Alta",4925,.264,"Alta",4925,.251,"Média",1086,9.76,903],
-["Padre Lothar",3814,.262,"Alta",4279,.254,"Alta",1452,13.09,1026],
-["Alfredo de Castro",3665,.272,"Alta",3854,.259,"Alta",1246,11.23,2293],
-["Luz D'Yara",7925,.248,"Média",7947,.242,"Específica",1194,10.76,920],
-["Conjunto São José",7804,.249,"Média",8083,.245,"Específica",1437,12.95,1424],
-["Sagrada Família",6884,.258,"Média",7115,.257,"Alta",1572,14.17,1525],
-["Rio Vermelho",4372,.245,"Específica",4617,.251,"Alta",583,5.25,877],
-["Central — histórico",2652,.251,"Específica",2283,.242,"Específica",475,4.28,710]
+["Ana Carla",7232,.271,"Alta",7071,.259,"Alta",1927,1285],
+["Alfredo de Castro",3665,.272,"Alta",3854,.259,"Alta",1246,2293],
+["Cidade Alta",4925,.264,"Alta",4925,.251,"Média",1086,903],
+["Conjunto São José",7804,.249,"Média",8083,.245,"Específica",1437,1424],
+["Luz D'Yara",7925,.248,"Média",7947,.242,"Específica",1194,920],
+["Padre Lothar",3814,.262,"Alta",4279,.254,"Alta",1452,1026],
+["Rio Vermelho",4372,.245,"Específica",4617,.251,"Alta",583,877],
+["Sagrada Família",6884,.258,"Média",7115,.257,"Alta",1572,1525],
+["Central (histórico)",2652,.251,"Específica",2283,.242,"Específica",475,710]
 ];
 
-// Ranking de 50 localidades, referência junho/2026.
-// Cada registro: [localidade, famílias distintas, pessoas, famílias em pobreza].
 const bairros=[
-["PARQUE UNIVERSITARIO",1369,3274,298],
-["RESIDENCIAL CELINA BEZERRA",1042,2341,362],
-["CENTRO",991,1704,212],
-["JARDIM LIBERDADE",905,2083,155],
-["LOTEAMENTO PEDRA 90",723,1790,167],
-["JARDIM IGUASSU",716,1491,156],
-["RESIDENCIAL ALFREDO DE CASTRO ARAUJO",669,1672,145],
-["JARDIM TROPICAL",665,1468,109],
-["VILA OPERARIA",662,1367,83],
-["JARDIM PRIMAVERA",599,1302,66],
-["PARQUE SAO JORGE",593,1354,116],
-["JARDIM ATLANTICO",514,1023,76],
-["VILA MINEIRA",487,1130,66],
-["PARQUE ROSA BORORO",482,1273,112],
-["JARDIM SERRA DOURADA",462,1000,66],
-["PARQUE SAGRADA FAMILIA",459,972,76],
-["CIDADE ALTA",448,934,99],
-["JARDIM RUI BARBOSA",391,975,95],
-["RESIDENCIAL ALFREDO DE CASTRO ARAUJO I",388,1086,170],
-["RESIDENCIAL PADRE LOTHAR",386,990,120],
-["JARDIM TANCREDO NEVES",352,864,70],
-["VILA OLINDA II",345,811,77],
-["JARDIM SUMARE",338,733,42],
-["RESIDENCIAL DONA NEUMA DE MORAES",326,975,99],
-["JARDIM ANA CARLA II",324,810,72],
-["JARDIM ITAPUA",324,734,41],
-["VILA CARDOSO",312,646,39],
-["JARDIM EUROPA",300,562,44],
-["VILA POROXO",290,601,67],
-["JARDIM IPANEMA",283,628,16],
-["JARDIM IGUACU",273,557,51],
-["RESIDENCIAL MATHIAS NEVES II",271,716,77],
-["CONJUNTO HABITACIONAL CIDADE DE DEUS II",264,633,68],
-["JARDIM NOVA ERA",262,662,55],
-["JARDIM DAS FLORES",256,582,63],
-["JARDIM RONDONIA",252,509,49],
-["JARDIM PINDORAMA",251,521,31],
-["RESIDENCIAL VILA RICA",250,616,71],
-["RESIDENCIAL SITIO FARIAS",244,584,51],
-["VILA SAO SEBASTIAO II",244,458,53],
-["CENTRO A",241,402,42],
-["RESIDENCIAL MATHIAS NEVES I",241,668,80],
-["JARDIM MONTE LIBANO",239,508,16],
-["JARDIM GRAMADO II",233,344,23],
-["JARDIM RIVERA",233,497,18],
-["RESIDENCIAL DOM OSORIO STOFFEL",232,562,58],
-["VILA OLINDA I",232,549,51],
-["JARDIM DAS PAINEIRAS",216,480,45],
-["VILA MARIANA",211,427,35],
-["VILA ITAMARATY",208,423,22]
+["Parque Universitário",1369,3274,298],
+["Residencial Celina Bezerra",1042,2341,362],
+["Centro",991,1704,212],
+["Jardim Liberdade",905,2083,155],
+["Loteamento Pedra 90",723,1790,167]
 ];
 
-const dimensoes=[
-["IVCAD","Índice de Vulnerabilidade das Famílias do Cadastro Único"],
-["NC","Necessidade de Cuidados"],
-["DPI","Desenvolvimento na Primeira Infância"],
-["DCA","Desenvolvimento de Crianças e Adolescentes"],
-["TQA","Trabalho e Qualificação de Adultos"],
-["DR","Disponibilidade de Recursos"],
-["CH","Condições Habitacionais"]
+const unidades=[
+["CRAS Ana Carla","Proteção Social Básica"],
+["CRAS Alfredo de Castro","Proteção Social Básica"],
+["CRAS Cidade Alta / Jardim Iguaçu","Proteção Social Básica"],
+["CRAS Conjunto São José","Proteção Social Básica"],
+["CRAS Luz D'Yara","Proteção Social Básica"],
+["CRAS Padre Lothar","Proteção Social Básica"],
+["CRAS Rio Vermelho","Proteção Social Básica"],
+["CRAS Sagrada Família / CEU","Proteção Social Básica"],
+["CREAS","Proteção Social Especial"],
+["Centro POP","Proteção Social Especial"],
+["CRAI","Proteção Social Especial"],
+["Unidades de Acolhimento","Alta Complexidade"],
+["Posto do Cadastro Único","Gestão Cadastral"],
+["SCFV Vila Olímpica","Convivência"],
+["SCFV Padre Lothar","Convivência"],
+["SCFV Alfredo de Castro","Convivência"],
+["SCFV Zumbi dos Palmares","Convivência"]
 ];
 
-const graficos={};
-function criarGrafico(id,tipo,labels,datasets,vertical=false){
-const el=document.getElementById(id);
-if(!el||typeof Chart==="undefined")return;
-if(graficos[id])graficos[id].destroy();
-graficos[id]=new Chart(el,{
-type:tipo,
-data:{labels,datasets},
+// ==========================================
+// 1. MUNICÍPIO, TERRITÓRIO E IBGE
+// ==========================================
+function municipio(){
+conteudo.innerHTML=
+card("Panorama Municipal — Rondonópolis/MT",
+indicadores([
+["População estimada IBGE 2026","268.202"],
+["Porte municipal","Grande Porte"],
+["CRAS ativos","8"],
+["Famílias CadÚnico Set/2026","50.941"]
+])+
+`<p>Diagnóstico socioterritorial e caracterização do município, conforme fontes oficiais e documentos da Vigilância Socioassistencial.</p>`)+
+card("Indicadores e Diagnósticos",
+modulo("Panorama demográfico",
+"População urbana, rural, idade, sexo, domicílios e condições de vida devem ser analisados conforme a referência de cada base.",
+["População por faixa etária","População rural e urbana","Domicílios","Pessoa com deficiência","Pessoa idosa"])+
+modulo("Território e vulnerabilidade",
+"Identificação dos territórios de abrangência dos oito CRAS e de áreas prioritárias.",
+["Bairros por CRAS","Concentração de pobreza","Cobertura socioassistencial"])+
+links([
+["IBGE Cidades — Rondonópolis","https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama"],
+["Mapa territorial dos CRAS","https://www.google.com/maps/d/edit?mid=1JiHgDzghrEuWZSaiy_uipJv7Rh3TUqQ"]
+]));
+}
+
+// ==========================================
+// 2. REDE SUAS E CONTATOS
+// ==========================================
+function rede(){
+conteudo.innerHTML=card("Rede Socioassistencial — CadSUAS e Contatos",
+`<div class="controles"><input id="buscaRede" placeholder="Pesquisar unidade ou serviço" oninput="filtrarRede()"></div>
+<div id="resultadoRede"></div>`+
+aviso("Endereços, telefones, e-mails, CNPJ e responsáveis precisam ser conferidos na base institucional antes da publicação. O CRAS Central permanece apenas como referência histórica."))+
+card("CadSUAS e Base Oficial",
+links([
+["Planilha institucional da Rede SUAS","https://docs.google.com/spreadsheets/d/1uaWIdy3tGPCER8teCyuJwqmZfInh1Tte/edit?gid=1144368120#gid=1144368120"],
+["Portal do Ministério do Desenvolvimento Social","https://www.gov.br/mds/pt-br"]
+]));
+filtrarRede();
+}
+
+function filtrarRede(){
+const el=document.getElementById("buscaRede");
+if(!el)return;
+const q=el.value.toLowerCase();
+const lista=unidades.filter(x=>x.join(" ").toLowerCase().includes(q));
+document.getElementById("resultadoRede").innerHTML=
+tabela(["Unidade / Serviço","Proteção / Área","Contato"],lista.map(x=>[
+x[0],x[1],"Consultar base institucional"
+]));
+}
+
+// ==========================================
+// 3. SUPERINTENDÊNCIA DA MULHER
+// ==========================================
+function mulher(){
+conteudo.innerHTML=
+card("Superintendência da Mulher — Rede de Proteção",
+`<p>Monitoramento de políticas públicas, prevenção da violência, autonomia e fortalecimento dos direitos das mulheres.</p>`+
+modulo("Serviços e contatos da rede",
+"Cadastro de equipamentos, instituições, endereços, telefones, e-mails e responsáveis.",
+["Unidades de atendimento","Contatos institucionais","Fluxos de encaminhamento"])+
+modulo("Prevenção e enfrentamento da violência",
+"Registro das campanhas, atividades, encaminhamentos e ações intersetoriais.",
+["Ações realizadas","Mulheres alcançadas","Encaminhamentos","Campanhas"])+
+modulo("Conselho Municipal dos Direitos da Mulher",
+"Espaço para composição, mandatos, reuniões e deliberações."))+
+card("Ações e Eventos",
+tabela(["Ação","Referência","Local"],[
+["Feira das Empreendedoras","20/11/2026","Casario"],
+["Abertura dos 21 dias de ativismo","20/11/2026","Casario"],
+["Desfile da Beleza Negra e Show de Talentos","20/11/2026","Casario"]
+]));
+}
+
+// ==========================================
+// 4. CADASTRO ÚNICO, RI SOCIAL E IVCAD
+// ==========================================
+function cadunico(){
+conteudo.innerHTML=
+card("Dashboard Cadastro Único — Setembro/2026",
+indicadores([
+["Famílias cadastradas","50.941"],
+["Pessoas cadastradas","114.463"],
+["Famílias em pobreza","9.534"],
+["Famílias baixa renda","12.973"],
+["Famílias acima de ½ SM","28.434"],
+["Famílias em pobreza (%)","18,72%"]
+]))+
+card("Série Histórica 2024–2026",
+`<div class="grafico"><canvas id="graficoHistorico"></canvas></div>`+
+tabela(["Mês","Famílias","Pessoas","Pobreza","Baixa Renda"],
+historico.map(x=>[x[0],fmt(x[1]),fmt(x[2]),fmt(x[3]),fmt(x[4])])))+
+card("Ranking de Bairros — Junho/2026",
+`<p>Classificação por famílias, pessoas e famílias em situação de pobreza.</p>
+<div class="controles">
+<input id="buscaBairro" placeholder="Pesquisar bairro" oninput="rankingBairros()">
+<select id="ordemBairro" onchange="rankingBairros()">
+<option value="1">Mais famílias</option>
+<option value="2">Mais pessoas</option>
+<option value="3">Mais famílias em pobreza</option>
+</select>
+</div>
+<div id="resultadoBairros"></div>`+
+aviso("Prévia com cinco localidades do levantamento de junho/2026. O ranking integral deve ser importado da base territorial original, preservando a contagem de famílias distintas e a padronização dos nomes dos bairros."))+
+card("IVCAD por CRAS — PMAS 2026",
+`<div class="grafico"><canvas id="graficoIVCAD"></canvas></div>`+
+tabela(["CRAS","Famílias referenciadas","IVCAD","Prioridade"],
+cras.map(x=>[x[0],fmt(x[4]),indice(x[5]),x[6]])))+
+card("Fontes e Plataformas Oficiais",
+links([
+["Portal Cadastro Único","https://cadunico.dataprev.gov.br/"],
+["RI Social","https://aplicacoes.cidadania.gov.br/ri/ri/"],
+["CECAD","https://cecad.cidadania.gov.br/"],
+["Observatório do Cadastro Único","https://observatoriocadunico.mds.gov.br/"],
+["VIS DATA","https://aplicacoes.cidadania.gov.br/vis/data3/"]
+])+
+aviso("O RI Social foi informado como estando em manutenção. Verifique a disponibilidade no momento da consulta."))+
+card("Análise Técnica",
+`<p>O aumento de famílias cadastradas entre setembro de 2025 e setembro de 2026 foi de aproximadamente 2,48%, enquanto as famílias em pobreza passaram de 9.693 para 9.534.</p>
+<p>A redução da pobreza cadastral não deve ser interpretada isoladamente como saída definitiva da vulnerabilidade social.</p>
+<h3>Dimensões do IVCAD</h3>
+<p>NC — Necessidade de Cuidados<br>
+DPI — Desenvolvimento na Primeira Infância<br>
+DCA — Desenvolvimento de Crianças e Adolescentes<br>
+TQA — Trabalho e Qualificação de Adultos<br>
+DR — Disponibilidade de Recursos<br>
+CH — Condições Habitacionais</p>`);
+
+rankingBairros();
+
+desenhar("graficoHistorico","line",historico.map(x=>x[0]),[
+{label:"Famílias",data:historico.map(x=>x[1]),borderColor:"#2563eb"},
+{label:"Pobreza",data:historico.map(x=>x[3]),borderColor:"#dc2626"}
+]);
+
+// Há apenas um gráfico ativo por vez neste modelo.
+// Desenhamos o IVCAD após a série histórica.
+const ctx=document.getElementById("graficoIVCAD");
+if(ctx && typeof Chart!=="undefined"){
+new Chart(ctx,{
+type:"bar",
+data:{
+labels:cras.map(x=>x[0]),
+datasets:[{
+label:"IVCAD 2026",
+data:cras.map(x=>x[5]),
+backgroundColor:"#2563eb"
+}]
+},
 options:{
 responsive:true,
 maintainAspectRatio:false,
-indexAxis:vertical?"y":"x",
-plugins:{legend:{position:"top"}},
-scales:tipo==="doughnut"?{}:{
-x:{ticks:{autoSkip:true,maxRotation:45}},
-y:{beginAtZero:tipo==="bar"}
-}
+indexAxis:"y"
 }
 });
 }
-
-function tabela(id,titulos,linhas){
-const elemento=document.getElementById(id);
-elemento.replaceChildren();
-const thead=elemento.createTHead();
-const linhaTitulo=thead.insertRow();
-titulos.forEach(t=>{
-const th=document.createElement("th");
-th.textContent=t;
-linhaTitulo.appendChild(th);
-});
-const corpo=elemento.createTBody();
-linhas.forEach(reg=>{
-const tr=corpo.insertRow();
-reg.forEach(valor=>{
-const td=tr.insertCell();
-td.textContent=String(valor);
-});
-});
 }
 
-function construirHistorico(){
-tabela("tabela-historica",
-["Referência","Famílias","Pessoas","Pobreza","Baixa renda","Acima de ½ SM"],
-historico.map(r=>[r[0],...r.slice(1).map(fmt)]));
-criarGrafico("grafico-evolucao","line",historico.map(r=>r[0]),[
-{label:"Famílias",data:historico.map(r=>r[1]),borderColor:"#2563eb",tension:.25},
-{label:"Pessoas",data:historico.map(r=>r[2]),borderColor:"#0d9488",tension:.25}
-]);
-const ultimo=historico[historico.length-1];
-criarGrafico("grafico-renda","doughnut",
-["Pobreza","Baixa renda","Acima de ½ SM"],[
-{label:"Famílias",data:ultimo.slice(3),backgroundColor:["#dc2626","#eab308","#2563eb"]}
-]);
-}
+function fmt(v){return Number(v).toLocaleString("pt-BR");}
 
-function construirTerritorial(){
-tabela("tabela-territorial",
-["CRAS","Famílias 2025","IVCAD 2025","Prioridade 2025",
-"Famílias 2026","IVCAD 2026","Prioridade 2026"],
-cras.map(r=>[r[0],fmt(r[1]),dec(r[2]),r[3],fmt(r[4]),dec(r[5]),r[6]]));
-
-tabela("tabela-beneficios",
-["CRAS","Bolsa Família 2025","Participação informada","Benefícios eventuais"],
-cras.map(r=>[r[0],fmt(r[7]),porcento(r[8]),fmt(r[9])]));
-
-criarGrafico("grafico-ivcad","bar",cras.map(r=>r[0]),[
-{label:"IVCAD 2025",data:cras.map(r=>r[2]),backgroundColor:"#94a3b8"},
-{label:"IVCAD 2026",data:cras.map(r=>r[5]),backgroundColor:"#2563eb"}
-],true);
-
-criarGrafico("grafico-cras","bar",cras.map(r=>r[0]),[
-{label:"Famílias 2025",data:cras.map(r=>r[1]),backgroundColor:"#94a3b8"},
-{label:"Famílias 2026",data:cras.map(r=>r[4]),backgroundColor:"#0d9488"}
-],true);
-
-document.getElementById("legenda-ivcad").innerHTML=
-dimensoes.map(r=>`<p><b>${r[0]}</b> — ${r[1]}</p>`).join("");
-}
-
-function ranking(){
-let busca=document.getElementById("pesquisa-bairro").value
-.trim().toLocaleUpperCase("pt-BR");
-let ordem=Number(document.getElementById("ordenacao-bairro").value);
-
-let dados=bairros.filter(r=>r[0].includes(busca));
-if(ordem===4)dados=dados.filter(r=>r[1]>=30);
-
-dados.sort((a,b)=>{
-const valor=r=>ordem===4?r[3]/r[1]:r[ordem];
-return valor(b)-valor(a)||a[0].localeCompare(b[0],"pt-BR");
-});
-
-tabela("tabela-bairros",
-["Posição","Bairro / Localidade","Famílias","Pessoas",
-"Famílias em pobreza","% em pobreza"],
-dados.map((r,i)=>[
-(i+1)+"º",r[0],fmt(r[1]),fmt(r[2]),
-fmt(r[3]),porcento(100*r[3]/r[1])
+function rankingBairros(){
+const busca=document.getElementById("buscaBairro");
+if(!busca)return;
+const q=busca.value.toLowerCase();
+const ordem=Number(document.getElementById("ordemBairro").value);
+const dados=bairros.filter(x=>x[0].toLowerCase().includes(q))
+.sort((a,b)=>b[ordem]-a[ordem]);
+document.getElementById("resultadoBairros").innerHTML=
+tabela(["Posição","Bairro","Famílias","Pessoas","Famílias em pobreza","% pobreza"],
+dados.map((x,i)=>[
+(i+1)+"º",x[0],fmt(x[1]),fmt(x[2]),fmt(x[3]),
+percentual(100*x[3]/x[1])
 ]));
-
-document.getElementById("total-bairros").textContent=
-"Localidades exibidas: "+dados.length+" de "+bairros.length+
-" incluídas nesta versão.";
-
-const top=dados.slice(0,15);
-criarGrafico("grafico-bairros","bar",top.map(r=>r[0]),[
-{label:ordem===4?"% de pobreza":
-ordem===1?"Famílias":ordem===2?"Pessoas":"Famílias em pobreza",
-data:top.map(r=>ordem===4?100*r[3]/r[1]:r[ordem]),
-backgroundColor:"#2563eb"}
-],true);
 }
 
-function abrir(id,botao){
-document.querySelectorAll(".aba").forEach(x=>x.classList.remove("ativa"));
-document.getElementById(id).classList.add("ativa");
-document.querySelectorAll("#menu button").forEach(b=>b.classList.remove("ativo"));
-botao.classList.add("ativo");
-if(graficos){
-Object.values(graficos).forEach(g=>g.resize());
-}
+// ==========================================
+// 5. PROTEÇÃO SOCIAL BÁSICA
+// ==========================================
+function basica(){
+conteudo.innerHTML=
+card("Proteção Social Básica — RMA e Monitoramento",
+indicadores([
+["Unidades CRAS","8"],
+["Serviço de referência","PAIF"],
+["RMA","Monitoramento mensal"],
+["Base territorial","CRAS e famílias"]
+]))+
+card("Monitoramento PAIF / CRAS",
+modulo("RMA — Registro Mensal de Atendimentos",
+"Consolidar mensalmente volume de atendimentos, acompanhamento familiar e atividades.",
+["Famílias em acompanhamento","Novas famílias inseridas","Atendimentos individualizados","Visitas domiciliares","Atendimentos coletivos"])+
+modulo("Busca ativa e diagnóstico territorial",
+"Comparar listas do Cadastro Único, demandas territoriais e registros de atendimento.",
+["Famílias identificadas","Famílias convocadas","Visitas realizadas","Famílias acompanhadas"])+
+modulo("Acompanhamento por Unidade",
+"Analisar produtividade, cobertura do PAIF e necessidades de equipe.")+
+aviso("Os quantitativos mensais de RMA não foram disponibilizados para preenchimento automático."))+
+card("Quadro de Famílias Referenciadas — PMAS 2026",
+tabela(["CRAS","Famílias","IVCAD"],
+cras.slice(0,8).map(x=>[x[0],fmt(x[4]),indice(x[5])])));
 }
 
-construirHistorico();
-construirTerritorial();
-ranking();
+// ==========================================
+// 6. PROTEÇÃO SOCIAL ESPECIAL
+// ==========================================
+function especial(){
+conteudo.innerHTML=
+card("Proteção Social Especial",
+indicadores([
+["CREAS / PAEFI","Monitoramento"],
+["Centro POP","Monitoramento"],
+["Acolhimento Institucional","Monitoramento"]
+]))+
+card("RMA e Indicadores da Proteção Especial",
+modulo("CREAS / PAEFI",
+"Atendimento e acompanhamento de famílias e indivíduos em situações de violações de direitos.",
+["Casos em acompanhamento","Novos casos","Atendimentos","Encaminhamentos"])+
+modulo("Centro POP",
+"Monitoramento do atendimento à população em situação de rua.",
+["Pessoas atendidas","Atendimentos individualizados","Encaminhamentos","Acompanhamento"])+
+modulo("Acolhimento Institucional",
+"Acompanhamento de vagas, acolhimentos, desligamentos e permanência.",
+["Vagas disponíveis","Pessoas acolhidas","Novos acolhimentos","Desligamentos"])
+);
+}
+
+// ==========================================
+// 7. SISC, SCFV E CONDICIONALIDADES
+// ==========================================
+function sisc(){
+conteudo.innerHTML=
+card("SISC, SCFV e Condicionalidades",
+indicadores([
+["Públicos prioritários confirmados — referência histórica","535"],
+["SCFV","Acompanhamento de grupos"],
+["Condicionalidades","Saúde e Educação"]
+]))+
+card("Gestão dos Serviços de Convivência",
+modulo("SISC — Grupos e Usuários",
+"Monitoramento da participação, capacidade de atendimento e situações prioritárias.",
+["Usuários ativos","Usuários prioritários","Meta de atendimento","Vagas","Grupos em funcionamento"])+
+modulo("SCFV por Unidade",
+"Monitoramento de participação e oferta nas unidades Vila Olímpica, Padre Lothar, Alfredo de Castro e Zumbi dos Palmares.")+
+modulo("Condicionalidades do Bolsa Família",
+"Indicadores de acompanhamento em saúde e educação, descumprimentos e repercussões.",
+["Acompanhamento educação","Acompanhamento saúde","Descumprimentos","Famílias acompanhadas"])
+);
+}
+
+// ==========================================
+// 8. CMAS
+// ==========================================
+function cmas(){
+conteudo.innerHTML=
+card("Conselho Municipal de Assistência Social — CMAS",
+modulo("Composição e Mandatos",
+"Controle de representantes governamentais e da sociedade civil.",
+["Titulares","Suplentes","Início do mandato","Término do mandato"])+
+modulo("Reuniões e Deliberações",
+"Registro de calendário, atas, pautas, resoluções e publicações.",
+["Reuniões ordinárias","Reuniões extraordinárias","Resoluções publicadas"])+
+modulo("Controle Social do SUAS",
+"Acompanhamento das aprovações, planos, prestações de contas e deliberações.")+
+aviso("Os mandatos, datas e resoluções precisam de conferência nos documentos oficiais do Conselho.")
+);
+}
+
+// ==========================================
+// 9. FMAS E ORÇAMENTO
+// ==========================================
+function fmas(){
+conteudo.innerHTML=
+card("Fundo Municipal de Assistência Social",
+modulo("Execução Orçamentária",
+"Consolidação de receitas, despesas, empenhos, liquidações e pagamentos.",
+["Dotação inicial","Dotação atualizada","Empenhado","Liquidado","Pago"])+
+modulo("Repasses e Cofinanciamento",
+"Acompanhamento das transferências federais, estaduais e municipais.",
+["Recursos federais","Recursos estaduais","Recursos municipais","Saldos"])+
+modulo("Prestação de Contas",
+"Controle de informações submetidas ao Conselho e aos órgãos fiscalizadores.")+
+links([
+["FNAS — Informações Oficiais","https://fnas.mds.gov.br/"],
+["Portal da Transparência","https://www.portaltransparencia.gov.br/"]
+])
+);
+}
+
+// ==========================================
+// 10. ARTICULAÇÃO INTERSETORIAL
+// ==========================================
+function articulacao(){
+conteudo.innerHTML=
+card("Articulação Intersetorial",
+modulo("Saúde — SINAN e Rede SUS",
+"Análise de notificações e articulação com serviços socioassistenciais, observando sigilo e proteção de dados.",
+["Notificações","Encaminhamentos","Acompanhamentos"])+
+modulo("Educação — Censo Escolar e Frequência",
+"Articulação de dados educacionais e identificação de situações de risco.",
+["Frequência escolar","Busca ativa escolar","Situações de evasão"])+
+modulo("Sistema de Justiça",
+"Monitoramento institucional de encaminhamentos e fluxos com os órgãos do Sistema de Justiça.")+
+modulo("Outras Políticas Públicas",
+"Habitação, trabalho, segurança alimentar, direitos da mulher e políticas de inclusão produtiva.")
+);
+}
+
+// ==========================================
+// 11. PMAS 2026–2029
+// ==========================================
+function pmas(){
+conteudo.innerHTML=
+card("Plano Municipal de Assistência Social — 2026–2029",
+`<p>Painel de acompanhamento das metas do PMAS, organizado por eixo, ação, indicador, prazo, responsável e situação de execução.</p>`+
+indicadores([
+["Vigência","2026–2029"],
+["Horizonte","4 anos"],
+["Monitoramento","Por eixo e meta"],
+["Situação","Acompanhamento"]
+]))+
+card("Matriz de Monitoramento das Metas",
+aviso("Para preservar a fidelidade ao PMAS aprovado, os textos, números e prazos das metas devem ser transcritos do documento oficial antes de registrar execução.")+
+tabela(["Eixo","Meta oficial","Indicador","Prazo","Execução"],[
+["Gestão do SUAS","A transcrever","A validar","A validar","Não informada"],
+["Proteção Social Básica","A transcrever","A validar","A validar","Não informada"],
+["Proteção Social Especial","A transcrever","A validar","A validar","Não informada"],
+["Vigilância Socioassistencial","A transcrever","A validar","A validar","Não informada"],
+["Gestão do Trabalho","A transcrever","A validar","A validar","Não informada"],
+["Controle Social","A transcrever","A validar","A validar","Não informada"]
+]))+
+card("Acompanhamento da Implementação",
+modulo("Avaliação anual das metas",
+"Registrar os resultados comprovados por indicadores e relatórios das unidades.")+
+modulo("Recomendações da Vigilância",
+"Consolidar diagnósticos, analisar indicadores e orientar revisões no planejamento.")
+);
+}
+
+// ==========================================
+// 12. BOLETINS E NOTAS TÉCNICAS
+// ==========================================
+function boletins(){
+conteudo.innerHTML=
+card("Biblioteca de Publicações — 2026",
+`<p>Repositório de boletins, notas técnicas, orientações operacionais, relatórios e materiais institucionais.</p>`+
+modulo("Boletins Socioassistenciais",
+"Publicação de indicadores municipais, diagnósticos e estudos territoriais.")+
+modulo("Notas Técnicas",
+"Orientações metodológicas sobre RMA, Cadastro Único, IVCAD, SISC e monitoramento.")+
+modulo("Orientações Operacionais",
+"Fluxos de preenchimento e acompanhamento dos sistemas de informação.")+
+modulo("Materiais Gráficos e Canva",
+"Organização de apresentações, artes, informativos e documentos da Vigilância.")+
+modulo("Ações 2026",
+"Registro das atividades e entregas institucionais realizadas ao longo do exercício.")
+);
+}
+
+abrir("municipio");
 </script>
 </body>
 </html>
