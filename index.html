@@ -1,127 +1,69 @@
 
-<!-- ===============================================
-PAINEL INTERATIVO IBGE — RONDONÓPOLIS/MT
-INTEGRAÇÃO COM API OFICIAL DO IBGE
-COLE ANTES DE </body> NO index.html
-================================================ -->
+<!-- =====================================================
+GESTÃO DO TRABALHO / CADSUAS / NOB-RH SUAS
+RONDONÓPOLIS-MT — PAINEL INTERATIVO
+COLE ANTES DE </body> NO INDEX.HTML
+===================================================== -->
 
 <style>
-#ibge-interativo{
-  font-family:Arial,sans-serif;
-  color:#26364a;
-  margin-top:22px;
+#cad-rh {font-family:Arial,sans-serif;margin-top:22px}
+#cad-rh *{box-sizing:border-box}
+#cad-rh .rh-card{
+ background:white;border:1px solid #dbe4f0;
+ border-radius:14px;padding:20px;margin:16px 0;
+ box-shadow:0 2px 8px #1e293b0a
 }
-#ibge-interativo *{box-sizing:border-box}
-#ibge-interativo .ibge-card{
-  background:white;
-  border:1px solid #dce5ef;
-  border-radius:14px;
-  padding:20px;
-  margin:16px 0;
-  box-shadow:0 2px 8px #142d4c0b;
+#cad-rh .rh-grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(165px,1fr));
+ gap:12px;margin:18px 0
 }
-#ibge-interativo h2,
-#ibge-interativo h3{color:#173b75}
-#ibge-interativo .ibge-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:12px;
-  margin:18px 0;
+#cad-rh .rh-kpi{
+ background:#eff6ff;border-radius:12px;
+ padding:18px;border:1px solid #dbeafe
 }
-#ibge-interativo .ibge-kpi{
-  background:#eff6ff;
-  border:1px solid #dbeafe;
-  border-radius:12px;
-  padding:18px;
+#cad-rh .rh-kpi small{display:block;color:#52657e}
+#cad-rh .rh-kpi strong{
+ display:block;color:#1d4ed8;
+ font-size:27px;margin-top:8px
 }
-#ibge-interativo .ibge-kpi small{
-  display:block;
-  color:#52657e;
-  line-height:1.5;
+#cad-rh h2,#cad-rh h3{color:#173b75}
+#cad-rh .rh-tools{
+ display:flex;gap:10px;flex-wrap:wrap;margin:16px 0
 }
-#ibge-interativo .ibge-kpi strong{
-  display:block;
-  font-size:26px;
-  color:#1d4ed8;
-  margin-top:8px;
+#cad-rh input,#cad-rh select{
+ padding:11px;border:1px solid #cad6e5;
+ border-radius:8px;background:white;min-width:175px;flex:1
 }
-#ibge-interativo .ibge-chart{
-  position:relative;
-  height:370px;
+#cad-rh .rh-table{overflow-x:auto;max-height:530px}
+#cad-rh table{width:100%;border-collapse:collapse;font-size:13px}
+#cad-rh th{
+ background:#e7eef8;padding:11px;
+ text-align:left;position:sticky;top:0;white-space:nowrap
 }
-#ibge-interativo .ibge-tools{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin:15px 0;
-  align-items:center;
+#cad-rh td{padding:10px;border-bottom:1px solid #e2e8f0}
+#cad-rh tr:hover td{background:#f8fafc}
+#cad-rh .rh-chart{height:380px;position:relative}
+#cad-rh .rh-alert{
+ border-left:4px solid #f59e0b;background:#fffbeb;
+ padding:14px;margin:12px 0;line-height:1.6
 }
-#ibge-interativo button{
-  background:#1d4ed8;
-  border:0;
-  border-radius:8px;
-  padding:12px 16px;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
+#cad-rh .rh-ok{
+ border-left:4px solid #16a34a;background:#f0fdf4;
+ padding:14px;margin:12px 0
 }
-#ibge-interativo button:disabled{
-  opacity:.5;cursor:wait;
+#cad-rh details{
+ border:1px solid #dbe4f0;padding:14px;
+ border-radius:9px;margin:10px 0
 }
-#ibge-interativo select{
-  padding:12px;
-  border:1px solid #cbd5e1;
-  border-radius:8px;
-  background:white;
-}
-#ibge-interativo table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-#ibge-interativo th{
-  text-align:left;
-  background:#e8eef8;
-  padding:11px;
-}
-#ibge-interativo td{
-  padding:11px;
-  border-bottom:1px solid #e2e8f0;
-}
-#ibge-interativo .ibge-alerta{
-  padding:14px;
-  background:#fffbeb;
-  border-left:4px solid #f59e0b;
-  margin:12px 0;
-  line-height:1.6;
-}
-#ibge-interativo .ibge-info{
-  padding:14px;
-  background:#eff6ff;
-  border-left:4px solid #2563eb;
-  margin:12px 0;
-  line-height:1.6;
-}
-#ibge-interativo .ibge-links{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-}
-#ibge-interativo .ibge-links a{
-  display:inline-block;
-  background:#edf5ff;
-  border-radius:8px;
-  padding:12px;
-  color:#1d4ed8;
-  text-decoration:none;
-  font-weight:bold;
-}
-#ibge-interativo .ibge-muted{
-  font-size:12px;
-  color:#64748b;
+#cad-rh summary{cursor:pointer;font-weight:bold;color:#173b75}
+#cad-rh .rh-small{font-size:12px;color:#64748b}
+#cad-rh button{
+ border:0;background:#1d4ed8;color:white;
+ border-radius:8px;padding:11px 15px;cursor:pointer
 }
 @media(max-width:600px){
-  #ibge-interativo .ibge-chart{height:300px}
+ #cad-rh .rh-chart{height:330px}
 }
 </style>
 
@@ -129,541 +71,672 @@ COLE ANTES DE </body> NO index.html
 (function(){
 "use strict";
 
-const IBGE_CODIGO="5107602";
-const IBGE_UF="51";
+/* ==========================================
+   BASE CONSOLIDADA — GESTÃO DO TRABALHO
+========================================== */
 
-const IBGE_API={
- localidade:
- "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/5107602",
+const RH={
+ cadastrados:289,
+ ativos:284,
+ inativos:5,
+ lotacoes:32,
 
- censoMunicipio:
- "https://servicodados.ibge.gov.br/api/v3/agregados/4714/periodos/2022/variaveis/93%7C6318%7C614?localidades=N6%5B5107602%5D",
+ tipos:[
+ ["Acolhimento",46,46],
+ ["Cadastro para programas sociais e habitacionais",4,4],
+ ["Cadastro Único",18,18],
+ ["Centro POP",11,11],
+ ["Conselho Tutelar",15,15],
+ ["CRAS",84,84],
+ ["CREAS",14,14],
+ ["Núcleo de Conselhos",5,5],
+ ["SCFV",38,39],
+ ["Órgão Gestor",49,53]
+ ],
 
- censoEstado:
- "https://servicodados.ibge.gov.br/api/v3/agregados/4714/periodos/2022/variaveis/93?localidades=N3%5B51%5D",
+ categorias:[
+ ["Coordenação/Gestão",26,26],
+ ["Conselheiro/a",11,11],
+ ["Cadastro Habitacional",4,4],
+ ["Psicopedagoga",1,1],
+ ["Assistente Social",30,30],
+ ["Pedagogo",14,14],
+ ["Psicólogo",22,22],
+ ["Técnico Nível Médio",38,38],
+ ["Orientador Social",12,13],
+ ["Entrevistador Social do Cadastro Único",20,20],
+ ["Apoio administrativo",106,110]
+ ],
 
- estimativas:
- "https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/-6/variaveis/9324?localidades=N6%5B5107602%5D"
+ vinculos:[
+ ["CLT",3,3],
+ ["Contratado",53,54],
+ ["Comissionado",90,90],
+ ["Efetivo",44,48],
+ ["Terceirizado",94,94]
+ ],
+
+ genero:[
+ ["Masculino",84],
+ ["Feminino",205]
+ ],
+
+ ingresso:[
+ ["Até 2008",20],
+ ["2017 a 2024",44],
+ ["A partir de 2025",131],
+ ["Sem data / terceirizados e apoio",94]
+ ],
+
+ faixaEtaria:[
+ ["Até 29 anos",0],
+ ["30 a 39 anos",12],
+ ["40 a 49 anos",10],
+ ["50 a 59 anos",16],
+ ["60 anos ou mais",9]
+ ],
+
+ categoriaVinculo:[
+ ["Assistente Social — efetivo nas unidades",9],
+ ["Assistente Social — efetivo na gestão",3],
+ ["Assistente Social — contratado nas unidades",21],
+ ["Psicólogo — efetivo nas unidades",4],
+ ["Psicólogo — contratado nas unidades",17],
+ ["Psicólogo — contratado na gestão",1],
+ ["Pedagogo — efetivo na função",6],
+ ["Pedagogo — efetivo na gestão",1],
+ ["Pedagogo — contratado nas unidades",5],
+ ["Pedagogo — contratado na gestão",2],
+ ["Psicopedagoga efetiva",1],
+ ["Orientador Social — efetivo na função",6],
+ ["Orientador Social — efetivo na gestão",3],
+ ["Orientador Social — contratado",4],
+ ["Entrevistador CadÚnico — contratado",3],
+ ["Entrevistador CadÚnico — comissionado",17],
+ ["Coordenação/Gestão — efetivo",3],
+ ["Coordenação/Gestão — comissionado",23],
+ ["Técnico de Nível Médio — comissionado",38],
+ ["Apoio administrativo — efetivos",11],
+ ["Apoio administrativo — terceirizados",94],
+ ["Conselheiro/a",11],
+ ["Cadastro Habitacional",4]
+ ]
 };
 
-let dadosIBGE={
- municipio:null,
- censo:{},
- estado:{},
- estimativas:[]
+/* ==========================================
+   QUADRO POR LOTAÇÃO REAL
+   Unidade, tipo, ativos, efetivos,
+   contratados, comissionados,
+   terceirizados e horas semanais
+========================================== */
+
+const LOTACOES=[
+["Cadastro para Programas Sociais e Habitacionais","Cadastro habitacional",4,0,0,4,0,160],
+["Centro POP e Abordagem Social","Centro POP",11,0,4,4,3,442],
+["Conselho Tutelar","Conselho Tutelar",17,2,0,11,4,676],
+["CRAI","Órgão Gestor",1,1,0,0,0,30],
+["CRAS Alfredo de Castro","Cadastro Único",10,0,5,3,2,378],
+["CRAS Ana Carla","Cadastro Único",10,2,4,3,1,364],
+["CRAS Cidade Alta","CRAS",16,4,2,4,6,614],
+["CRAS Conjunto São José","CRAS",12,4,2,3,3,442],
+["CRAS Luz D'Yara","CRAS",12,4,3,3,2,428],
+["CRAS Padre Lothar","CRAS",10,2,3,3,2,378],
+["CRAS Rio Vermelho","CRAS",15,3,3,3,6,584],
+["CRAS Sagrada Família","Cadastro Único",13,1,4,5,3,502],
+["CREAS","CREAS",14,3,8,1,2,488],
+["Educação Permanente","Não classificado",0,0,0,0,0,40],
+["Escritório Social","Núcleo de Conselhos",1,0,0,1,0,40],
+["Família Acolhedora","Acolhimento",1,0,0,1,0,40],
+["Núcleo dos Conselhos","Órgão Gestor",7,3,1,1,2,268],
+["Parcerias com OSC","Órgão Gestor",2,0,0,2,0,84],
+["Posto do Cadastro Único","Cadastro Único",3,0,0,3,0,120],
+["SCFV Alfredo de Castro","SCFV",12,1,3,2,6,504],
+["SCFV Padre Lothar","SCFV",13,1,2,2,8,542],
+["SCFV Vila Olímpica","SCFV",13,0,3,3,7,548],
+["SEMPRAS","Órgão Gestor",22,5,4,6,7,888],
+["Superintendência de Políticas Públicas para Mulheres","Órgão Gestor",3,1,0,2,0,110],
+["Superintendência de Benefícios, Programas e Projetos","Órgão Gestor",3,0,0,3,0,120],
+["Superintendência de Engenharia e Arquitetura","Órgão Gestor",1,0,0,1,0,40],
+["Superintendência de Gestão","Órgão Gestor",10,3,0,7,0,370],
+["Superintendência de Políticas do Trabalho","Órgão Gestor",1,0,0,1,0,40],
+["Superintendência de Proteção Social Especial","Cadastro Único",1,0,0,1,0,40],
+["Unidade de Acolhimento Casa Abrigo Rotativa","Acolhimento",27,3,3,2,19,1146],
+["Unidade de Acolhimento Casa de Passagem","Acolhimento",9,0,0,3,6,384],
+["Unidade de Acolhimento Mulheres Vítimas de Violência","Acolhimento",9,0,2,2,5,370],
+["Vigilância Socioassistencial","Órgão Gestor",1,1,0,0,0,40]
+];
+
+/* ==========================================
+   EFETIVOS CONCURSADOS DA REDE
+   Superior, médio, apoio e total
+========================================== */
+
+const EFETIVOS=[
+["CRAS Alfredo de Castro",0,0,0,0],
+["CRAS Ana Carla",2,0,0,2],
+["CRAS Conjunto São José",3,1,0,4],
+["CRAS Cidade Alta",3,1,0,4],
+["CRAS Luz D'Yara",2,0,2,4],
+["CRAS Sagrada Família",1,0,0,1],
+["CRAS Rio Vermelho",2,1,0,3],
+["CRAS Padre Lothar",1,1,0,2],
+["SCFV Vila Olímpica",0,0,0,0],
+["SCFV Padre Lothar",1,0,0,1],
+["SCFV Alfredo de Castro",0,0,1,1],
+["CREAS",2,1,0,3],
+["Centro POP e Abordagem Social",0,0,0,0],
+["Unidade Casa de Passagem",0,0,0,0],
+["Unidade Casa Abrigo Rotativa",0,0,3,3],
+["Unidade Mulheres Vítimas de Violência",0,0,0,0]
+];
+
+/* ==========================================
+   DIMENSIONAMENTO DA REDE
+   Famílias, mínimo total, mínimo superior,
+   AS, psicólogo, pedagogo, coordenação
+========================================== */
+
+const DIMENS=[
+["CRAS Alfredo de Castro","CRAS",3854,9,5,3,1,0,1],
+["CRAS Ana Carla","CRAS",7071,9,5,3,2,1,1],
+["CRAS Conjunto São José","CRAS",8083,9,5,2,2,1,1],
+["CRAS Cidade Alta","CRAS",4925,9,5,2,1,2,1],
+["CRAS Luz D'Yara","CRAS",7947,9,5,3,1,1,1],
+["CRAS Sagrada Família","CRAS",7115,9,5,2,2,1,0],
+["CRAS Rio Vermelho","CRAS",4617,9,5,2,2,0,1],
+["CRAS Padre Lothar","CRAS",4279,9,5,2,1,0,1],
+["SCFV Vila Olímpica","SCFV",null,8,1,0,1,0,1],
+["SCFV Padre Lothar","SCFV",null,8,1,0,0,2,0],
+["SCFV Alfredo de Castro","SCFV",null,8,1,0,1,1,1],
+["CREAS","CREAS",null,9,6,5,3,1,1],
+["Centro POP e Abordagem Social","Centro POP",null,9,5,1,2,1,1],
+["Unidade Casa de Passagem","Acolhimento",null,8,3,0,0,0,1],
+["Unidade Casa Abrigo Rotativa","Acolhimento",null,8,3,1,1,1,1],
+["Unidade Mulheres Vítimas de Violência","Acolhimento",null,8,3,1,1,0,1]
+];
+
+/* ==========================================
+   FUNÇÕES DE APRESENTAÇÃO
+========================================== */
+
+const fmtRH=n=>Number(n).toLocaleString("pt-BR");
+const percRH=(a,b)=>b?
+(100*a/b).toFixed(1).replace(".",",")+"%":"—";
+
+const escapeRH=v=>String(v??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;");
+
+function tabelaRH(id,cabecalhos,linhas){
+const alvo=document.getElementById(id);
+if(!alvo)return;
+alvo.replaceChildren();
+const table=document.createElement("table");
+const thead=table.createTHead();
+const tr=thead.insertRow();
+cabecalhos.forEach(h=>{
+const th=document.createElement("th");
+th.textContent=h;
+tr.appendChild(th);
+});
+const body=table.createTBody();
+linhas.forEach(reg=>{
+const row=body.insertRow();
+reg.forEach(c=>{
+const td=row.insertCell();
+td.textContent=String(c??"—");
+});
+});
+alvo.appendChild(table);
+}
+
+function tabelaSimplesRH(id,cab,arr){
+tabelaRH(id,cab,arr.map(r=>r.map((v,i)=>
+typeof v==="number"&&Number.isInteger(v)?fmtRH(v):v
+)));
+}
+
+function graficoRH(id,labels,dados,horizontal=true){
+if(typeof Chart==="undefined")return;
+const canvas=document.getElementById(id);
+if(!canvas)return;
+const anterior=Chart.getChart(canvas);
+if(anterior)anterior.destroy();
+new Chart(canvas,{
+type:"bar",
+data:{
+labels,
+datasets:dados
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+indexAxis:horizontal?"y":"x",
+plugins:{legend:{position:"top"}},
+scales:{x:{beginAtZero:true}}
+}
+});
+}
+
+function graficoPizzaRH(id,labels,valores){
+if(typeof Chart==="undefined")return;
+const canvas=document.getElementById(id);
+if(!canvas)return;
+const anterior=Chart.getChart(canvas);
+if(anterior)anterior.destroy();
+new Chart(canvas,{
+type:"doughnut",
+data:{
+labels,
+datasets:[{
+data:valores,
+backgroundColor:[
+"#2563eb","#0d9488","#f59e0b",
+"#a855f7","#64748b"
+]
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+plugins:{legend:{position:"bottom"}}
+}
+});
+}
+
+/* ==========================================
+   HTML DO MÓDULO
+========================================== */
+
+function htmlGestaoRH(){
+return `
+<div id="cad-rh">
+
+<div class="rh-card">
+<h2>Gestão do Trabalho — SUAS / NOB-RH SUAS</h2>
+<p>Monitoramento do quadro de profissionais, vínculos,
+lotações e dimensionamento das equipes.</p>
+
+<div class="rh-grid">
+ <div class="rh-kpi"><small>Servidores cadastrados</small><strong>289</strong></div>
+ <div class="rh-kpi"><small>Servidores ativos</small><strong>284</strong></div>
+ <div class="rh-kpi"><small>Inativos / cedidos / afastados</small><strong>5</strong></div>
+ <div class="rh-kpi"><small>Lotações informadas</small><strong>32</strong></div>
+ <div class="rh-kpi"><small>Efetivos ativos</small><strong>44</strong></div>
+ <div class="rh-kpi"><small>Contratados ativos</small><strong>53</strong></div>
+ <div class="rh-kpi"><small>Comissionados ativos</small><strong>90</strong></div>
+ <div class="rh-kpi"><small>Terceirizados ativos</small><strong>94</strong></div>
+</div>
+
+<div class="rh-alert">
+<b>Controle de consistência:</b>
+o resumo por categoria profissional e vínculo apresenta
+287 registros, enquanto o consolidado informa 284 ativos.
+O quadro de gênero totaliza 289 cadastrados.
+Os quadros possuem classificações e abrangências distintas
+e devem ser reconciliados antes de utilização para decisões
+administrativas ou cálculo de déficit.
+</div>
+</div>
+
+<div class="rh-card">
+<h3>Distribuição de profissionais por tipo de unidade</h3>
+<div class="rh-chart">
+<canvas id="rhGraficoTipo"></canvas>
+</div>
+<div id="rhTabelaTipo" class="rh-table"></div>
+</div>
+
+<div class="rh-card">
+<h3>Distribuição por categoria profissional</h3>
+<div class="rh-chart" style="height:450px">
+<canvas id="rhGraficoProf"></canvas>
+</div>
+<div id="rhTabelaProf" class="rh-table"></div>
+</div>
+
+<div class="rh-card">
+<h3>Distribuição por vínculo de trabalho</h3>
+<div class="rh-chart">
+<canvas id="rhGraficoVinculo"></canvas>
+</div>
+<div id="rhTabelaVinculo" class="rh-table"></div>
+</div>
+
+<div class="rh-card">
+<h3>Perfil dos profissionais</h3>
+<div class="rh-grid">
+ <div>
+  <h4>Distribuição por gênero</h4>
+  <div class="rh-chart">
+   <canvas id="rhGraficoGenero"></canvas>
+  </div>
+ </div>
+ <div>
+  <h4>Período de ingresso</h4>
+  <div class="rh-chart">
+   <canvas id="rhGraficoIngresso"></canvas>
+  </div>
+ </div>
+</div>
+<details>
+<summary>Faixa etária de efetivos e CLT ativos</summary>
+<div id="rhFaixaEtaria" class="rh-table"></div>
+</details>
+</div>
+
+<div class="rh-card">
+<h3>Quadro por lotação real</h3>
+<p>Pesquisa por unidade e tipo de serviço.</p>
+<div class="rh-tools">
+<input id="rhBuscaLotacao" placeholder="Pesquisar unidade...">
+<select id="rhTipoLotacao">
+<option value="">Todos os tipos de unidade</option>
+</select>
+<select id="rhOrdenacao">
+<option value="ativos">Mais servidores ativos</option>
+<option value="efetivos">Mais efetivos</option>
+<option value="terceirizados">Mais terceirizados</option>
+</select>
+</div>
+<div id="rhTotalLotacao"></div>
+<div class="rh-table" id="rhTabelaLotacao"></div>
+</div>
+
+<div class="rh-card">
+<h3>Efetivos concursados nas unidades</h3>
+<div class="rh-grid">
+ <div class="rh-kpi">
+  <small>Efetivos concursados no recorte da rede</small>
+  <strong>28</strong>
+ </div>
+ <div class="rh-kpi">
+  <small>Efetivos de nível superior</small>
+  <strong>17</strong>
+ </div>
+ <div class="rh-kpi">
+  <small>Efetivos nível médio de referência</small>
+  <strong>5</strong>
+ </div>
+ <div class="rh-kpi">
+  <small>Efetivos apoio/administração</small>
+  <strong>6</strong>
+ </div>
+</div>
+<div class="rh-table" id="rhTabelaEfetivos"></div>
+</div>
+
+<div class="rh-card">
+<h3>Dimensionamento e equipes de referência</h3>
+<p>Comparação do quantitativo informado por unidade com
+os parâmetros apresentados no quadro técnico.</p>
+<div class="rh-tools">
+<input id="rhBuscaDimens" placeholder="Pesquisar unidade...">
+<select id="rhTipoDimens">
+<option value="">Todos os serviços</option>
+</select>
+</div>
+<div class="rh-table" id="rhTabelaDimens"></div>
+
+<div class="rh-alert">
+<b>Atenção metodológica:</b>
+os parâmetros do quadro NOB-RH devem ser conferidos
+por porte, capacidade, tipificação e regulamentação
+aplicável. A quantidade de trabalhadores por categoria
+não comprova, isoladamente, conformidade de equipes,
+vínculos, carga horária e habilitação profissional.
+</div>
+</div>
+
+<div class="rh-card">
+<h3>Categoria profissional × vínculo</h3>
+<div class="rh-table" id="rhTabelaCatVinculo"></div>
+</div>
+
+<div class="rh-card">
+<h3>Análises e alertas da Vigilância</h3>
+<div id="rhAnalises"></div>
+<p class="rh-small">
+Fonte: Painel de Gestão do Trabalho SUAS / NOB-RH SUAS
+enviado para consolidação. Referência temporal da base
+não especificada no quadro apresentado.
+</p>
+</div>
+
+</div>`;
+}
+
+/* ==========================================
+   PREENCHIMENTO DOS PAINÉIS
+========================================== */
+
+function carregarGraficosRH(){
+
+graficoRH("rhGraficoTipo",
+RH.tipos.map(x=>x[0]),[
+{label:"Ativos",data:RH.tipos.map(x=>x[1]),backgroundColor:"#2563eb"},
+{label:"Cadastrados",data:RH.tipos.map(x=>x[2]),backgroundColor:"#94a3b8"}
+]);
+
+graficoRH("rhGraficoProf",
+RH.categorias.map(x=>x[0]),[
+{label:"Ativos",data:RH.categorias.map(x=>x[1]),backgroundColor:"#0d9488"},
+{label:"Cadastrados",data:RH.categorias.map(x=>x[2]),backgroundColor:"#94a3b8"}
+]);
+
+graficoRH("rhGraficoVinculo",
+RH.vinculos.map(x=>x[0]),[
+{label:"Ativos",data:RH.vinculos.map(x=>x[1]),backgroundColor:"#2563eb"},
+{label:"Cadastrados",data:RH.vinculos.map(x=>x[2]),backgroundColor:"#f59e0b"}
+]);
+
+graficoPizzaRH("rhGraficoGenero",
+RH.genero.map(x=>x[0]),RH.genero.map(x=>x[1]));
+
+graficoPizzaRH("rhGraficoIngresso",
+RH.ingresso.map(x=>x[0]),RH.ingresso.map(x=>x[1]));
+
+}
+
+function preencherTabelasRH(){
+
+tabelaSimplesRH("rhTabelaTipo",
+["Tipo de unidade","Ativos","Total cadastrado"],RH.tipos);
+
+tabelaSimplesRH("rhTabelaProf",
+["Categoria profissional","Ativos","Total cadastrado"],RH.categorias);
+
+tabelaSimplesRH("rhTabelaVinculo",
+["Vínculo","Ativos","Total cadastrado"],RH.vinculos);
+
+tabelaRH("rhFaixaEtaria",
+["Faixa etária","Quantidade","Participação"],
+RH.faixaEtaria.map(x=>[
+x[0],x[1],percRH(x[1],47)
+]));
+
+tabelaSimplesRH("rhTabelaEfetivos",
+["Unidade","Superior","Médio de referência","Apoio","Total"],
+EFETIVOS);
+
+tabelaSimplesRH("rhTabelaCatVinculo",
+["Categoria / Vínculo","Quantidade informada"],
+RH.categoriaVinculo);
+
+}
+
+function prepararFiltrosRH(){
+
+const tipos=[...new Set(LOTACOES.map(x=>x[1]))].sort();
+document.getElementById("rhTipoLotacao").innerHTML=
+'<option value="">Todos os tipos de unidade</option>'+
+tipos.map(x=>`<option value="${escapeRH(x)}">${escapeRH(x)}</option>`).join("");
+
+const grupos=[...new Set(DIMENS.map(x=>x[1]))].sort();
+document.getElementById("rhTipoDimens").innerHTML=
+'<option value="">Todos os serviços</option>'+
+grupos.map(x=>`<option value="${escapeRH(x)}">${escapeRH(x)}</option>`).join("");
+
+["rhBuscaLotacao","rhTipoLotacao","rhOrdenacao"].forEach(id=>{
+document.getElementById(id).addEventListener("input",filtrarLotacoesRH);
+});
+
+["rhBuscaDimens","rhTipoDimens"].forEach(id=>{
+document.getElementById(id).addEventListener("input",filtrarDimensRH);
+});
+
+filtrarLotacoesRH();
+filtrarDimensRH();
+}
+
+function filtrarLotacoesRH(){
+
+const busca=document.getElementById("rhBuscaLotacao").value
+.toLocaleLowerCase("pt-BR");
+
+const tipo=document.getElementById("rhTipoLotacao").value;
+const ordem=document.getElementById("rhOrdenacao").value;
+const col=ordem==="efetivos"?3:ordem==="terceirizados"?6:2;
+
+const lista=LOTACOES
+.filter(r=>r[0].toLocaleLowerCase("pt-BR").includes(busca))
+.filter(r=>!tipo||r[1]===tipo)
+.sort((a,b)=>b[col]-a[col]||a[0].localeCompare(b[0],"pt-BR"));
+
+const total=lista.reduce((a,r)=>a+r[2],0);
+
+document.getElementById("rhTotalLotacao").textContent=
+lista.length+" lotações exibidas — "+fmtRH(total)+
+" registros ativos somados no recorte.";
+
+tabelaRH("rhTabelaLotacao",
+["Unidade","Tipo","Ativos","Efetivos",
+"Contratados","Comissionados","Terceirizados","Horas semanais"],
+lista.map(r=>r.map((v,i)=>i>=2?fmtRH(v):v))
+);
+
+}
+
+function filtrarDimensRH(){
+
+const busca=document.getElementById("rhBuscaDimens").value
+.toLocaleLowerCase("pt-BR");
+const tipo=document.getElementById("rhTipoDimens").value;
+
+const lista=DIMENS.filter(r=>
+r[0].toLocaleLowerCase("pt-BR").includes(busca)&&
+(!tipo||r[1]===tipo)
+);
+
+tabelaRH("rhTabelaDimens",
+["Unidade","Serviço","Famílias ref. 2026",
+"Equipe mínima (quadro)","Superior exigido",
+"Assistentes Sociais","Psicólogos","Pedagogos/outros",
+"Coordenação"],
+lista.map(r=>r.map((v,i)=>
+i===2?(v===null?"—":fmtRH(v)):v
+))
+);
+
+}
+
+function analisesRH(){
+
+const unidadesSemEfetivos=EFETIVOS
+.filter(r=>r[4]===0).map(r=>r[0]);
+
+const maiores=LOTACOES.slice()
+.sort((a,b)=>b[2]-a[2])
+.slice(0,5);
+
+document.getElementById("rhAnalises").innerHTML=`
+
+<div class="rh-alert">
+<b>1. Conferência do quadro de pessoal:</b>
+o consolidado informa 284 ativos e 289 cadastrados.
+O total da tabela de categoria profissional × vínculo
+não é idêntico ao consolidado de ativos.
+Recomenda-se conciliação com a base nominal interna
+antes de publicação de indicadores de efetividade.
+</div>
+
+<div class="rh-alert">
+<b>2. Unidades sem efetivos no recorte específico:</b>
+${escapeRH(unidadesSemEfetivos.join("; "))}.
+Esse recorte não deve ser confundido com o total de
+efetivos de toda a SEMPRAS.
+</div>
+
+<div class="rh-alert">
+<b>3. Maiores lotações por número de ativos:</b>
+${maiores.map(x=>escapeRH(x[0])+" ("+x[2]+")").join("; ")}.
+A avaliação da suficiência das equipes deve considerar
+a demanda territorial, jornada e composição profissional.
+</div>
+
+<div class="rh-ok">
+<b>4. Recomendação de monitoramento:</b>
+manter atualização periódica de lotação, vínculo,
+carga horária, afastamentos e equipe de referência
+por unidade, articulando Gestão do Trabalho,
+CadSUAS, Censo SUAS e Vigilância Socioassistencial.
+</div>
+
+<div class="rh-alert">
+<b>5. Qualidade da informação:</b>
+a tabela original contém classificação inconsistente
+para algumas lotações (por exemplo, CRAS registrados
+como tipo Cadastro Único), além de Educação Permanente
+com zero ativos e 40 horas informadas.
+Os registros foram preservados e sinalizados para revisão.
+</div>
+`;
+}
+
+/* ==========================================
+   INTEGRAÇÃO À ABA 2
+========================================== */
+
+function montarGestaoRH(){
+
+const alvo=document.getElementById("conteudo");
+
+if(!alvo)return;
+if(document.getElementById("cad-rh"))return;
+
+alvo.insertAdjacentHTML("beforeend",htmlGestaoRH());
+
+preencherTabelasRH();
+prepararFiltrosRH();
+analisesRH();
+carregarGraficosRH();
+
+}
+
+// Mantém a função original da aba Rede SUAS
+// e acrescenta o módulo após seu conteúdo.
+
+if(typeof window.rede==="function"){
+
+const redeOriginal=window.rede;
+
+window.rede=function(){
+redeOriginal();
+montarGestaoRH();
 };
-
-const graficosIBGE={};
-
-const formatarIBGE=(n,casas=0)=>
- Number(n).toLocaleString("pt-BR",{
-  minimumFractionDigits:casas,
-  maximumFractionDigits:casas
- });
-
-function numeroIBGE(valor){
- if(valor===null||valor===undefined)return null;
- const s=String(valor).trim();
- if(!s||s==="-"||s==="..."||s==="X"||s==="..")
-  return null;
- const n=Number(s);
- return Number.isFinite(n)?n:null;
-}
-
-function textoSeguroIBGE(valor){
- return String(valor??"")
- .replace(/&/g,"&amp;")
- .replace(/</g,"&lt;")
- .replace(/>/g,"&gt;")
- .replace(/"/g,"&quot;");
-}
-
-async function requisicaoIBGE(url){
- const resposta=await fetch(url,{
-  headers:{"Accept":"application/json"},
-  cache:"no-store"
- });
- if(!resposta.ok){
-  throw new Error("API retornou HTTP "+resposta.status);
- }
- return await resposta.json();
-}
-
-function obterVariaveisIBGE(resposta){
- const resultado={};
-
- if(!Array.isArray(resposta))return resultado;
-
- resposta.forEach(item=>{
-  const id=String(item.id);
-  const serie=item.resultados?.[0]?.series?.[0]?.serie;
-
-  if(!serie)return;
-
-  const periodo=Object.keys(serie)[0];
-  resultado[id]={
-   nome:item.variavel||id,
-   unidade:item.unidade||"",
-   periodo,
-   valor:numeroIBGE(serie[periodo])
-  };
- });
-
- return resultado;
-}
-
-function obterEstimativasIBGE(resposta){
- if(!Array.isArray(resposta))return [];
-
- const serie=resposta[0]?.resultados?.[0]?.series?.[0]?.serie;
-
- if(!serie)return [];
-
- return Object.entries(serie)
- .map(([ano,valor])=>({
-  ano:Number(ano),
-  populacao:numeroIBGE(valor)
- }))
- .filter(x=>Number.isInteger(x.ano)&&x.populacao!==null)
- .sort((a,b)=>a.ano-b.ano);
-}
-
-function criarPainelIBGE(){
- return `
- <section id="ibge-interativo">
-
-  <div class="ibge-card">
-   <h2>Panorama Estatístico Interativo — IBGE</h2>
-   <p>
-    Município de Rondonópolis, Mato Grosso.
-    Indicadores consultados diretamente nas APIs
-    oficiais de Localidades e de Agregados do IBGE.
-   </p>
-
-   <div class="ibge-tools">
-    <button id="ibge-atualizar" type="button">
-     Atualizar dados do IBGE
-    </button>
-    <span id="ibge-situacao" aria-live="polite">
-     Aguardando consulta...
-    </span>
-   </div>
-
-   <div id="ibge-indicadores" class="ibge-grid"></div>
-  </div>
-
-  <div class="ibge-card">
-   <h3>Evolução das estimativas populacionais</h3>
-   <p>
-    Série anual de estimativas disponíveis
-    na tabela 6579 do IBGE.
-   </p>
-
-   <div class="ibge-chart">
-    <canvas id="ibge-grafico-evolucao"></canvas>
-   </div>
-
-   <div id="ibge-analise-evolucao"
-        class="ibge-info">
-    Aguardando dados.
-   </div>
-  </div>
-
-  <div class="ibge-card">
-   <h3>Comparativo: Rondonópolis e Mato Grosso</h3>
-   <p>
-    População residente apurada pelo Censo 2022.
-   </p>
-
-   <div class="ibge-chart">
-    <canvas id="ibge-grafico-comparativo"></canvas>
-   </div>
-
-   <div id="ibge-analise-comparativo"
-        class="ibge-info">
-    Aguardando dados.
-   </div>
-  </div>
-
-  <div class="ibge-card">
-   <h3>Consulta interativa dos indicadores</h3>
-
-   <div class="ibge-tools">
-    <select id="ibge-selecionar">
-     <option value="93">População residente</option>
-     <option value="6318">Área territorial do Censo</option>
-     <option value="614">Densidade demográfica</option>
-    </select>
-   </div>
-
-   <div id="ibge-detalhe"></div>
-  </div>
-
-  <div class="ibge-card">
-   <h3>Identificação territorial do município</h3>
-   <div id="ibge-localidade"></div>
-  </div>
-
-  <div class="ibge-card">
-   <h3>Fontes e metodologia</h3>
-
-   <div class="ibge-links">
-    <a href="https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama"
-       target="_blank" rel="noopener">
-       IBGE Cidades
-    </a>
-
-    <a href="https://servicodados.ibge.gov.br/api/docs/agregados?versao=3"
-       target="_blank" rel="noopener">
-       Documentação da API de Agregados
-    </a>
-
-    <a href="https://servicodados.ibge.gov.br/api/docs/localidades"
-       target="_blank" rel="noopener">
-       Documentação da API de Localidades
-    </a>
-   </div>
-
-   <div class="ibge-alerta">
-    Os indicadores do Censo 2022 representam
-    informações censitárias, enquanto a tabela
-    de estimativas apresenta resultados anuais
-    de outra operação estatística.
-
-    Os dados não são necessariamente atualizados
-    todos os anos nem devem ser interpretados
-    como se pertencessem à mesma pesquisa.
-   </div>
-
-   <p class="ibge-muted">
-    Fonte: IBGE — APIs de Agregados e Localidades.
-    Código do município: 5107602.
-    Os dados exibidos são resultados agregados,
-    sem informações pessoais.
-   </p>
-  </div>
-
- </section>`;
-}
-
-function montarKPIsIBGE(){
-
- const c=dadosIBGE.censo;
- const ult=dadosIBGE.estimativas.at(-1);
-
- const itens=[
-  ["População residente — Censo 2022",
-   c["93"]?.valor,
-   "habitantes"],
-  ["Área territorial — tabela 4714",
-   c["6318"]?.valor,
-   "km²"],
-  ["Densidade demográfica — Censo 2022",
-   c["614"]?.valor,
-   "hab./km²"],
-  ["Última estimativa disponível",
-   ult?.populacao,
-   ult?"habitantes — "+ult.ano:""]
- ];
-
- document.getElementById("ibge-indicadores").innerHTML=
- itens.map((r,i)=>`
-  <div class="ibge-kpi">
-   <small>${textoSeguroIBGE(r[0])}</small>
-   <strong>
-    ${r[1]===null||r[1]===undefined
-      ?"Indisponível"
-      :formatarIBGE(r[1],i===1||i===2?2:0)}
-   </strong>
-   <small>${textoSeguroIBGE(r[2])}</small>
-  </div>
- `).join("");
-}
-
-function desenharGraficoIBGE(id,tipo,labels,datasets,opcoes={}){
-
- if(typeof Chart==="undefined")return;
-
- const canvas=document.getElementById(id);
- if(!canvas)return;
-
- if(graficosIBGE[id]){
-  graficosIBGE[id].destroy();
- }
-
- graficosIBGE[id]=new Chart(canvas,{
-  type:tipo,
-  data:{labels,datasets},
-  options:{
-   responsive:true,
-   maintainAspectRatio:false,
-   plugins:{
-    legend:{position:"top"}
-   },
-   ...opcoes
-  }
- });
-}
-
-function montarEvolucaoIBGE(){
-
- const dados=dadosIBGE.estimativas;
-
- if(!dados.length){
-  document.getElementById("ibge-analise-evolucao")
-   .textContent="Série de estimativas indisponível.";
-  return;
- }
-
- desenharGraficoIBGE(
-  "ibge-grafico-evolucao",
-  "line",
-  dados.map(d=>String(d.ano)),
-  [{
-   label:"População estimada",
-   data:dados.map(d=>d.populacao),
-   borderColor:"#2563eb",
-   backgroundColor:"rgba(37,99,235,.12)",
-   tension:.25,
-   fill:true
-  }]
- );
-
- const primeiro=dados[0];
- const ultimo=dados[dados.length-1];
-
- const diferenca=ultimo.populacao-primeiro.populacao;
- const variacao=primeiro.populacao?
-   100*diferenca/primeiro.populacao:null;
-
- document.getElementById("ibge-analise-evolucao").textContent=
-  "Entre "+primeiro.ano+" e "+ultimo.ano+
-  ", as estimativas passaram de "+
-  formatarIBGE(primeiro.populacao)+" para "+
-  formatarIBGE(ultimo.populacao)+" habitantes. "+
-  (variacao===null?"":"Variação aproximada de "+
-  formatarIBGE(variacao,2)+"%.")+
-  " Isso representa variação estimada da população, "+
-  "não uma contagem censitária.";
-}
-
-function montarComparativoIBGE(){
-
- const municipal=dadosIBGE.censo["93"]?.valor;
- const estadual=dadosIBGE.estado["93"]?.valor;
-
- if(municipal===null||municipal===undefined||
- estadual===null||estadual===undefined){
-  document.getElementById("ibge-analise-comparativo")
-   .textContent="Comparativo indisponível na consulta.";
-  return;
- }
-
- const restante=Math.max(0,estadual-municipal);
-
- desenharGraficoIBGE(
-  "ibge-grafico-comparativo",
-  "doughnut",
-  ["Rondonópolis","Demais municípios de Mato Grosso"],
-  [{
-   data:[municipal,restante],
-   backgroundColor:["#2563eb","#cbd5e1"]
-  }]
- );
-
- const participacao=100*municipal/estadual;
-
- document.getElementById("ibge-analise-comparativo")
-  .textContent=
-  "Rondonópolis concentrava aproximadamente "+
-  formatarIBGE(participacao,2)+
-  "% da população residente de Mato Grosso "+
-  "no Censo Demográfico de 2022.";
-}
-
-function montarDetalheIBGE(){
-
- const id=document.getElementById("ibge-selecionar").value;
- const dado=dadosIBGE.censo[id];
- const alvo=document.getElementById("ibge-detalhe");
-
- if(!dado||dado.valor===null){
-  alvo.textContent="Indicador não disponível na consulta.";
-  return;
- }
-
- alvo.innerHTML=`
-  <div class="ibge-grid">
-   <div class="ibge-kpi">
-    <small>${textoSeguroIBGE(dado.nome)}</small>
-    <strong>${formatarIBGE(
-      dado.valor,id==="93"?0:2
-    )}</strong>
-    <small>${textoSeguroIBGE(dado.unidade)}</small>
-   </div>
-   <div class="ibge-kpi">
-    <small>Período de referência</small>
-    <strong>${textoSeguroIBGE(dado.periodo)}</strong>
-    <small>Fonte: IBGE, tabela 4714</small>
-   </div>
-  </div>`;
-}
-
-function montarTerritorioIBGE(){
-
- const municipio=dadosIBGE.municipio;
- const alvo=document.getElementById("ibge-localidade");
-
- if(!municipio){
-  alvo.textContent="Informação territorial indisponível.";
-  return;
- }
-
- // A API pode apresentar hierarquias alternativas
- // conforme sua versão.
- const uf=municipio.microrregiao?.mesorregiao?.UF||
- municipio["regiao-imediata"]?.["regiao-intermediaria"]?.UF;
-
- const imediata=municipio["regiao-imediata"];
- const intermediaria=imediata?.["regiao-intermediaria"];
-
- const dados=[
-  ["Município",municipio.nome],
-  ["Código IBGE",municipio.id],
-  ["UF",uf?.nome||"Mato Grosso"],
-  ["Região geográfica imediata",imediata?.nome||"Não informado"],
-  ["Região geográfica intermediária",intermediaria?.nome||"Não informado"]
- ];
-
- alvo.innerHTML=`
-  <div style="overflow-x:auto">
-   <table>
-    <thead><tr>
-     <th>Identificação</th>
-     <th>Informação</th>
-    </tr></thead>
-    <tbody>
-    ${dados.map(r=>`
-      <tr>
-       <td>${textoSeguroIBGE(r[0])}</td>
-       <td>${textoSeguroIBGE(r[1])}</td>
-      </tr>
-    `).join("")}
-    </tbody>
-   </table>
-  </div>`;
-}
-
-async function atualizarDadosIBGE(){
-
- const raiz=document.getElementById("ibge-interativo");
- if(!raiz)return;
-
- const botao=document.getElementById("ibge-atualizar");
- const situacao=document.getElementById("ibge-situacao");
-
- botao.disabled=true;
- situacao.textContent="Consultando API oficial do IBGE...";
-
- const consultas=await Promise.allSettled([
-  requisicaoIBGE(IBGE_API.localidade),
-  requisicaoIBGE(IBGE_API.censoMunicipio),
-  requisicaoIBGE(IBGE_API.censoEstado),
-  requisicaoIBGE(IBGE_API.estimativas)
- ]);
-
- dadosIBGE.municipio=
-  consultas[0].status==="fulfilled"?consultas[0].value:null;
-
- dadosIBGE.censo=
-  consultas[1].status==="fulfilled"?
-  obterVariaveisIBGE(consultas[1].value):{};
-
- dadosIBGE.estado=
-  consultas[2].status==="fulfilled"?
-  obterVariaveisIBGE(consultas[2].value):{};
-
- dadosIBGE.estimativas=
-  consultas[3].status==="fulfilled"?
-  obterEstimativasIBGE(consultas[3].value):[];
-
- if(!document.getElementById("ibge-interativo"))return;
-
- montarKPIsIBGE();
- montarEvolucaoIBGE();
- montarComparativoIBGE();
- montarDetalheIBGE();
- montarTerritorioIBGE();
-
- const sucesso=consultas.filter(
-  x=>x.status==="fulfilled"
- ).length;
-
- situacao.textContent=
- sucesso===4?
- "Consulta concluída — 4 fontes carregadas.":
- "Consulta parcial: "+sucesso+
- " de 4 fontes carregadas. Tente atualizar novamente.";
-
- botao.disabled=false;
-}
-
-function instalarPainelIBGE(){
-
- const alvo=document.getElementById("conteudo");
- if(!alvo)return;
-
- Object.values(graficosIBGE).forEach(g=>g.destroy());
- Object.keys(graficosIBGE).forEach(k=>delete graficosIBGE[k]);
-
- document.getElementById("ibge-interativo")?.remove();
-
- alvo.insertAdjacentHTML("beforeend",criarPainelIBGE());
-
- document.getElementById("ibge-atualizar")
- .addEventListener("click",atualizarDadosIBGE);
-
- document.getElementById("ibge-selecionar")
- .addEventListener("change",montarDetalheIBGE);
-
- atualizarDadosIBGE();
-}
-
-/* INTEGRAÇÃO COM A ABA 1 — MUNICÍPIO E IBGE */
-
-if(typeof window.municipio==="function"){
-
- const municipioOriginal=window.municipio;
-
- window.municipio=function(...args){
-  const resultado=municipioOriginal.apply(this,args);
-  instalarPainelIBGE();
-  return resultado;
- };
 
 }else{
 
- // Alternativa caso a versão tenha outra
- // forma de navegação entre abas.
- document.addEventListener("click",e=>{
+console.warn(
+"Módulo Gestão do Trabalho: função rede() não encontrada. "+
+"Verifique se este script foi inserido após o código principal."
+);
 
-  const botao=e.target.closest("button");
-  if(!botao)return;
-
-  if(/munic[ií]pio.*ibge/i.test(botao.textContent)){
-   setTimeout(instalarPainelIBGE,0);
-  }
- });
-}
-
-const ativo=document.querySelector("#menu button.ativo");
-
-if(ativo&&/munic[ií]pio.*ibge/i.test(ativo.textContent)){
- instalarPainelIBGE();
 }
 
 })();
 </script>
 
-<!-- FIM: PAINEL INTERATIVO IBGE -->
-
+<!-- FIM DO MÓDULO GESTÃO DO TRABALHO -->
