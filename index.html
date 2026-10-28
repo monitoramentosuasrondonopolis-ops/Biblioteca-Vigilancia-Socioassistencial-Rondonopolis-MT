@@ -1,846 +1,608 @@
 
-<!-- =========================================
-PAINEL INTERATIVO PMAS 2026-2029 E SETASC
-SEMPRAS - RONDONÓPOLIS/MT
-INSERIR ANTES DE </body>
-========================================= -->
-
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel da Vigilância Socioassistencial | Rondonópolis</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-#pmas2026 {
-  font-family: Arial, sans-serif;
-  color: #25364d;
+:root{
+ --azul:#123c71;
+ --destaque:#2463bb;
+ --fundo:#f1f5fa;
+ --borda:#dbe4ee;
+ --texto:#26364a;
 }
-#pmas2026 * {
-  box-sizing: border-box;
-}
-#pmas2026 .pmas-box {
-  background: white;
-  border: 1px solid #dbe5f0;
-  padding: 20px;
-  border-radius: 14px;
-  margin-bottom: 18px;
-}
-#pmas2026 .pmas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(175px,1fr));
-  gap: 12px;
-  margin: 18px 0;
-}
-#pmas2026 .pmas-kpi {
-  padding: 20px;
-  background: #edf5ff;
-  border-radius: 12px;
-  border: 1px solid #d6e6fa;
-}
-#pmas2026 .pmas-kpi small {
-  display: block;
-  color: #526580;
-  line-height: 1.5;
-}
-#pmas2026 .pmas-kpi strong {
-  display: block;
-  font-size: 28px;
-  color: #1957a5;
-  margin-top: 8px;
-}
-#pmas2026 h2,
-#pmas2026 h3 {
-  color: #164477;
-}
-#pmas2026 .pmas-filtros {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 18px 0;
-}
-#pmas2026 input,
-#pmas2026 select {
-  padding: 12px;
-  border: 1px solid #cad7e5;
-  border-radius: 9px;
-  background: white;
-  min-width: 170px;
-  flex: 1;
-  max-width: 100%;
-}
-#pmas2026 button {
-  padding: 12px 17px;
-  border: 0;
-  border-radius: 9px;
-  background: #1957a5;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-#pmas2026 .pmas-grafico {
-  height: 340px;
-  position: relative;
-}
-#pmas2026 .pmas-tabela {
-  width: 100%;
-  overflow-x: auto;
-  max-height: 600px;
-}
-#pmas2026 table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-#pmas2026 th {
-  background: #e6eef9;
-  padding: 12px;
-  text-align: left;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-#pmas2026 td {
-  border-bottom: 1px solid #e2e8f0;
-  padding: 11px;
-  vertical-align: top;
-}
-#pmas2026 details {
-  border: 1px solid #dce5ef;
-  border-radius: 10px;
-  margin: 12px 0;
-  padding: 14px;
-  background: #fafcff;
-}
-#pmas2026 summary {
-  cursor: pointer;
-  color: #164477;
-  font-weight: bold;
-}
-#pmas2026 .pmas-aviso {
-  background: #fffbeb;
-  border-left: 4px solid #f59e0b;
-  padding: 14px;
-  margin: 14px 0;
-  line-height: 1.6;
-}
-#pmas2026 .pmas-meta {
-  margin: 8px 0;
-  line-height: 1.6;
-}
-#pmas2026 .pmas-meta b {
-  color: #164477;
-}
-#pmas2026 .pmas-status {
-  background: #dbeafe;
-  border-radius: 7px;
-  padding: 5px 9px;
-  display: inline-block;
-}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fundo);font-family:Arial,sans-serif;color:var(--texto)}
+header{background:linear-gradient(120deg,#102d55,#2363ae);color:white;padding:30px 5%}
+header h1{margin:10px 0;font-size:27px}
+header p{color:#dbeafe}
+main{max-width:1400px;margin:auto;padding:20px}
+nav{display:flex;gap:8px;overflow-x:auto;padding:15px 0}
+nav button{border:1px solid var(--borda);background:white;color:var(--azul);padding:13px;border-radius:9px;font-weight:bold;cursor:pointer;white-space:nowrap}
+nav button.ativo{background:var(--azul);color:white}
+.aba{display:none}
+.aba.ativa{display:block}
+.card{background:white;border:1px solid var(--borda);padding:22px;border-radius:14px;margin-bottom:17px;box-shadow:0 2px 8px #172c4510}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.kpi{background:#edf5ff;border:1px solid #d9eaff;padding:19px;border-radius:12px}
+.kpi small{display:block;color:#52657e}
+.kpi strong{display:block;font-size:27px;color:#1855a5;margin-top:8px}
+h2,h3{color:var(--azul)}
+.controles{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}
+input,select,textarea{padding:12px;border:1px solid #cad6e5;border-radius:8px;background:white;max-width:100%}
+input,select{flex:1;min-width:180px}
+button.acao{background:#1855a5;color:white;padding:11px 15px;border:0;border-radius:8px;cursor:pointer}
+.grafico{height:380px;position:relative}
+.tabela{overflow-x:auto;max-height:560px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{background:#e7eef8;text-align:left;padding:11px;position:sticky;top:0}
+td{padding:10px;border-bottom:1px solid #e2e8f0}
+tr:hover td{background:#f8fbff}
+.aviso{background:#fffae8;border-left:4px solid #e8a82d;padding:14px;margin:15px 0;line-height:1.6}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.links a{display:block;padding:18px;background:#eff6ff;border-radius:10px;color:#1855a5;text-decoration:none;font-weight:bold}
+details{border:1px solid var(--borda);padding:14px;border-radius:9px;margin:10px 0}
+summary{cursor:pointer;font-weight:bold;color:var(--azul)}
+footer{text-align:center;background:#172e4b;color:white;padding:25px}
+@media(max-width:600px){header h1{font-size:22px}.grafico{height:320px}main{padding:10px}}
 </style>
+</head>
+
+<body>
+<header>
+<small>SEMPRAS | RONDONÓPOLIS - MT</small>
+<h1>Biblioteca e Painel da Vigilância Socioassistencial</h1>
+<p>Diagnóstico Socioterritorial • Monitoramento • Gestão da Informação • PMAS 2026–2029</p>
+<small>Base documental consolidada até outubro de 2026</small>
+</header>
+
+<main>
+<nav id="menu"></nav>
+<div id="conteudo"></div>
+</main>
+
+<footer>
+Prefeitura Municipal de Rondonópolis — SEMPRAS
+<p>Vigilância Socioassistencial | Painel de Apoio à Gestão</p>
+</footer>
 
 <script>
-(function(){
-
 "use strict";
 
-/* =========================================
-   BANCO DE DADOS
-========================================= */
+// ==========================================
+// CONFIGURAÇÕES GERAIS
+// ==========================================
+const formato = n => Number(n).toLocaleString("pt-BR");
+const indice = n => Number(n).toFixed(3).replace(".",",");
+const percentual = n => Number(n).toFixed(1).replace(".",",")+"%";
 
-let metasPMAS = [];
-let metasSETASC = [];
-let graficosPMAS = [];
-
-const resumoAreas = [
-  ["Gestão do SUAS",59],
-  ["Proteção Social Especial",37],
-  ["Proteção Social Básica",32],
-  ["Engenharia e Arquitetura",20],
-  ["Benefícios Socioassistenciais",20],
-  ["Gestão Financeira",15],
-  ["Controle Social",8]
+const abas=[
+["municipio","Município, Território e IBGE"],
+["rede","Rede SUAS, CadSUAS e Contatos"],
+["mulher","Superintendência da Mulher"],
+["cadunico","Cadastro Único, RI Social e IVCAD"],
+["basica","Proteção Social Básica — RMA"],
+["especial","Proteção Social Especial"],
+["sisc","SISC, SCFV e Condicionalidades"],
+["cmas","CMAS — Conselho Municipal"],
+["fmas","FMAS e Orçamento"],
+["articulacao","Articulação Intersetorial"],
+["pmas","Resumo Visual PMAS 2026–2029"],
+["boletins","Boletins, Notas Técnicas e Ações 2026"]
 ];
 
-const numeroPMAS = valor =>
-  Number(valor).toLocaleString("pt-BR");
+const menu=document.getElementById("menu");
+const conteudo=document.getElementById("conteudo");
+let graficoAtivo=null;
+let abaAtual="municipio";
 
-function seguroPMAS(valor){
-  return String(valor ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#39;");
+abas.forEach(([id,nome],i)=>{
+const botao=document.createElement("button");
+botao.textContent=(i+1)+". "+nome;
+botao.onclick=()=>abrir(id);
+botao.dataset.aba=id;
+menu.appendChild(botao);
+});
+
+function abrir(id){
+abaAtual=id;
+document.querySelectorAll("#menu button").forEach(b=>
+ b.classList.toggle("ativo",b.dataset.aba===id)
+);
+if(graficoAtivo){graficoAtivo.destroy();graficoAtivo=null;}
+const funcoes={
+ municipio:municipio,
+ rede:rede,
+ mulher:mulher,
+ cadunico:cadunico,
+ basica:basica,
+ especial:especial,
+ sisc:sisc,
+ cmas:cmas,
+ fmas:fmas,
+ articulacao:articulacao,
+ pmas:pmas,
+ boletins:boletins
+};
+funcoes[id]();
 }
 
-function valorPMAS(v){
-  if(v === null || v === undefined) return "";
-  return String(v);
+function card(titulo,corpo){
+return `<div class="card"><h2>${titulo}</h2>${corpo}</div>`;
 }
 
-/* =========================================
-   IMPORTAÇÃO DA PLANILHA OFICIAL
-========================================= */
-
-function importarPMAS(arquivo){
-
-  if(!arquivo){
-    return;
-  }
-
-  if(typeof XLSX === "undefined"){
-    alert("Biblioteca de planilhas indisponível.");
-    return;
-  }
-
-  const leitor = new FileReader();
-
-  leitor.onload = function(evento){
-
-    try{
-
-      const workbook = XLSX.read(
-        evento.target.result,
-        {type:"array",cellDates:true}
-      );
-
-      const nomePMAS = workbook.SheetNames.find(
-        nome => nome.trim() === "PMAS Consolidado"
-      ) || workbook.SheetNames.find(
-        nome => nome.trim() === "Base Original"
-      );
-
-      const nomeSETASC = workbook.SheetNames.find(
-        nome => nome.trim() === "SETASC Consolidado"
-      );
-
-      if(!nomePMAS || !nomeSETASC){
-        alert(
-          "Não foram encontradas as abas PMAS Consolidado e SETASC Consolidado."
-        );
-        return;
-      }
-
-      const matrizPMAS = XLSX.utils.sheet_to_json(
-        workbook.Sheets[nomePMAS],
-        {header:1,defval:"",raw:false}
-      );
-
-      const matrizSETASC = XLSX.utils.sheet_to_json(
-        workbook.Sheets[nomeSETASC],
-        {header:1,defval:"",raw:false}
-      );
-
-      metasPMAS = matrizPMAS.slice(4)
-        .filter(r => /^\d+$/.test(String(r[0]).trim()))
-        .map(r => ({
-          numero:r[0],
-          eixo:r[1],
-          diretriz:r[2],
-          objetivo:r[3],
-          acao:r[4],
-          ano2026:r[5],
-          ano2027:r[6],
-          ano2028:r[7],
-          ano2029:r[8],
-          periodo:r[9],
-          situacao:r[10],
-          semaforo:r[11],
-          resultado:r[12],
-          impacto:r[13],
-          responsavel:r[14],
-          indicador:r[15],
-          linha:r
-        }));
-
-      metasSETASC = matrizSETASC.slice(4)
-        .filter(r => /^\d+$/.test(String(r[0]).trim()))
-        .map(r => ({
-          id:r[0],
-          semaforo:r[1],
-          status:r[2],
-          eixo:r[3],
-          unidade:r[4],
-          dificuldade:r[5],
-          acao:r[6],
-          responsavel:r[7],
-          prazo:r[8],
-          execucao:r[9],
-          proximo:r[10],
-          atualizacao:r[11],
-          linha:r
-        }));
-
-      preencherFiltrosPMAS();
-      atualizarPMAS();
-
-    }catch(erro){
-      console.error(erro);
-      alert("Erro ao interpretar a planilha: "+erro.message);
-    }
-  };
-
-  leitor.readAsArrayBuffer(arquivo);
+function indicadores(itens){
+return `<div class="cards">${itens.map(x=>
+ `<div class="kpi"><small>${x[0]}</small><strong>${x[1]}</strong></div>`
+).join("")}</div>`;
 }
 
-/* =========================================
-   INTERFACE PRINCIPAL
-========================================= */
-
-function telaPMAS(){
-
-  return `
-  <div id="pmas2026">
-
-    <div class="pmas-box">
-
-      <h2>Resumo Visual do PMAS 2026–2029</h2>
-
-      <p>
-        Prefeitura Municipal de Rondonópolis —
-        Vigilância Socioassistencial.
-      </p>
-
-      <div class="pmas-grid">
-
-        <div class="pmas-kpi">
-          <small>Metas PMAS previstas</small>
-          <strong>191</strong>
-        </div>
-
-        <div class="pmas-kpi">
-          <small>Providências SETASC</small>
-          <strong>64</strong>
-        </div>
-
-        <div class="pmas-kpi">
-          <small>Áreas de acompanhamento</small>
-          <strong>7</strong>
-        </div>
-
-        <div class="pmas-kpi">
-          <small>Vigência do PMAS</small>
-          <strong>2026–2029</strong>
-        </div>
-
-      </div>
-
-      <div class="pmas-aviso">
-        Importe a planilha oficial
-        <b>metas_pmas_com_setasc.xlsm</b>
-        para carregar as metas completas e as
-        providências SETASC.
-
-        <p>
-          Os quantitativos acima representam o
-          planejamento cadastrado, não a execução
-          das metas.
-        </p>
-      </div>
-
-      <input
-        type="file"
-        id="arquivoPMAS"
-        accept=".xlsx,.xlsm,.xls"
-      >
-
-      <p id="situacaoImportacaoPMAS">
-        Aguardando importação da planilha.
-      </p>
-
-    </div>
-
-    <div class="pmas-box">
-
-      <h3>Distribuição das metas por área</h3>
-
-      <div class="pmas-grafico">
-        <canvas id="graficoAreasPMAS"></canvas>
-      </div>
-
-    </div>
-
-    <div class="pmas-box">
-
-      <h3>Consulta e Monitoramento das Metas</h3>
-
-      <div class="pmas-filtros">
-
-        <input
-          id="buscaMetaPMAS"
-          placeholder="Pesquisar número, meta, diretriz ou ação..."
-        >
-
-        <select id="filtroEixoPMAS">
-          <option value="">Todos os eixos</option>
-        </select>
-
-        <select id="filtroAnoPMAS">
-          <option value="">Todos os anos</option>
-          <option value="2026">2026</option>
-          <option value="2027">2027</option>
-          <option value="2028">2028</option>
-          <option value="2029">2029</option>
-        </select>
-
-        <select id="filtroSituacaoPMAS">
-          <option value="">Todas as situações</option>
-        </select>
-
-      </div>
-
-      <div id="indicadoresFiltroPMAS"></div>
-
-      <div id="listaMetasPMAS"></div>
-
-    </div>
-
-    <div class="pmas-box">
-
-      <h3>Plano de Aprimoramento — SETASC</h3>
-
-      <div class="pmas-grafico">
-        <canvas id="graficoSETASC"></canvas>
-      </div>
-
-      <div class="pmas-filtros">
-
-        <input
-          id="buscaSETASC"
-          placeholder="Pesquisar unidade, providência ou responsável..."
-        >
-
-        <select id="filtroSETASC">
-          <option value="">Todas as situações</option>
-        </select>
-
-      </div>
-
-      <div id="listaSETASC"></div>
-
-    </div>
-
-    <div class="pmas-box">
-
-      <h3>Análise Técnica e Monitoramento</h3>
-
-      <p>
-        A Vigilância Socioassistencial poderá
-        utilizar o painel para identificar metas
-        com necessidade de acompanhamento,
-        comparar o planejamento plurianual e
-        consolidar informações para a gestão
-        e o controle social.
-      </p>
-
-      <div class="pmas-aviso">
-        Os resultados previstos e percentuais
-        planejados para os anos de 2026, 2027,
-        2028 e 2029 não devem ser classificados
-        como execução realizada sem evidência
-        documental correspondente.
-      </div>
-
-    </div>
-
-  </div>`;
+function tabela(titulos,linhas){
+return `<div class="tabela"><table><thead><tr>${
+titulos.map(x=>`<th>${x}</th>`).join("")
+}</tr></thead><tbody>${
+linhas.map(l=>`<tr>${l.map(x=>`<td>${x}</td>`).join("")}</tr>`).join("")
+}</tbody></table></div>`;
 }
 
-/* =========================================
-   GRÁFICOS
-========================================= */
+function aviso(texto){return `<div class="aviso">${texto}</div>`;}
 
-function limparGraficosPMAS(){
-  graficosPMAS.forEach(g => g.destroy());
-  graficosPMAS = [];
+function desenhar(id,tipo,labels,datasets,vertical=false){
+if(typeof Chart==="undefined")return;
+const elemento=document.getElementById(id);
+if(!elemento)return;
+graficoAtivo=new Chart(elemento,{
+ type:tipo,
+ data:{labels,datasets},
+ options:{
+ responsive:true,
+ maintainAspectRatio:false,
+ indexAxis:vertical?"y":"x",
+ plugins:{legend:{position:"top"}},
+ scales:tipo==="doughnut"?{}:{
+ x:{ticks:{autoSkip:false,maxRotation:50}},
+ y:{beginAtZero:tipo==="bar"}
+ }
+ }
+});
 }
 
-function graficosResumoPMAS(){
-
-  if(typeof Chart === "undefined") return;
-
-  const elemento=document.getElementById(
-    "graficoAreasPMAS"
-  );
-
-  if(!elemento)return;
-
-  graficosPMAS.push(new Chart(elemento,{
-    type:"bar",
-    data:{
-      labels:resumoAreas.map(a=>a[0]),
-      datasets:[{
-        label:"Quantidade de metas",
-        data:resumoAreas.map(a=>a[1]),
-        backgroundColor:"#2563eb"
-      }]
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      indexAxis:"y",
-      plugins:{
-        legend:{display:false}
-      },
-      scales:{
-        x:{beginAtZero:true}
-      }
-    }
-  }));
+function modulo(titulo,descricao,campos=[]){
+return `<details>
+<summary>${titulo}</summary>
+<p>${descricao}</p>
+${campos.length?tabela(["Indicador","Situação"],campos.map(x=>[x,"A validar"])):""}
+</details>`;
 }
 
-function graficoSituacaoSETASC(){
-
-  if(typeof Chart==="undefined")return;
-
-  const canvas=document.getElementById(
-    "graficoSETASC"
-  );
-
-  if(!canvas || !metasSETASC.length)return;
-
-  const contagem={};
-
-  metasSETASC.forEach(meta=>{
-    const s=valorPMAS(meta.status).trim() ||
-      "Não informado";
-    contagem[s]=(contagem[s]||0)+1;
-  });
-
-  graficosPMAS
-    .filter(g=>g.canvas===canvas)
-    .forEach(g=>g.destroy());
-
-  graficosPMAS=graficosPMAS.filter(
-    g=>g.canvas!==canvas
-  );
-
-  graficosPMAS.push(new Chart(canvas,{
-    type:"doughnut",
-    data:{
-      labels:Object.keys(contagem),
-      datasets:[{
-        data:Object.values(contagem),
-        backgroundColor:[
-          "#16a34a",
-          "#2563eb",
-          "#eab308",
-          "#dc2626",
-          "#94a3b8"
-        ]
-      }]
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      plugins:{
-        legend:{position:"bottom"}
-      }
-    }
-  }));
+function links(lista){
+return `<div class="links">${lista.map(x=>
+ `<a href="${x[1]}" target="_blank" rel="noopener noreferrer">${x[0]}</a>`
+).join("")}</div>`;
 }
 
-/* =========================================
-   FILTROS
-========================================= */
+// ==========================================
+// BASES DE DADOS
+// ==========================================
+const historico=[
+["Set/2024",50983,113615,10472,12726,27785],
+["Dez/2024",52336,116116,10104,12713,29519],
+["Mar/2025",49434,110536,9912,12953,26569],
+["Jun/2025",50799,113263,10009,12685,28105],
+["Set/2025",49707,111412,9693,12227,27787],
+["Dez/2025",49570,111010,9498,12187,27885],
+["Mar/2026",49920,111980,9397,13150,27373],
+["Jun/2026",50514,113524,9427,13124,27963],
+["Set/2026",50941,114463,9534,12973,28434]
+];
 
-function preencherFiltrosPMAS(){
+// CRAS, famílias 2025, IVCAD 2025, prioridade 2025,
+// famílias 2026, IVCAD 2026, prioridade 2026,
+// Bolsa Família 2025, benefícios eventuais 2025
+const cras=[
+["Ana Carla",7232,.271,"Alta",7071,.259,"Alta",1927,1285],
+["Alfredo de Castro",3665,.272,"Alta",3854,.259,"Alta",1246,2293],
+["Cidade Alta",4925,.264,"Alta",4925,.251,"Média",1086,903],
+["Conjunto São José",7804,.249,"Média",8083,.245,"Específica",1437,1424],
+["Luz D'Yara",7925,.248,"Média",7947,.242,"Específica",1194,920],
+["Padre Lothar",3814,.262,"Alta",4279,.254,"Alta",1452,1026],
+["Rio Vermelho",4372,.245,"Específica",4617,.251,"Alta",583,877],
+["Sagrada Família",6884,.258,"Média",7115,.257,"Alta",1572,1525],
+["Central (histórico)",2652,.251,"Específica",2283,.242,"Específica",475,710]
+];
 
-  const eixos=[
-    ...new Set(
-      metasPMAS.map(m=>valorPMAS(m.eixo))
-        .filter(Boolean)
-    )
-  ].sort();
+const bairros=[
+["Parque Universitário",1369,3274,298],
+["Residencial Celina Bezerra",1042,2341,362],
+["Centro",991,1704,212],
+["Jardim Liberdade",905,2083,155],
+["Loteamento Pedra 90",723,1790,167]
+];
 
-  document.getElementById("filtroEixoPMAS")
-    .innerHTML='<option value="">Todos os eixos</option>'+
-    eixos.map(e=>`
-      <option value="${seguroPMAS(e)}">
-        ${seguroPMAS(e)}
-      </option>
-    `).join("");
+const unidades=[
+["CRAS Ana Carla","Proteção Social Básica"],
+["CRAS Alfredo de Castro","Proteção Social Básica"],
+["CRAS Cidade Alta / Jardim Iguaçu","Proteção Social Básica"],
+["CRAS Conjunto São José","Proteção Social Básica"],
+["CRAS Luz D'Yara","Proteção Social Básica"],
+["CRAS Padre Lothar","Proteção Social Básica"],
+["CRAS Rio Vermelho","Proteção Social Básica"],
+["CRAS Sagrada Família / CEU","Proteção Social Básica"],
+["CREAS","Proteção Social Especial"],
+["Centro POP","Proteção Social Especial"],
+["CRAI","Proteção Social Especial"],
+["Unidades de Acolhimento","Alta Complexidade"],
+["Posto do Cadastro Único","Gestão Cadastral"],
+["SCFV Vila Olímpica","Convivência"],
+["SCFV Padre Lothar","Convivência"],
+["SCFV Alfredo de Castro","Convivência"],
+["SCFV Zumbi dos Palmares","Convivência"]
+];
 
-  const situacoes=[
-    ...new Set(
-      metasPMAS.map(m=>valorPMAS(m.situacao))
-        .filter(Boolean)
-    )
-  ].sort();
-
-  document.getElementById("filtroSituacaoPMAS")
-    .innerHTML=
-    '<option value="">Todas as situações</option>'+
-    situacoes.map(s=>`
-      <option value="${seguroPMAS(s)}">
-        ${seguroPMAS(s)}
-      </option>
-    `).join("");
-
-  const statusSETASC=[
-    ...new Set(
-      metasSETASC.map(m=>valorPMAS(m.status))
-        .filter(Boolean)
-    )
-  ].sort();
-
-  document.getElementById("filtroSETASC")
-    .innerHTML=
-    '<option value="">Todas as situações</option>'+
-    statusSETASC.map(s=>`
-      <option value="${seguroPMAS(s)}">
-        ${seguroPMAS(s)}
-      </option>
-    `).join("");
+// ==========================================
+// 1. MUNICÍPIO, TERRITÓRIO E IBGE
+// ==========================================
+function municipio(){
+conteudo.innerHTML=
+card("Panorama Municipal — Rondonópolis/MT",
+indicadores([
+["População estimada IBGE 2026","268.202"],
+["Porte municipal","Grande Porte"],
+["CRAS ativos","8"],
+["Famílias CadÚnico Set/2026","50.941"]
+])+
+`<p>Diagnóstico socioterritorial e caracterização do município, conforme fontes oficiais e documentos da Vigilância Socioassistencial.</p>`)+
+card("Indicadores e Diagnósticos",
+modulo("Panorama demográfico",
+"População urbana, rural, idade, sexo, domicílios e condições de vida devem ser analisados conforme a referência de cada base.",
+["População por faixa etária","População rural e urbana","Domicílios","Pessoa com deficiência","Pessoa idosa"])+
+modulo("Território e vulnerabilidade",
+"Identificação dos territórios de abrangência dos oito CRAS e de áreas prioritárias.",
+["Bairros por CRAS","Concentração de pobreza","Cobertura socioassistencial"])+
+links([
+["IBGE Cidades — Rondonópolis","https://cidades.ibge.gov.br/brasil/mt/rondonopolis/panorama"],
+["Mapa territorial dos CRAS","https://www.google.com/maps/d/edit?mid=1JiHgDzghrEuWZSaiy_uipJv7Rh3TUqQ"]
+]));
 }
 
-/* =========================================
-   LISTA DE METAS PMAS
-========================================= */
-
-function atualizarMetasPMAS(){
-
-  const busca=document.getElementById(
-    "buscaMetaPMAS"
-  ).value.toLowerCase();
-
-  const eixo=document.getElementById(
-    "filtroEixoPMAS"
-  ).value;
-
-  const ano=document.getElementById(
-    "filtroAnoPMAS"
-  ).value;
-
-  const situacao=document.getElementById(
-    "filtroSituacaoPMAS"
-  ).value;
-
-  let lista=metasPMAS.filter(m=>{
-
-    const texto=Object.values(m)
-      .filter(v=>typeof v!=="object")
-      .join(" ").toLowerCase();
-
-    if(busca && !texto.includes(busca))return false;
-    if(eixo && valorPMAS(m.eixo)!==eixo)return false;
-
-    if(situacao &&
-       valorPMAS(m.situacao)!==situacao)return false;
-
-    if(ano && !valorPMAS(m["ano"+ano]).trim())
-      return false;
-
-    return true;
-  });
-
-  document.getElementById("indicadoresFiltroPMAS")
-    .innerHTML=`
-      <div class="pmas-grid">
-        <div class="pmas-kpi">
-          <small>Metas encontradas</small>
-          <strong>${lista.length}</strong>
-        </div>
-        <div class="pmas-kpi">
-          <small>Total importado</small>
-          <strong>${metasPMAS.length}</strong>
-        </div>
-      </div>
-    `;
-
-  document.getElementById("listaMetasPMAS")
-    .innerHTML=lista.length?
-    lista.map(m=>`
-
-      <details>
-
-        <summary>
-          Meta ${seguroPMAS(m.numero)} —
-          ${seguroPMAS(m.eixo)}
-          ${m.situacao?
-          " | "+seguroPMAS(m.situacao):""}
-        </summary>
-
-        <div class="pmas-meta">
-          <b>Diretriz estratégica:</b>
-          ${seguroPMAS(m.diretriz)}
-        </div>
-
-        <div class="pmas-meta">
-          <b>Objetivo específico:</b>
-          ${seguroPMAS(m.objetivo)}
-        </div>
-
-        <div class="pmas-meta">
-          <b>Ação estratégica:</b>
-          ${seguroPMAS(m.acao)}
-        </div>
-
-        <h4>Planejamento anual</h4>
-
-        <div class="pmas-grid">
-          ${[2026,2027,2028,2029].map(a=>`
-            <div class="pmas-kpi">
-              <small>${a}</small>
-              <strong style="font-size:19px">
-                ${seguroPMAS(m["ano"+a]) || "—"}
-              </strong>
-            </div>
-          `).join("")}
-        </div>
-
-        <p><b>Período de execução:</b>
-          ${seguroPMAS(m.periodo)||"Não informado"}</p>
-
-        <p><b>Situação:</b>
-          ${seguroPMAS(m.situacao)||"Não informada"}</p>
-
-        <p><b>Resultados:</b>
-          ${seguroPMAS(m.resultado)||"Consultar base original"}</p>
-
-        <p><b>Impacto:</b>
-          ${seguroPMAS(m.impacto)||"Consultar base original"}</p>
-
-      </details>
-
-    `).join(""):
-    '<p>Nenhuma meta encontrada para os filtros selecionados.</p>';
+// ==========================================
+// 2. REDE SUAS E CONTATOS
+// ==========================================
+function rede(){
+conteudo.innerHTML=card("Rede Socioassistencial — CadSUAS e Contatos",
+`<div class="controles"><input id="buscaRede" placeholder="Pesquisar unidade ou serviço" oninput="filtrarRede()"></div>
+<div id="resultadoRede"></div>`+
+aviso("Endereços, telefones, e-mails, CNPJ e responsáveis precisam ser conferidos na base institucional antes da publicação. O CRAS Central permanece apenas como referência histórica."))+
+card("CadSUAS e Base Oficial",
+links([
+["Planilha institucional da Rede SUAS","https://docs.google.com/spreadsheets/d/1uaWIdy3tGPCER8teCyuJwqmZfInh1Tte/edit?gid=1144368120#gid=1144368120"],
+["Portal do Ministério do Desenvolvimento Social","https://www.gov.br/mds/pt-br"]
+]));
+filtrarRede();
 }
 
-/* =========================================
-   LISTA SETASC
-========================================= */
-
-function atualizarSETASC(){
-
-  const busca=document.getElementById(
-    "buscaSETASC"
-  ).value.toLowerCase();
-
-  const filtro=document.getElementById(
-    "filtroSETASC"
-  ).value;
-
-  const lista=metasSETASC.filter(m=>{
-
-    const texto=[
-      m.id,m.eixo,m.unidade,m.dificuldade,
-      m.acao,m.responsavel,m.prazo,m.status
-    ].join(" ").toLowerCase();
-
-    return (!busca||texto.includes(busca)) &&
-      (!filtro||valorPMAS(m.status)===filtro);
-  });
-
-  document.getElementById("listaSETASC").innerHTML=`
-
-    <p>
-      <b>${lista.length}</b> providências encontradas.
-      Total importado: ${metasSETASC.length}.
-    </p>
-
-    ${lista.map(m=>`
-
-      <details>
-
-        <summary>
-          Providência ${seguroPMAS(m.id)} —
-          ${seguroPMAS(m.unidade)}
-          | ${seguroPMAS(m.status)}
-        </summary>
-
-        <p><b>Eixo:</b>
-          ${seguroPMAS(m.eixo)}</p>
-
-        <p><b>Dificuldade / Meta:</b>
-          ${seguroPMAS(m.dificuldade)}</p>
-
-        <p><b>Ação:</b>
-          ${seguroPMAS(m.acao)}</p>
-
-        <p><b>Responsável:</b>
-          ${seguroPMAS(m.responsavel)}</p>
-
-        <p><b>Prazo:</b>
-          ${seguroPMAS(m.prazo)}</p>
-
-        <p><b>Execução registrada:</b>
-          ${seguroPMAS(m.execucao)}</p>
-
-        <p><b>Próximo passo:</b>
-          ${seguroPMAS(m.proximo)}</p>
-
-        <p><b>Última atualização:</b>
-          ${seguroPMAS(m.atualizacao)}</p>
-
-      </details>
-
-    `).join("")}
-  `;
+function filtrarRede(){
+const el=document.getElementById("buscaRede");
+if(!el)return;
+const q=el.value.toLowerCase();
+const lista=unidades.filter(x=>x.join(" ").toLowerCase().includes(q));
+document.getElementById("resultadoRede").innerHTML=
+tabela(["Unidade / Serviço","Proteção / Área","Contato"],lista.map(x=>[
+x[0],x[1],"Consultar base institucional"
+]));
 }
 
-function atualizarPMAS(){
-
-  document.getElementById("situacaoImportacaoPMAS")
-    .textContent=
-    "Planilha carregada: "+metasPMAS.length+
-    " metas PMAS e "+metasSETASC.length+
-    " providências SETASC.";
-
-  atualizarMetasPMAS();
-  atualizarSETASC();
-  graficoSituacaoSETASC();
+// ==========================================
+// 3. SUPERINTENDÊNCIA DA MULHER
+// ==========================================
+function mulher(){
+conteudo.innerHTML=
+card("Superintendência da Mulher — Rede de Proteção",
+`<p>Monitoramento de políticas públicas, prevenção da violência, autonomia e fortalecimento dos direitos das mulheres.</p>`+
+modulo("Serviços e contatos da rede",
+"Cadastro de equipamentos, instituições, endereços, telefones, e-mails e responsáveis.",
+["Unidades de atendimento","Contatos institucionais","Fluxos de encaminhamento"])+
+modulo("Prevenção e enfrentamento da violência",
+"Registro das campanhas, atividades, encaminhamentos e ações intersetoriais.",
+["Ações realizadas","Mulheres alcançadas","Encaminhamentos","Campanhas"])+
+modulo("Conselho Municipal dos Direitos da Mulher",
+"Espaço para composição, mandatos, reuniões e deliberações."))+
+card("Ações e Eventos",
+tabela(["Ação","Referência","Local"],[
+["Feira das Empreendedoras","20/11/2026","Casario"],
+["Abertura dos 21 dias de ativismo","20/11/2026","Casario"],
+["Desfile da Beleza Negra e Show de Talentos","20/11/2026","Casario"]
+]));
 }
 
-/* =========================================
-   INTEGRAÇÃO COM A ABA 11
-========================================= */
+// ==========================================
+// 4. CADASTRO ÚNICO, RI SOCIAL E IVCAD
+// ==========================================
+function cadunico(){
+conteudo.innerHTML=
+card("Dashboard Cadastro Único — Setembro/2026",
+indicadores([
+["Famílias cadastradas","50.941"],
+["Pessoas cadastradas","114.463"],
+["Famílias em pobreza","9.534"],
+["Famílias baixa renda","12.973"],
+["Famílias acima de ½ SM","28.434"],
+["Famílias em pobreza (%)","18,72%"]
+]))+
+card("Série Histórica 2024–2026",
+`<div class="grafico"><canvas id="graficoHistorico"></canvas></div>`+
+tabela(["Mês","Famílias","Pessoas","Pobreza","Baixa Renda"],
+historico.map(x=>[x[0],fmt(x[1]),fmt(x[2]),fmt(x[3]),fmt(x[4])])))+
+card("Ranking de Bairros — Junho/2026",
+`<p>Classificação por famílias, pessoas e famílias em situação de pobreza.</p>
+<div class="controles">
+<input id="buscaBairro" placeholder="Pesquisar bairro" oninput="rankingBairros()">
+<select id="ordemBairro" onchange="rankingBairros()">
+<option value="1">Mais famílias</option>
+<option value="2">Mais pessoas</option>
+<option value="3">Mais famílias em pobreza</option>
+</select>
+</div>
+<div id="resultadoBairros"></div>`+
+aviso("Prévia com cinco localidades do levantamento de junho/2026. O ranking integral deve ser importado da base territorial original, preservando a contagem de famílias distintas e a padronização dos nomes dos bairros."))+
+card("IVCAD por CRAS — PMAS 2026",
+`<div class="grafico"><canvas id="graficoIVCAD"></canvas></div>`+
+tabela(["CRAS","Famílias referenciadas","IVCAD","Prioridade"],
+cras.map(x=>[x[0],fmt(x[4]),indice(x[5]),x[6]])))+
+card("Fontes e Plataformas Oficiais",
+links([
+["Portal Cadastro Único","https://cadunico.dataprev.gov.br/"],
+["RI Social","https://aplicacoes.cidadania.gov.br/ri/ri/"],
+["CECAD","https://cecad.cidadania.gov.br/"],
+["Observatório do Cadastro Único","https://observatoriocadunico.mds.gov.br/"],
+["VIS DATA","https://aplicacoes.cidadania.gov.br/vis/data3/"]
+])+
+aviso("O RI Social foi informado como estando em manutenção. Verifique a disponibilidade no momento da consulta."))+
+card("Análise Técnica",
+`<p>O aumento de famílias cadastradas entre setembro de 2025 e setembro de 2026 foi de aproximadamente 2,48%, enquanto as famílias em pobreza passaram de 9.693 para 9.534.</p>
+<p>A redução da pobreza cadastral não deve ser interpretada isoladamente como saída definitiva da vulnerabilidade social.</p>
+<h3>Dimensões do IVCAD</h3>
+<p>NC — Necessidade de Cuidados<br>
+DPI — Desenvolvimento na Primeira Infância<br>
+DCA — Desenvolvimento de Crianças e Adolescentes<br>
+TQA — Trabalho e Qualificação de Adultos<br>
+DR — Disponibilidade de Recursos<br>
+CH — Condições Habitacionais</p>`);
 
-function iniciarPainelPMAS(){
+rankingBairros();
 
-  const alvo=document.getElementById("conteudo");
+desenhar("graficoHistorico","line",historico.map(x=>x[0]),[
+{label:"Famílias",data:historico.map(x=>x[1]),borderColor:"#2563eb"},
+{label:"Pobreza",data:historico.map(x=>x[3]),borderColor:"#dc2626"}
+]);
 
-  if(!alvo)return;
-
-  limparGraficosPMAS();
-
-  alvo.innerHTML=telaPMAS();
-
-  document.getElementById("arquivoPMAS")
-    .addEventListener("change",function(){
-      importarPMAS(this.files[0]);
-    });
-
-  [
-    "buscaMetaPMAS",
-    "filtroEixoPMAS",
-    "filtroAnoPMAS",
-    "filtroSituacaoPMAS"
-  ].forEach(id=>{
-    document.getElementById(id)
-      .addEventListener("input",atualizarMetasPMAS);
-  });
-
-  [
-    "buscaSETASC",
-    "filtroSETASC"
-  ].forEach(id=>{
-    document.getElementById(id)
-      .addEventListener("input",atualizarSETASC);
-  });
-
-  preencherFiltrosPMAS();
-  atualizarMetasPMAS();
-  atualizarSETASC();
-  graficosResumoPMAS();
-
-  if(metasSETASC.length)graficoSituacaoSETASC();
+// Há apenas um gráfico ativo por vez neste modelo.
+// Desenhamos o IVCAD após a série histórica.
+const ctx=document.getElementById("graficoIVCAD");
+if(ctx && typeof Chart!=="undefined"){
+new Chart(ctx,{
+type:"bar",
+data:{
+labels:cras.map(x=>x[0]),
+datasets:[{
+label:"IVCAD 2026",
+data:cras.map(x=>x[5]),
+backgroundColor:"#2563eb"
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+indexAxis:"y"
+}
+});
+}
 }
 
-/*
- Substitui a função de conteúdo da aba 11.
- Mantém a navegação das outras onze abas.
-*/
+function fmt(v){return Number(v).toLocaleString("pt-BR");}
 
-window.pmas=iniciarPainelPMAS;
+function rankingBairros(){
+const busca=document.getElementById("buscaBairro");
+if(!busca)return;
+const q=busca.value.toLowerCase();
+const ordem=Number(document.getElementById("ordemBairro").value);
+const dados=bairros.filter(x=>x[0].toLowerCase().includes(q))
+.sort((a,b)=>b[ordem]-a[ordem]);
+document.getElementById("resultadoBairros").innerHTML=
+tabela(["Posição","Bairro","Famílias","Pessoas","Famílias em pobreza","% pobreza"],
+dados.map((x,i)=>[
+(i+1)+"º",x[0],fmt(x[1]),fmt(x[2]),fmt(x[3]),
+percentual(100*x[3]/x[1])
+]));
+}
 
-})();
+// ==========================================
+// 5. PROTEÇÃO SOCIAL BÁSICA
+// ==========================================
+function basica(){
+conteudo.innerHTML=
+card("Proteção Social Básica — RMA e Monitoramento",
+indicadores([
+["Unidades CRAS","8"],
+["Serviço de referência","PAIF"],
+["RMA","Monitoramento mensal"],
+["Base territorial","CRAS e famílias"]
+]))+
+card("Monitoramento PAIF / CRAS",
+modulo("RMA — Registro Mensal de Atendimentos",
+"Consolidar mensalmente volume de atendimentos, acompanhamento familiar e atividades.",
+["Famílias em acompanhamento","Novas famílias inseridas","Atendimentos individualizados","Visitas domiciliares","Atendimentos coletivos"])+
+modulo("Busca ativa e diagnóstico territorial",
+"Comparar listas do Cadastro Único, demandas territoriais e registros de atendimento.",
+["Famílias identificadas","Famílias convocadas","Visitas realizadas","Famílias acompanhadas"])+
+modulo("Acompanhamento por Unidade",
+"Analisar produtividade, cobertura do PAIF e necessidades de equipe.")+
+aviso("Os quantitativos mensais de RMA não foram disponibilizados para preenchimento automático."))+
+card("Quadro de Famílias Referenciadas — PMAS 2026",
+tabela(["CRAS","Famílias","IVCAD"],
+cras.slice(0,8).map(x=>[x[0],fmt(x[4]),indice(x[5])])));
+}
+
+// ==========================================
+// 6. PROTEÇÃO SOCIAL ESPECIAL
+// ==========================================
+function especial(){
+conteudo.innerHTML=
+card("Proteção Social Especial",
+indicadores([
+["CREAS / PAEFI","Monitoramento"],
+["Centro POP","Monitoramento"],
+["Acolhimento Institucional","Monitoramento"]
+]))+
+card("RMA e Indicadores da Proteção Especial",
+modulo("CREAS / PAEFI",
+"Atendimento e acompanhamento de famílias e indivíduos em situações de violações de direitos.",
+["Casos em acompanhamento","Novos casos","Atendimentos","Encaminhamentos"])+
+modulo("Centro POP",
+"Monitoramento do atendimento à população em situação de rua.",
+["Pessoas atendidas","Atendimentos individualizados","Encaminhamentos","Acompanhamento"])+
+modulo("Acolhimento Institucional",
+"Acompanhamento de vagas, acolhimentos, desligamentos e permanência.",
+["Vagas disponíveis","Pessoas acolhidas","Novos acolhimentos","Desligamentos"])
+);
+}
+
+// ==========================================
+// 7. SISC, SCFV E CONDICIONALIDADES
+// ==========================================
+function sisc(){
+conteudo.innerHTML=
+card("SISC, SCFV e Condicionalidades",
+indicadores([
+["Públicos prioritários confirmados — referência histórica","535"],
+["SCFV","Acompanhamento de grupos"],
+["Condicionalidades","Saúde e Educação"]
+]))+
+card("Gestão dos Serviços de Convivência",
+modulo("SISC — Grupos e Usuários",
+"Monitoramento da participação, capacidade de atendimento e situações prioritárias.",
+["Usuários ativos","Usuários prioritários","Meta de atendimento","Vagas","Grupos em funcionamento"])+
+modulo("SCFV por Unidade",
+"Monitoramento de participação e oferta nas unidades Vila Olímpica, Padre Lothar, Alfredo de Castro e Zumbi dos Palmares.")+
+modulo("Condicionalidades do Bolsa Família",
+"Indicadores de acompanhamento em saúde e educação, descumprimentos e repercussões.",
+["Acompanhamento educação","Acompanhamento saúde","Descumprimentos","Famílias acompanhadas"])
+);
+}
+
+// ==========================================
+// 8. CMAS
+// ==========================================
+function cmas(){
+conteudo.innerHTML=
+card("Conselho Municipal de Assistência Social — CMAS",
+modulo("Composição e Mandatos",
+"Controle de representantes governamentais e da sociedade civil.",
+["Titulares","Suplentes","Início do mandato","Término do mandato"])+
+modulo("Reuniões e Deliberações",
+"Registro de calendário, atas, pautas, resoluções e publicações.",
+["Reuniões ordinárias","Reuniões extraordinárias","Resoluções publicadas"])+
+modulo("Controle Social do SUAS",
+"Acompanhamento das aprovações, planos, prestações de contas e deliberações.")+
+aviso("Os mandatos, datas e resoluções precisam de conferência nos documentos oficiais do Conselho.")
+);
+}
+
+// ==========================================
+// 9. FMAS E ORÇAMENTO
+// ==========================================
+function fmas(){
+conteudo.innerHTML=
+card("Fundo Municipal de Assistência Social",
+modulo("Execução Orçamentária",
+"Consolidação de receitas, despesas, empenhos, liquidações e pagamentos.",
+["Dotação inicial","Dotação atualizada","Empenhado","Liquidado","Pago"])+
+modulo("Repasses e Cofinanciamento",
+"Acompanhamento das transferências federais, estaduais e municipais.",
+["Recursos federais","Recursos estaduais","Recursos municipais","Saldos"])+
+modulo("Prestação de Contas",
+"Controle de informações submetidas ao Conselho e aos órgãos fiscalizadores.")+
+links([
+["FNAS — Informações Oficiais","https://fnas.mds.gov.br/"],
+["Portal da Transparência","https://www.portaltransparencia.gov.br/"]
+])
+);
+}
+
+// ==========================================
+// 10. ARTICULAÇÃO INTERSETORIAL
+// ==========================================
+function articulacao(){
+conteudo.innerHTML=
+card("Articulação Intersetorial",
+modulo("Saúde — SINAN e Rede SUS",
+"Análise de notificações e articulação com serviços socioassistenciais, observando sigilo e proteção de dados.",
+["Notificações","Encaminhamentos","Acompanhamentos"])+
+modulo("Educação — Censo Escolar e Frequência",
+"Articulação de dados educacionais e identificação de situações de risco.",
+["Frequência escolar","Busca ativa escolar","Situações de evasão"])+
+modulo("Sistema de Justiça",
+"Monitoramento institucional de encaminhamentos e fluxos com os órgãos do Sistema de Justiça.")+
+modulo("Outras Políticas Públicas",
+"Habitação, trabalho, segurança alimentar, direitos da mulher e políticas de inclusão produtiva.")
+);
+}
+
+// ==========================================
+// 11. PMAS 2026–2029
+// ==========================================
+function pmas(){
+conteudo.innerHTML=
+card("Plano Municipal de Assistência Social — 2026–2029",
+`<p>Painel de acompanhamento das metas do PMAS, organizado por eixo, ação, indicador, prazo, responsável e situação de execução.</p>`+
+indicadores([
+["Vigência","2026–2029"],
+["Horizonte","4 anos"],
+["Monitoramento","Por eixo e meta"],
+["Situação","Acompanhamento"]
+]))+
+card("Matriz de Monitoramento das Metas",
+aviso("Para preservar a fidelidade ao PMAS aprovado, os textos, números e prazos das metas devem ser transcritos do documento oficial antes de registrar execução.")+
+tabela(["Eixo","Meta oficial","Indicador","Prazo","Execução"],[
+["Gestão do SUAS","A transcrever","A validar","A validar","Não informada"],
+["Proteção Social Básica","A transcrever","A validar","A validar","Não informada"],
+["Proteção Social Especial","A transcrever","A validar","A validar","Não informada"],
+["Vigilância Socioassistencial","A transcrever","A validar","A validar","Não informada"],
+["Gestão do Trabalho","A transcrever","A validar","A validar","Não informada"],
+["Controle Social","A transcrever","A validar","A validar","Não informada"]
+]))+
+card("Acompanhamento da Implementação",
+modulo("Avaliação anual das metas",
+"Registrar os resultados comprovados por indicadores e relatórios das unidades.")+
+modulo("Recomendações da Vigilância",
+"Consolidar diagnósticos, analisar indicadores e orientar revisões no planejamento.")
+);
+}
+
+// ==========================================
+// 12. BOLETINS E NOTAS TÉCNICAS
+// ==========================================
+function boletins(){
+conteudo.innerHTML=
+card("Biblioteca de Publicações — 2026",
+`<p>Repositório de boletins, notas técnicas, orientações operacionais, relatórios e materiais institucionais.</p>`+
+modulo("Boletins Socioassistenciais",
+"Publicação de indicadores municipais, diagnósticos e estudos territoriais.")+
+modulo("Notas Técnicas",
+"Orientações metodológicas sobre RMA, Cadastro Único, IVCAD, SISC e monitoramento.")+
+modulo("Orientações Operacionais",
+"Fluxos de preenchimento e acompanhamento dos sistemas de informação.")+
+modulo("Materiais Gráficos e Canva",
+"Organização de apresentações, artes, informativos e documentos da Vigilância.")+
+modulo("Ações 2026",
+"Registro das atividades e entregas institucionais realizadas ao longo do exercício.")
+);
+}
+
+abrir("municipio");
 </script>
-<!-- FIM DO PAINEL PMAS -->
+</body>
+</html>
