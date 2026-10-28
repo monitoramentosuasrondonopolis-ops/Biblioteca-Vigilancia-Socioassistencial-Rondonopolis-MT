@@ -700,24 +700,100 @@ function especial(){
 // ==========================================
 // 7. SISC, SCFV E CONDICIONALIDADES
 // ==========================================
+// ABA 8: SISC/SCFV - dados agregados da captura enviada, referência a confirmar
+const SISC_REGISTROS=[
+// nome, total, sim, nao, 0-17 total, 0-17 prioritario, 60+ total, 60+ prioritario
+["Conjunto São José",387,267,120,62,31,240,115],
+["Cidade Alta / Jardim Iguaçu",89,89,0,21,0,46,5],
+["Ana Carla / Parque",415,157,258,199,26,125,53],
+["Rio Vermelho / Ipanema",320,234,86,167,26,88,33],
+["Luz D'Yara",288,288,0,113,22,147,41],
+["Alfredo de Castro",132,132,0,103,0,22,2],
+["Sagrada Família / CEU",90,66,24,13,10,69,41],
+["Padre Lothar",124,99,25,80,11,29,9]
+];
+const SISC_ACOES=[
+["2.1. Atualização e monitoramento do SISC",[
+"Orientação às equipes sobre atualização e preenchimento correto do SISC.",
+"Organização dos registros e identificação de usuários inativos conforme cada situação.",
+"Lançamentos desde o início de cada trimestre para evitar acúmulo no fechamento.",
+"Lembretes de prazos e orientações técnicas no grupo de WhatsApp.",
+"Vídeos e tutoriais de apoio à utilização do sistema.",
+"Monitoramento dos lançamentos por unidade e do cumprimento das metas.",
+"Relatórios trimestrais dos registros e alcance do público prioritário.",
+"Atualização das nomenclaturas conforme orientações do MDS.",
+"Encaminhamento de informações à gestão da PSB e à Secretaria."]],
+["2.2. Orientação e suporte técnico às equipes",[
+"Alessandra e Eloísa: acesso ao Drive, SISC e procedimentos de lançamento.",
+"Márcia Casali: orientações sobre alinhamentos e conteúdos das formações.",
+"Márcia Medeiros: apoio à execução dos serviços.",
+"Apoio especial a profissionais novos e a equipes com maior necessidade de orientação."]],
+["2.3. Visitas técnicas e articulação CRAS–SCFV",[
+"Agenda de visitas técnicas, junto com Eloísa, para alinhamento dos fluxos e identificação de demandas.",
+"Compartilhamento dos relatórios de visita no grupo de trabalho.",
+"Pendências informadas: CRAS Padre Lothar, SCFV Vila Olímpica e CRAS Rio Vermelho, por mudanças ou ausência de referência profissional."]],
+["2.4. Qualificação da execução do SCFV",[
+"Acompanhamento das equipes de referência e dos orientadores sociais, conforme normativas e Plano de Providências da SETASC.",
+"Integração dos fluxos entre CRAS e SCFV, comunicação e encaminhamentos.",
+"Organização de registros, documentação e arquivamento.",
+"Busca ativa de usuários que deixaram de frequentar atividades.",
+"Comprovação técnica da situação prioritária dos usuários e revisão de registros pendentes.",
+"Planejamento semanal dos grupos e participação dos técnicos de referência.",
+"Elaboração de relatórios técnicos, estudos de caso, visitas e encaminhamentos conjuntos."]]
+];
+function siscEsc(v){return String(v).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));}
+function siscPct(a,b){return b?(100*a/b).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%':'—';}
 function sisc(){
-conteudo.innerHTML=
-card("SISC, SCFV e Condicionalidades",
-indicadores([
-["Públicos prioritários confirmados — referência histórica","535"],
-["SCFV","Acompanhamento de grupos"],
-["Condicionalidades","Saúde e Educação"]
-]))+
-card("Gestão dos Serviços de Convivência",
-modulo("SISC — Grupos e Usuários",
-"Monitoramento da participação, capacidade de atendimento e situações prioritárias.",
-["Usuários ativos","Usuários prioritários","Meta de atendimento","Vagas","Grupos em funcionamento"])+
-modulo("SCFV por Unidade",
-"Monitoramento de participação e oferta nas unidades Vila Olímpica, Padre Lothar, Alfredo de Castro e Zumbi dos Palmares.")+
-modulo("Condicionalidades do Bolsa Família",
-"Indicadores de acompanhamento em saúde e educação, descumprimentos e repercussões.",
-["Acompanhamento educação","Acompanhamento saúde","Descumprimentos","Famílias acompanhadas"])
-);
+ const total=SISC_REGISTROS.reduce((s,r)=>s+r[1],0);
+ const sim=SISC_REGISTROS.reduce((s,r)=>s+r[2],0);
+ const nao=SISC_REGISTROS.reduce((s,r)=>s+r[3],0);
+ const a17=SISC_REGISTROS.reduce((s,r)=>s+r[4],0);
+ const p17=SISC_REGISTROS.reduce((s,r)=>s+r[5],0);
+ const a60=SISC_REGISTROS.reduce((s,r)=>s+r[6],0);
+ const p60=SISC_REGISTROS.reduce((s,r)=>s+r[7],0);
+ const a1859=total-a17-a60;
+ const acoes=SISC_ACOES.map(([titulo,itens])=>'<details><summary>'+siscEsc(titulo)+'</summary><ul>'+itens.map(t=>'<li>'+siscEsc(t)+'</li>').join('')+'</ul></details>').join('');
+ conteudo.innerHTML=card('SISC / SCFV — Participação e Monitoramento 2026',
+ '<div class="aviso"><b>Fonte:</b> capturas de relatórios estatísticos SISC fornecidas pela Vigilância Socioassistencial. <b>Data/período da extração não informado nas capturas:</b> validar antes de comparar com trimestres anteriores. A confirmação do registro e a resposta “sim”/“não” são conceitos diferentes.</div>'+indicadores([
+ ['Usuários confirmados',formato(total)],['Respostas “sim”',formato(sim)+' ('+siscPct(sim,total)+')'],['Respostas “não”',formato(nao)+' ('+siscPct(nao,total)+')'],['Não confirmados','0'],['0–17 anos',formato(a17)],['60 anos ou mais',formato(a60)],['18–59 anos (diferença)',formato(a1859)],['Prioritários 0–17 e 60+',formato(p17+p60)]
+ ])+'<p><b>Leitura:</b> 100% dos 1.845 registros estão confirmados no relatório, mas 513 têm resposta “não”. É necessário verificar o significado operacional dessa resposta na competência consultada; ela não deve ser interpretada como cadastro não confirmado.</p>')+
+ card('Participação por CRAS — análise interativa',
+ '<div class="controles"><select id="siscUnidade"><option value="">Todos os CRAS</option>'+SISC_REGISTROS.map((r,i)=>'<option value="'+i+'">'+siscEsc(r[0])+'</option>').join('')+'</select><select id="siscMedida"><option value="participacao">Confirmação de participação: sim/não</option><option value="criancas">0 a 17 anos: prioritários</option><option value="idosos">60 anos ou mais: prioritários</option></select></div><div id="siscLeitura"></div><div id="siscBarras"></div><div id="siscTabela"></div>')+
+ card('Público por faixa etária e alcance prioritário',indicadores([
+ ['0–17 anos — prioritários',formato(p17)+' / '+formato(a17)],
+ ['60+ — prioritários',formato(p60)+' / '+formato(a60)],
+ ['Público 0–17 e 60+ no recorte',formato(a17+a60)],
+ ['Prioritários no recorte',formato(p17+p60)]
+ ])+'<div class="aviso">Os '+formato(a1859)+' usuários de 18 a 59 anos permanecem no atendimento do SCFV, mas não integram o recorte etário de cofinanciamento informado no material apresentado. Percentuais e critérios de financiamento devem ser confrontados com a regulamentação vigente e a competência da extração.</div>')+
+ card('Ações desenvolvidas pela Vigilância Socioassistencial — SISC/SCFV',acoes)+
+ card('Avanços, avaliação e providências SUAS',
+ '<p><b>Avanços relatados:</b> melhoria dos registros, organização do processo de trabalho, delimitação de responsabilidades, fortalecimento da integração entre CRAS e SCFV e suporte às equipes.</p>'+ 
+ '<p><b>Acompanhamento necessário:</b> concluir visitas técnicas pendentes, formalizar a referência técnica CRAS–SCFV, comprovar os registros de prioridade e revisar a consistência das respostas “sim” e “não” por unidade, especialmente no CRAS Ana Carla/Parque e no Conjunto São José.</p>'+ 
+ '<p><b>Leitura normativa:</b> a integração entre PAIF e SCFV, a territorialização, a matricialidade sociofamiliar e a prevenção de riscos devem orientar as ações. Percentuais de registro não comprovam, isoladamente, frequência efetiva, qualidade das atividades ou fortalecimento dos vínculos.</p>'+ 
+ '<div class="aviso"><b>Atenção:</b> as tabelas de prioridade por faixa etária são recortes específicos. Não some diretamente seus totais aos registros municipais gerais sem verificar competências, filtros e critérios do SISC. Os indicadores de condicionalidades do Bolsa Família não foram fornecidos nesta extração.</div>');
+ function atualizarSISC(){
+  const choice=document.getElementById('siscUnidade').value;
+  const medida=document.getElementById('siscMedida').value;
+  const base=choice===''?SISC_REGISTROS:[SISC_REGISTROS[Number(choice)]];
+  let linhas=[];
+  for(const r of base){
+   const t=medida==='participacao'?r[1]:(medida==='criancas'?r[4]:r[6]);
+   const a=medida==='participacao'?r[2]:(medida==='criancas'?r[5]:r[7]);
+   linhas.push([r[0],a,t-a,t,siscPct(a,t)]);
+  }
+  const rotulo=medida==='participacao'?'Respostas “sim”':'Prioritários';
+  const linhasHtml=linhas.map(r=>{
+   const p=r[3]?100*r[1]/r[3]:0;
+   return '<div style="margin:12px 0"><b>'+siscEsc(r[0])+'</b> <small>('+r[1]+' / '+r[3]+' — '+r[4]+')</small><div style="background:#e5e7eb;border-radius:8px;overflow:hidden;height:16px;margin-top:5px"><div style="height:16px;width:'+p+'%;background:#0d9488"></div></div></div>';
+  }).join('');
+  document.getElementById('siscBarras').innerHTML=linhasHtml;
+  document.getElementById('siscTabela').innerHTML=tabela(['CRAS',rotulo,'Demais / “não”','Total','%'],linhas.map(x=>[x[0],formato(x[1]),formato(x[2]),formato(x[3]),x[4]]));
+  const soma=linhas.reduce((v,x)=>[v[0]+x[1],v[1]+x[3]],[0,0]);
+  document.getElementById('siscLeitura').innerHTML='<div class="aviso"><b>Recorte selecionado:</b> '+siscEsc(rotulo)+' = '+formato(soma[0])+' de '+formato(soma[1])+' ('+siscPct(...soma)+'). Interpretar segundo o território, as ofertas e a qualidade dos registros; não como ranking de desempenho.</div>';
+ }
+ document.getElementById('siscUnidade').addEventListener('change',atualizarSISC);
+ document.getElementById('siscMedida').addEventListener('change',atualizarSISC);
+ atualizarSISC();
 }
 
 // ==========================================
