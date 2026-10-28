@@ -632,7 +632,6 @@ municipio=function(){vsaMunicipioAnterior();conteudo.insertAdjacentHTML('beforee
 <div class="controles"><button class="acao" id="vsaIbgeBtn">Atualizar indicadores do IBGE</button><span id="vsaIbgeMsg">Consultando...</span></div>
 <div class="cards" id="vsaIbgeKPIs"><div class="kpi">Carregando dados oficiais...</div></div></div>
 <div class="card"><h3>Evolução das estimativas da população</h3><div class="grafico"><canvas id="vsaIbgeSerie"></canvas></div><p class="aviso">Estimativas populacionais e Censo 2022 são operações estatísticas distintas. Cada indicador apresenta sua referência.</p></div>
-<div class="card"><h3>Comparação: Rondonópolis e Mato Grosso — Censo 2022</h3><div class="grafico"><canvas id="vsaIbgeComp"></canvas></div></div>
 <div class="card"><h3>Identificação territorial</h3><div id="vsaIbgeTerritorio">Carregando...</div></div>`);
  document.getElementById('vsaIbgeBtn').onclick=vsaCarregarIBGE;vsaCarregarIBGE();};
 async function vsaIBGEfetch(url){const r=await fetch(url);if(!r.ok)throw Error('HTTP '+r.status);return r.json()}
@@ -643,19 +642,17 @@ async function vsaCarregarIBGE(){
  const tasks=[
  vsaIBGEfetch('https://servicodados.ibge.gov.br/api/v1/localidades/municipios/5107602'),
  vsaIBGEfetch(root+'4714/periodos/2022/variaveis/93%7C614%7C6318?localidades=N6%5B5107602%5D'),
- vsaIBGEfetch(root+'6579/periodos/-6/variaveis/9324?localidades=N6%5B5107602%5D'),
- vsaIBGEfetch(root+'4714/periodos/2022/variaveis/93?localidades=N3%5B51%5D')
+ vsaIBGEfetch(root+'6579/periodos/-6/variaveis/9324?localidades=N6%5B5107602%5D')
  ];
  const r=await Promise.allSettled(tasks);if(!document.getElementById('vsaIbgeKPIs'))return;
- const ok=i=>r[i].status==='fulfilled';let loc=ok(0)?r[0].value:null,cen=ok(1)?vsaSeries(r[1].value):{},est=ok(2)?vsaSeries(r[2].value):{},uf=ok(3)?vsaSeries(r[3].value):{};
+ const ok=i=>r[i].status==='fulfilled';let loc=ok(0)?r[0].value:null,cen=ok(1)?vsaSeries(r[1].value):{},est=ok(2)?vsaSeries(r[2].value):{};
  let serie=Object.entries(est['9324']?.serie||{}).map(([a,v])=>[a,Number(v)]).filter(x=>Number.isFinite(x[1])).sort((a,b)=>a[0].localeCompare(b[0]));
  let last=serie.at(-1);
  const kpis=[['População — Censo 2022',cen['93']?.valor,'habitantes'],['Área territorial — Censo 2022',cen['6318']?.valor,'km²'],['Densidade — Censo 2022',cen['614']?.valor,'hab./km²'],['Estimativa mais recente da API',last?.[1],last?'Ano '+last[0]:'']];
  document.getElementById('vsaIbgeKPIs').innerHTML=kpis.map(([n,v,u],i)=>`<div class="kpi"><small>${vsaEsc(n)}</small><strong>${Number.isFinite(v)?Number(v).toLocaleString('pt-BR',{maximumFractionDigits:i===1||i===2?2:0}):'Indisponível'}</strong><small>${vsaEsc(u)}</small></div>`).join('');
  if(serie.length)vsaDraw('vsaIbgeSerie','line',serie.map(x=>x[0]),[{label:'Habitantes estimados',data:serie.map(x=>x[1]),borderColor:'#2563eb',tension:.25}]);
- const m=cen['93']?.valor,t=uf['93']?.valor;if(Number.isFinite(m)&&Number.isFinite(t)&&t>=m)vsaDraw('vsaIbgeComp','doughnut',['Rondonópolis','Demais municípios de MT'],[{data:[m,t-m],backgroundColor:['#2563eb','#cbd5e1']}]);
  document.getElementById('vsaIbgeTerritorio').textContent=loc?`${loc.nome} • código ${loc.id} • Mato Grosso • região imediata: ${loc['regiao-imediata']?.nome||'não informada'}`:'Identificação indisponível';
- el.textContent=r.filter(x=>x.status==='fulfilled').length+' de 4 consultas concluídas. Dados não carregados permanecem indisponíveis.';
+ el.textContent=r.filter(x=>x.status==='fulfilled').length+' de 3 consultas concluídas. Dados não carregados permanecem indisponíveis.';
 }
 const vsaRedeAnterior=rede;
 rede=function(){vsaRedeAnterior();conteudo.insertAdjacentHTML('beforeend',`
