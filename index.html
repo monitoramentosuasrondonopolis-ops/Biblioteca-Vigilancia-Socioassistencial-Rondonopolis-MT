@@ -20,7 +20,7 @@
                 <div>
                     <span class="bg-blue-800 text-blue-200 text-xs font-semibold px-2.5 py-1 rounded uppercase tracking-wider">SEMPRAS · Rondonópolis-MT</span>
                     <h1 class="text-2xl md:text-3xl font-bold mt-1">Biblioteca e Painel da Vigilância Socioassistencial</h1>
-                    <p class="text-blue-200 text-sm mt-1">Portal analítico com Panorama Oficial do IBGE, gráficos em tempo real e diretório da rede.</p>
+                    <p class="text-blue-200 text-sm mt-1">Portal analítico com Panorama Oficial do IBGE[cite: 1], gráficos em tempo real e diretório da rede.</p>
                 </div>
                 <div class="bg-blue-800/80 p-3 rounded-lg border border-blue-700 text-xs text-blue-100">
                     <p class="font-semibold">📊 Sincronização Ativa</p>
@@ -52,7 +52,7 @@
     </footer>
 
     <script>
-        // BASE DE DADOS INTEGRADA DIRETAMENTE NO SCRIPT (SEM ERROS DE FETCH)
+        // Base de dados integrada diretamente (sem dependência externa de fetch)
         const dadosGlobais = {
             "ultimaAtualizacao": "Outubro de 2026",
             "categorias": {
@@ -365,7 +365,7 @@
             renderizarConteudo(e.target.value);
         });
 
-        // Inicialização direta
+        // Inicialização direta imediata
         inicializarAbas();
         renderizarConteudo();
     </script>
