@@ -1,742 +1,846 @@
 
-<!-- =====================================================
-GESTÃO DO TRABALHO / CADSUAS / NOB-RH SUAS
-RONDONÓPOLIS-MT — PAINEL INTERATIVO
-COLE ANTES DE </body> NO INDEX.HTML
-===================================================== -->
+<!-- =========================================
+PAINEL INTERATIVO PMAS 2026-2029 E SETASC
+SEMPRAS - RONDONÓPOLIS/MT
+INSERIR ANTES DE </body>
+========================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
-#cad-rh {font-family:Arial,sans-serif;margin-top:22px}
-#cad-rh *{box-sizing:border-box}
-#cad-rh .rh-card{
- background:white;border:1px solid #dbe4f0;
- border-radius:14px;padding:20px;margin:16px 0;
- box-shadow:0 2px 8px #1e293b0a
+#pmas2026 {
+  font-family: Arial, sans-serif;
+  color: #25364d;
 }
-#cad-rh .rh-grid{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(165px,1fr));
- gap:12px;margin:18px 0
+#pmas2026 * {
+  box-sizing: border-box;
 }
-#cad-rh .rh-kpi{
- background:#eff6ff;border-radius:12px;
- padding:18px;border:1px solid #dbeafe
+#pmas2026 .pmas-box {
+  background: white;
+  border: 1px solid #dbe5f0;
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 18px;
 }
-#cad-rh .rh-kpi small{display:block;color:#52657e}
-#cad-rh .rh-kpi strong{
- display:block;color:#1d4ed8;
- font-size:27px;margin-top:8px
+#pmas2026 .pmas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(175px,1fr));
+  gap: 12px;
+  margin: 18px 0;
 }
-#cad-rh h2,#cad-rh h3{color:#173b75}
-#cad-rh .rh-tools{
- display:flex;gap:10px;flex-wrap:wrap;margin:16px 0
+#pmas2026 .pmas-kpi {
+  padding: 20px;
+  background: #edf5ff;
+  border-radius: 12px;
+  border: 1px solid #d6e6fa;
 }
-#cad-rh input,#cad-rh select{
- padding:11px;border:1px solid #cad6e5;
- border-radius:8px;background:white;min-width:175px;flex:1
+#pmas2026 .pmas-kpi small {
+  display: block;
+  color: #526580;
+  line-height: 1.5;
 }
-#cad-rh .rh-table{overflow-x:auto;max-height:530px}
-#cad-rh table{width:100%;border-collapse:collapse;font-size:13px}
-#cad-rh th{
- background:#e7eef8;padding:11px;
- text-align:left;position:sticky;top:0;white-space:nowrap
+#pmas2026 .pmas-kpi strong {
+  display: block;
+  font-size: 28px;
+  color: #1957a5;
+  margin-top: 8px;
 }
-#cad-rh td{padding:10px;border-bottom:1px solid #e2e8f0}
-#cad-rh tr:hover td{background:#f8fafc}
-#cad-rh .rh-chart{height:380px;position:relative}
-#cad-rh .rh-alert{
- border-left:4px solid #f59e0b;background:#fffbeb;
- padding:14px;margin:12px 0;line-height:1.6
+#pmas2026 h2,
+#pmas2026 h3 {
+  color: #164477;
 }
-#cad-rh .rh-ok{
- border-left:4px solid #16a34a;background:#f0fdf4;
- padding:14px;margin:12px 0
+#pmas2026 .pmas-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0;
 }
-#cad-rh details{
- border:1px solid #dbe4f0;padding:14px;
- border-radius:9px;margin:10px 0
+#pmas2026 input,
+#pmas2026 select {
+  padding: 12px;
+  border: 1px solid #cad7e5;
+  border-radius: 9px;
+  background: white;
+  min-width: 170px;
+  flex: 1;
+  max-width: 100%;
 }
-#cad-rh summary{cursor:pointer;font-weight:bold;color:#173b75}
-#cad-rh .rh-small{font-size:12px;color:#64748b}
-#cad-rh button{
- border:0;background:#1d4ed8;color:white;
- border-radius:8px;padding:11px 15px;cursor:pointer
+#pmas2026 button {
+  padding: 12px 17px;
+  border: 0;
+  border-radius: 9px;
+  background: #1957a5;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
 }
-@media(max-width:600px){
- #cad-rh .rh-chart{height:330px}
+#pmas2026 .pmas-grafico {
+  height: 340px;
+  position: relative;
+}
+#pmas2026 .pmas-tabela {
+  width: 100%;
+  overflow-x: auto;
+  max-height: 600px;
+}
+#pmas2026 table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+#pmas2026 th {
+  background: #e6eef9;
+  padding: 12px;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+#pmas2026 td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 11px;
+  vertical-align: top;
+}
+#pmas2026 details {
+  border: 1px solid #dce5ef;
+  border-radius: 10px;
+  margin: 12px 0;
+  padding: 14px;
+  background: #fafcff;
+}
+#pmas2026 summary {
+  cursor: pointer;
+  color: #164477;
+  font-weight: bold;
+}
+#pmas2026 .pmas-aviso {
+  background: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  padding: 14px;
+  margin: 14px 0;
+  line-height: 1.6;
+}
+#pmas2026 .pmas-meta {
+  margin: 8px 0;
+  line-height: 1.6;
+}
+#pmas2026 .pmas-meta b {
+  color: #164477;
+}
+#pmas2026 .pmas-status {
+  background: #dbeafe;
+  border-radius: 7px;
+  padding: 5px 9px;
+  display: inline-block;
 }
 </style>
 
 <script>
 (function(){
+
 "use strict";
 
-/* ==========================================
-   BASE CONSOLIDADA — GESTÃO DO TRABALHO
-========================================== */
+/* =========================================
+   BANCO DE DADOS
+========================================= */
 
-const RH={
- cadastrados:289,
- ativos:284,
- inativos:5,
- lotacoes:32,
+let metasPMAS = [];
+let metasSETASC = [];
+let graficosPMAS = [];
 
- tipos:[
- ["Acolhimento",46,46],
- ["Cadastro para programas sociais e habitacionais",4,4],
- ["Cadastro Único",18,18],
- ["Centro POP",11,11],
- ["Conselho Tutelar",15,15],
- ["CRAS",84,84],
- ["CREAS",14,14],
- ["Núcleo de Conselhos",5,5],
- ["SCFV",38,39],
- ["Órgão Gestor",49,53]
- ],
-
- categorias:[
- ["Coordenação/Gestão",26,26],
- ["Conselheiro/a",11,11],
- ["Cadastro Habitacional",4,4],
- ["Psicopedagoga",1,1],
- ["Assistente Social",30,30],
- ["Pedagogo",14,14],
- ["Psicólogo",22,22],
- ["Técnico Nível Médio",38,38],
- ["Orientador Social",12,13],
- ["Entrevistador Social do Cadastro Único",20,20],
- ["Apoio administrativo",106,110]
- ],
-
- vinculos:[
- ["CLT",3,3],
- ["Contratado",53,54],
- ["Comissionado",90,90],
- ["Efetivo",44,48],
- ["Terceirizado",94,94]
- ],
-
- genero:[
- ["Masculino",84],
- ["Feminino",205]
- ],
-
- ingresso:[
- ["Até 2008",20],
- ["2017 a 2024",44],
- ["A partir de 2025",131],
- ["Sem data / terceirizados e apoio",94]
- ],
-
- faixaEtaria:[
- ["Até 29 anos",0],
- ["30 a 39 anos",12],
- ["40 a 49 anos",10],
- ["50 a 59 anos",16],
- ["60 anos ou mais",9]
- ],
-
- categoriaVinculo:[
- ["Assistente Social — efetivo nas unidades",9],
- ["Assistente Social — efetivo na gestão",3],
- ["Assistente Social — contratado nas unidades",21],
- ["Psicólogo — efetivo nas unidades",4],
- ["Psicólogo — contratado nas unidades",17],
- ["Psicólogo — contratado na gestão",1],
- ["Pedagogo — efetivo na função",6],
- ["Pedagogo — efetivo na gestão",1],
- ["Pedagogo — contratado nas unidades",5],
- ["Pedagogo — contratado na gestão",2],
- ["Psicopedagoga efetiva",1],
- ["Orientador Social — efetivo na função",6],
- ["Orientador Social — efetivo na gestão",3],
- ["Orientador Social — contratado",4],
- ["Entrevistador CadÚnico — contratado",3],
- ["Entrevistador CadÚnico — comissionado",17],
- ["Coordenação/Gestão — efetivo",3],
- ["Coordenação/Gestão — comissionado",23],
- ["Técnico de Nível Médio — comissionado",38],
- ["Apoio administrativo — efetivos",11],
- ["Apoio administrativo — terceirizados",94],
- ["Conselheiro/a",11],
- ["Cadastro Habitacional",4]
- ]
-};
-
-/* ==========================================
-   QUADRO POR LOTAÇÃO REAL
-   Unidade, tipo, ativos, efetivos,
-   contratados, comissionados,
-   terceirizados e horas semanais
-========================================== */
-
-const LOTACOES=[
-["Cadastro para Programas Sociais e Habitacionais","Cadastro habitacional",4,0,0,4,0,160],
-["Centro POP e Abordagem Social","Centro POP",11,0,4,4,3,442],
-["Conselho Tutelar","Conselho Tutelar",17,2,0,11,4,676],
-["CRAI","Órgão Gestor",1,1,0,0,0,30],
-["CRAS Alfredo de Castro","Cadastro Único",10,0,5,3,2,378],
-["CRAS Ana Carla","Cadastro Único",10,2,4,3,1,364],
-["CRAS Cidade Alta","CRAS",16,4,2,4,6,614],
-["CRAS Conjunto São José","CRAS",12,4,2,3,3,442],
-["CRAS Luz D'Yara","CRAS",12,4,3,3,2,428],
-["CRAS Padre Lothar","CRAS",10,2,3,3,2,378],
-["CRAS Rio Vermelho","CRAS",15,3,3,3,6,584],
-["CRAS Sagrada Família","Cadastro Único",13,1,4,5,3,502],
-["CREAS","CREAS",14,3,8,1,2,488],
-["Educação Permanente","Não classificado",0,0,0,0,0,40],
-["Escritório Social","Núcleo de Conselhos",1,0,0,1,0,40],
-["Família Acolhedora","Acolhimento",1,0,0,1,0,40],
-["Núcleo dos Conselhos","Órgão Gestor",7,3,1,1,2,268],
-["Parcerias com OSC","Órgão Gestor",2,0,0,2,0,84],
-["Posto do Cadastro Único","Cadastro Único",3,0,0,3,0,120],
-["SCFV Alfredo de Castro","SCFV",12,1,3,2,6,504],
-["SCFV Padre Lothar","SCFV",13,1,2,2,8,542],
-["SCFV Vila Olímpica","SCFV",13,0,3,3,7,548],
-["SEMPRAS","Órgão Gestor",22,5,4,6,7,888],
-["Superintendência de Políticas Públicas para Mulheres","Órgão Gestor",3,1,0,2,0,110],
-["Superintendência de Benefícios, Programas e Projetos","Órgão Gestor",3,0,0,3,0,120],
-["Superintendência de Engenharia e Arquitetura","Órgão Gestor",1,0,0,1,0,40],
-["Superintendência de Gestão","Órgão Gestor",10,3,0,7,0,370],
-["Superintendência de Políticas do Trabalho","Órgão Gestor",1,0,0,1,0,40],
-["Superintendência de Proteção Social Especial","Cadastro Único",1,0,0,1,0,40],
-["Unidade de Acolhimento Casa Abrigo Rotativa","Acolhimento",27,3,3,2,19,1146],
-["Unidade de Acolhimento Casa de Passagem","Acolhimento",9,0,0,3,6,384],
-["Unidade de Acolhimento Mulheres Vítimas de Violência","Acolhimento",9,0,2,2,5,370],
-["Vigilância Socioassistencial","Órgão Gestor",1,1,0,0,0,40]
+const resumoAreas = [
+  ["Gestão do SUAS",59],
+  ["Proteção Social Especial",37],
+  ["Proteção Social Básica",32],
+  ["Engenharia e Arquitetura",20],
+  ["Benefícios Socioassistenciais",20],
+  ["Gestão Financeira",15],
+  ["Controle Social",8]
 ];
 
-/* ==========================================
-   EFETIVOS CONCURSADOS DA REDE
-   Superior, médio, apoio e total
-========================================== */
+const numeroPMAS = valor =>
+  Number(valor).toLocaleString("pt-BR");
 
-const EFETIVOS=[
-["CRAS Alfredo de Castro",0,0,0,0],
-["CRAS Ana Carla",2,0,0,2],
-["CRAS Conjunto São José",3,1,0,4],
-["CRAS Cidade Alta",3,1,0,4],
-["CRAS Luz D'Yara",2,0,2,4],
-["CRAS Sagrada Família",1,0,0,1],
-["CRAS Rio Vermelho",2,1,0,3],
-["CRAS Padre Lothar",1,1,0,2],
-["SCFV Vila Olímpica",0,0,0,0],
-["SCFV Padre Lothar",1,0,0,1],
-["SCFV Alfredo de Castro",0,0,1,1],
-["CREAS",2,1,0,3],
-["Centro POP e Abordagem Social",0,0,0,0],
-["Unidade Casa de Passagem",0,0,0,0],
-["Unidade Casa Abrigo Rotativa",0,0,3,3],
-["Unidade Mulheres Vítimas de Violência",0,0,0,0]
-];
-
-/* ==========================================
-   DIMENSIONAMENTO DA REDE
-   Famílias, mínimo total, mínimo superior,
-   AS, psicólogo, pedagogo, coordenação
-========================================== */
-
-const DIMENS=[
-["CRAS Alfredo de Castro","CRAS",3854,9,5,3,1,0,1],
-["CRAS Ana Carla","CRAS",7071,9,5,3,2,1,1],
-["CRAS Conjunto São José","CRAS",8083,9,5,2,2,1,1],
-["CRAS Cidade Alta","CRAS",4925,9,5,2,1,2,1],
-["CRAS Luz D'Yara","CRAS",7947,9,5,3,1,1,1],
-["CRAS Sagrada Família","CRAS",7115,9,5,2,2,1,0],
-["CRAS Rio Vermelho","CRAS",4617,9,5,2,2,0,1],
-["CRAS Padre Lothar","CRAS",4279,9,5,2,1,0,1],
-["SCFV Vila Olímpica","SCFV",null,8,1,0,1,0,1],
-["SCFV Padre Lothar","SCFV",null,8,1,0,0,2,0],
-["SCFV Alfredo de Castro","SCFV",null,8,1,0,1,1,1],
-["CREAS","CREAS",null,9,6,5,3,1,1],
-["Centro POP e Abordagem Social","Centro POP",null,9,5,1,2,1,1],
-["Unidade Casa de Passagem","Acolhimento",null,8,3,0,0,0,1],
-["Unidade Casa Abrigo Rotativa","Acolhimento",null,8,3,1,1,1,1],
-["Unidade Mulheres Vítimas de Violência","Acolhimento",null,8,3,1,1,0,1]
-];
-
-/* ==========================================
-   FUNÇÕES DE APRESENTAÇÃO
-========================================== */
-
-const fmtRH=n=>Number(n).toLocaleString("pt-BR");
-const percRH=(a,b)=>b?
-(100*a/b).toFixed(1).replace(".",",")+"%":"—";
-
-const escapeRH=v=>String(v??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;");
-
-function tabelaRH(id,cabecalhos,linhas){
-const alvo=document.getElementById(id);
-if(!alvo)return;
-alvo.replaceChildren();
-const table=document.createElement("table");
-const thead=table.createTHead();
-const tr=thead.insertRow();
-cabecalhos.forEach(h=>{
-const th=document.createElement("th");
-th.textContent=h;
-tr.appendChild(th);
-});
-const body=table.createTBody();
-linhas.forEach(reg=>{
-const row=body.insertRow();
-reg.forEach(c=>{
-const td=row.insertCell();
-td.textContent=String(c??"—");
-});
-});
-alvo.appendChild(table);
+function seguroPMAS(valor){
+  return String(valor ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#39;");
 }
 
-function tabelaSimplesRH(id,cab,arr){
-tabelaRH(id,cab,arr.map(r=>r.map((v,i)=>
-typeof v==="number"&&Number.isInteger(v)?fmtRH(v):v
-)));
+function valorPMAS(v){
+  if(v === null || v === undefined) return "";
+  return String(v);
 }
 
-function graficoRH(id,labels,dados,horizontal=true){
-if(typeof Chart==="undefined")return;
-const canvas=document.getElementById(id);
-if(!canvas)return;
-const anterior=Chart.getChart(canvas);
-if(anterior)anterior.destroy();
-new Chart(canvas,{
-type:"bar",
-data:{
-labels,
-datasets:dados
-},
-options:{
-responsive:true,
-maintainAspectRatio:false,
-indexAxis:horizontal?"y":"x",
-plugins:{legend:{position:"top"}},
-scales:{x:{beginAtZero:true}}
-}
-});
-}
+/* =========================================
+   IMPORTAÇÃO DA PLANILHA OFICIAL
+========================================= */
 
-function graficoPizzaRH(id,labels,valores){
-if(typeof Chart==="undefined")return;
-const canvas=document.getElementById(id);
-if(!canvas)return;
-const anterior=Chart.getChart(canvas);
-if(anterior)anterior.destroy();
-new Chart(canvas,{
-type:"doughnut",
-data:{
-labels,
-datasets:[{
-data:valores,
-backgroundColor:[
-"#2563eb","#0d9488","#f59e0b",
-"#a855f7","#64748b"
-]
-}]
-},
-options:{
-responsive:true,
-maintainAspectRatio:false,
-plugins:{legend:{position:"bottom"}}
-}
-});
-}
+function importarPMAS(arquivo){
 
-/* ==========================================
-   HTML DO MÓDULO
-========================================== */
+  if(!arquivo){
+    return;
+  }
 
-function htmlGestaoRH(){
-return `
-<div id="cad-rh">
+  if(typeof XLSX === "undefined"){
+    alert("Biblioteca de planilhas indisponível.");
+    return;
+  }
 
-<div class="rh-card">
-<h2>Gestão do Trabalho — SUAS / NOB-RH SUAS</h2>
-<p>Monitoramento do quadro de profissionais, vínculos,
-lotações e dimensionamento das equipes.</p>
+  const leitor = new FileReader();
 
-<div class="rh-grid">
- <div class="rh-kpi"><small>Servidores cadastrados</small><strong>289</strong></div>
- <div class="rh-kpi"><small>Servidores ativos</small><strong>284</strong></div>
- <div class="rh-kpi"><small>Inativos / cedidos / afastados</small><strong>5</strong></div>
- <div class="rh-kpi"><small>Lotações informadas</small><strong>32</strong></div>
- <div class="rh-kpi"><small>Efetivos ativos</small><strong>44</strong></div>
- <div class="rh-kpi"><small>Contratados ativos</small><strong>53</strong></div>
- <div class="rh-kpi"><small>Comissionados ativos</small><strong>90</strong></div>
- <div class="rh-kpi"><small>Terceirizados ativos</small><strong>94</strong></div>
-</div>
+  leitor.onload = function(evento){
 
-<div class="rh-alert">
-<b>Controle de consistência:</b>
-o resumo por categoria profissional e vínculo apresenta
-287 registros, enquanto o consolidado informa 284 ativos.
-O quadro de gênero totaliza 289 cadastrados.
-Os quadros possuem classificações e abrangências distintas
-e devem ser reconciliados antes de utilização para decisões
-administrativas ou cálculo de déficit.
-</div>
-</div>
+    try{
 
-<div class="rh-card">
-<h3>Distribuição de profissionais por tipo de unidade</h3>
-<div class="rh-chart">
-<canvas id="rhGraficoTipo"></canvas>
-</div>
-<div id="rhTabelaTipo" class="rh-table"></div>
-</div>
+      const workbook = XLSX.read(
+        evento.target.result,
+        {type:"array",cellDates:true}
+      );
 
-<div class="rh-card">
-<h3>Distribuição por categoria profissional</h3>
-<div class="rh-chart" style="height:450px">
-<canvas id="rhGraficoProf"></canvas>
-</div>
-<div id="rhTabelaProf" class="rh-table"></div>
-</div>
+      const nomePMAS = workbook.SheetNames.find(
+        nome => nome.trim() === "PMAS Consolidado"
+      ) || workbook.SheetNames.find(
+        nome => nome.trim() === "Base Original"
+      );
 
-<div class="rh-card">
-<h3>Distribuição por vínculo de trabalho</h3>
-<div class="rh-chart">
-<canvas id="rhGraficoVinculo"></canvas>
-</div>
-<div id="rhTabelaVinculo" class="rh-table"></div>
-</div>
+      const nomeSETASC = workbook.SheetNames.find(
+        nome => nome.trim() === "SETASC Consolidado"
+      );
 
-<div class="rh-card">
-<h3>Perfil dos profissionais</h3>
-<div class="rh-grid">
- <div>
-  <h4>Distribuição por gênero</h4>
-  <div class="rh-chart">
-   <canvas id="rhGraficoGenero"></canvas>
-  </div>
- </div>
- <div>
-  <h4>Período de ingresso</h4>
-  <div class="rh-chart">
-   <canvas id="rhGraficoIngresso"></canvas>
-  </div>
- </div>
-</div>
-<details>
-<summary>Faixa etária de efetivos e CLT ativos</summary>
-<div id="rhFaixaEtaria" class="rh-table"></div>
-</details>
-</div>
+      if(!nomePMAS || !nomeSETASC){
+        alert(
+          "Não foram encontradas as abas PMAS Consolidado e SETASC Consolidado."
+        );
+        return;
+      }
 
-<div class="rh-card">
-<h3>Quadro por lotação real</h3>
-<p>Pesquisa por unidade e tipo de serviço.</p>
-<div class="rh-tools">
-<input id="rhBuscaLotacao" placeholder="Pesquisar unidade...">
-<select id="rhTipoLotacao">
-<option value="">Todos os tipos de unidade</option>
-</select>
-<select id="rhOrdenacao">
-<option value="ativos">Mais servidores ativos</option>
-<option value="efetivos">Mais efetivos</option>
-<option value="terceirizados">Mais terceirizados</option>
-</select>
-</div>
-<div id="rhTotalLotacao"></div>
-<div class="rh-table" id="rhTabelaLotacao"></div>
-</div>
+      const matrizPMAS = XLSX.utils.sheet_to_json(
+        workbook.Sheets[nomePMAS],
+        {header:1,defval:"",raw:false}
+      );
 
-<div class="rh-card">
-<h3>Efetivos concursados nas unidades</h3>
-<div class="rh-grid">
- <div class="rh-kpi">
-  <small>Efetivos concursados no recorte da rede</small>
-  <strong>28</strong>
- </div>
- <div class="rh-kpi">
-  <small>Efetivos de nível superior</small>
-  <strong>17</strong>
- </div>
- <div class="rh-kpi">
-  <small>Efetivos nível médio de referência</small>
-  <strong>5</strong>
- </div>
- <div class="rh-kpi">
-  <small>Efetivos apoio/administração</small>
-  <strong>6</strong>
- </div>
-</div>
-<div class="rh-table" id="rhTabelaEfetivos"></div>
-</div>
+      const matrizSETASC = XLSX.utils.sheet_to_json(
+        workbook.Sheets[nomeSETASC],
+        {header:1,defval:"",raw:false}
+      );
 
-<div class="rh-card">
-<h3>Dimensionamento e equipes de referência</h3>
-<p>Comparação do quantitativo informado por unidade com
-os parâmetros apresentados no quadro técnico.</p>
-<div class="rh-tools">
-<input id="rhBuscaDimens" placeholder="Pesquisar unidade...">
-<select id="rhTipoDimens">
-<option value="">Todos os serviços</option>
-</select>
-</div>
-<div class="rh-table" id="rhTabelaDimens"></div>
+      metasPMAS = matrizPMAS.slice(4)
+        .filter(r => /^\d+$/.test(String(r[0]).trim()))
+        .map(r => ({
+          numero:r[0],
+          eixo:r[1],
+          diretriz:r[2],
+          objetivo:r[3],
+          acao:r[4],
+          ano2026:r[5],
+          ano2027:r[6],
+          ano2028:r[7],
+          ano2029:r[8],
+          periodo:r[9],
+          situacao:r[10],
+          semaforo:r[11],
+          resultado:r[12],
+          impacto:r[13],
+          responsavel:r[14],
+          indicador:r[15],
+          linha:r
+        }));
 
-<div class="rh-alert">
-<b>Atenção metodológica:</b>
-os parâmetros do quadro NOB-RH devem ser conferidos
-por porte, capacidade, tipificação e regulamentação
-aplicável. A quantidade de trabalhadores por categoria
-não comprova, isoladamente, conformidade de equipes,
-vínculos, carga horária e habilitação profissional.
-</div>
-</div>
+      metasSETASC = matrizSETASC.slice(4)
+        .filter(r => /^\d+$/.test(String(r[0]).trim()))
+        .map(r => ({
+          id:r[0],
+          semaforo:r[1],
+          status:r[2],
+          eixo:r[3],
+          unidade:r[4],
+          dificuldade:r[5],
+          acao:r[6],
+          responsavel:r[7],
+          prazo:r[8],
+          execucao:r[9],
+          proximo:r[10],
+          atualizacao:r[11],
+          linha:r
+        }));
 
-<div class="rh-card">
-<h3>Categoria profissional × vínculo</h3>
-<div class="rh-table" id="rhTabelaCatVinculo"></div>
-</div>
+      preencherFiltrosPMAS();
+      atualizarPMAS();
 
-<div class="rh-card">
-<h3>Análises e alertas da Vigilância</h3>
-<div id="rhAnalises"></div>
-<p class="rh-small">
-Fonte: Painel de Gestão do Trabalho SUAS / NOB-RH SUAS
-enviado para consolidação. Referência temporal da base
-não especificada no quadro apresentado.
-</p>
-</div>
+    }catch(erro){
+      console.error(erro);
+      alert("Erro ao interpretar a planilha: "+erro.message);
+    }
+  };
 
-</div>`;
+  leitor.readAsArrayBuffer(arquivo);
 }
 
-/* ==========================================
-   PREENCHIMENTO DOS PAINÉIS
-========================================== */
+/* =========================================
+   INTERFACE PRINCIPAL
+========================================= */
 
-function carregarGraficosRH(){
+function telaPMAS(){
 
-graficoRH("rhGraficoTipo",
-RH.tipos.map(x=>x[0]),[
-{label:"Ativos",data:RH.tipos.map(x=>x[1]),backgroundColor:"#2563eb"},
-{label:"Cadastrados",data:RH.tipos.map(x=>x[2]),backgroundColor:"#94a3b8"}
-]);
+  return `
+  <div id="pmas2026">
 
-graficoRH("rhGraficoProf",
-RH.categorias.map(x=>x[0]),[
-{label:"Ativos",data:RH.categorias.map(x=>x[1]),backgroundColor:"#0d9488"},
-{label:"Cadastrados",data:RH.categorias.map(x=>x[2]),backgroundColor:"#94a3b8"}
-]);
+    <div class="pmas-box">
 
-graficoRH("rhGraficoVinculo",
-RH.vinculos.map(x=>x[0]),[
-{label:"Ativos",data:RH.vinculos.map(x=>x[1]),backgroundColor:"#2563eb"},
-{label:"Cadastrados",data:RH.vinculos.map(x=>x[2]),backgroundColor:"#f59e0b"}
-]);
+      <h2>Resumo Visual do PMAS 2026–2029</h2>
 
-graficoPizzaRH("rhGraficoGenero",
-RH.genero.map(x=>x[0]),RH.genero.map(x=>x[1]));
+      <p>
+        Prefeitura Municipal de Rondonópolis —
+        Vigilância Socioassistencial.
+      </p>
 
-graficoPizzaRH("rhGraficoIngresso",
-RH.ingresso.map(x=>x[0]),RH.ingresso.map(x=>x[1]));
+      <div class="pmas-grid">
 
+        <div class="pmas-kpi">
+          <small>Metas PMAS previstas</small>
+          <strong>191</strong>
+        </div>
+
+        <div class="pmas-kpi">
+          <small>Providências SETASC</small>
+          <strong>64</strong>
+        </div>
+
+        <div class="pmas-kpi">
+          <small>Áreas de acompanhamento</small>
+          <strong>7</strong>
+        </div>
+
+        <div class="pmas-kpi">
+          <small>Vigência do PMAS</small>
+          <strong>2026–2029</strong>
+        </div>
+
+      </div>
+
+      <div class="pmas-aviso">
+        Importe a planilha oficial
+        <b>metas_pmas_com_setasc.xlsm</b>
+        para carregar as metas completas e as
+        providências SETASC.
+
+        <p>
+          Os quantitativos acima representam o
+          planejamento cadastrado, não a execução
+          das metas.
+        </p>
+      </div>
+
+      <input
+        type="file"
+        id="arquivoPMAS"
+        accept=".xlsx,.xlsm,.xls"
+      >
+
+      <p id="situacaoImportacaoPMAS">
+        Aguardando importação da planilha.
+      </p>
+
+    </div>
+
+    <div class="pmas-box">
+
+      <h3>Distribuição das metas por área</h3>
+
+      <div class="pmas-grafico">
+        <canvas id="graficoAreasPMAS"></canvas>
+      </div>
+
+    </div>
+
+    <div class="pmas-box">
+
+      <h3>Consulta e Monitoramento das Metas</h3>
+
+      <div class="pmas-filtros">
+
+        <input
+          id="buscaMetaPMAS"
+          placeholder="Pesquisar número, meta, diretriz ou ação..."
+        >
+
+        <select id="filtroEixoPMAS">
+          <option value="">Todos os eixos</option>
+        </select>
+
+        <select id="filtroAnoPMAS">
+          <option value="">Todos os anos</option>
+          <option value="2026">2026</option>
+          <option value="2027">2027</option>
+          <option value="2028">2028</option>
+          <option value="2029">2029</option>
+        </select>
+
+        <select id="filtroSituacaoPMAS">
+          <option value="">Todas as situações</option>
+        </select>
+
+      </div>
+
+      <div id="indicadoresFiltroPMAS"></div>
+
+      <div id="listaMetasPMAS"></div>
+
+    </div>
+
+    <div class="pmas-box">
+
+      <h3>Plano de Aprimoramento — SETASC</h3>
+
+      <div class="pmas-grafico">
+        <canvas id="graficoSETASC"></canvas>
+      </div>
+
+      <div class="pmas-filtros">
+
+        <input
+          id="buscaSETASC"
+          placeholder="Pesquisar unidade, providência ou responsável..."
+        >
+
+        <select id="filtroSETASC">
+          <option value="">Todas as situações</option>
+        </select>
+
+      </div>
+
+      <div id="listaSETASC"></div>
+
+    </div>
+
+    <div class="pmas-box">
+
+      <h3>Análise Técnica e Monitoramento</h3>
+
+      <p>
+        A Vigilância Socioassistencial poderá
+        utilizar o painel para identificar metas
+        com necessidade de acompanhamento,
+        comparar o planejamento plurianual e
+        consolidar informações para a gestão
+        e o controle social.
+      </p>
+
+      <div class="pmas-aviso">
+        Os resultados previstos e percentuais
+        planejados para os anos de 2026, 2027,
+        2028 e 2029 não devem ser classificados
+        como execução realizada sem evidência
+        documental correspondente.
+      </div>
+
+    </div>
+
+  </div>`;
 }
 
-function preencherTabelasRH(){
+/* =========================================
+   GRÁFICOS
+========================================= */
 
-tabelaSimplesRH("rhTabelaTipo",
-["Tipo de unidade","Ativos","Total cadastrado"],RH.tipos);
-
-tabelaSimplesRH("rhTabelaProf",
-["Categoria profissional","Ativos","Total cadastrado"],RH.categorias);
-
-tabelaSimplesRH("rhTabelaVinculo",
-["Vínculo","Ativos","Total cadastrado"],RH.vinculos);
-
-tabelaRH("rhFaixaEtaria",
-["Faixa etária","Quantidade","Participação"],
-RH.faixaEtaria.map(x=>[
-x[0],x[1],percRH(x[1],47)
-]));
-
-tabelaSimplesRH("rhTabelaEfetivos",
-["Unidade","Superior","Médio de referência","Apoio","Total"],
-EFETIVOS);
-
-tabelaSimplesRH("rhTabelaCatVinculo",
-["Categoria / Vínculo","Quantidade informada"],
-RH.categoriaVinculo);
-
+function limparGraficosPMAS(){
+  graficosPMAS.forEach(g => g.destroy());
+  graficosPMAS = [];
 }
 
-function prepararFiltrosRH(){
+function graficosResumoPMAS(){
 
-const tipos=[...new Set(LOTACOES.map(x=>x[1]))].sort();
-document.getElementById("rhTipoLotacao").innerHTML=
-'<option value="">Todos os tipos de unidade</option>'+
-tipos.map(x=>`<option value="${escapeRH(x)}">${escapeRH(x)}</option>`).join("");
+  if(typeof Chart === "undefined") return;
 
-const grupos=[...new Set(DIMENS.map(x=>x[1]))].sort();
-document.getElementById("rhTipoDimens").innerHTML=
-'<option value="">Todos os serviços</option>'+
-grupos.map(x=>`<option value="${escapeRH(x)}">${escapeRH(x)}</option>`).join("");
+  const elemento=document.getElementById(
+    "graficoAreasPMAS"
+  );
 
-["rhBuscaLotacao","rhTipoLotacao","rhOrdenacao"].forEach(id=>{
-document.getElementById(id).addEventListener("input",filtrarLotacoesRH);
-});
+  if(!elemento)return;
 
-["rhBuscaDimens","rhTipoDimens"].forEach(id=>{
-document.getElementById(id).addEventListener("input",filtrarDimensRH);
-});
-
-filtrarLotacoesRH();
-filtrarDimensRH();
+  graficosPMAS.push(new Chart(elemento,{
+    type:"bar",
+    data:{
+      labels:resumoAreas.map(a=>a[0]),
+      datasets:[{
+        label:"Quantidade de metas",
+        data:resumoAreas.map(a=>a[1]),
+        backgroundColor:"#2563eb"
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      indexAxis:"y",
+      plugins:{
+        legend:{display:false}
+      },
+      scales:{
+        x:{beginAtZero:true}
+      }
+    }
+  }));
 }
 
-function filtrarLotacoesRH(){
+function graficoSituacaoSETASC(){
 
-const busca=document.getElementById("rhBuscaLotacao").value
-.toLocaleLowerCase("pt-BR");
+  if(typeof Chart==="undefined")return;
 
-const tipo=document.getElementById("rhTipoLotacao").value;
-const ordem=document.getElementById("rhOrdenacao").value;
-const col=ordem==="efetivos"?3:ordem==="terceirizados"?6:2;
+  const canvas=document.getElementById(
+    "graficoSETASC"
+  );
 
-const lista=LOTACOES
-.filter(r=>r[0].toLocaleLowerCase("pt-BR").includes(busca))
-.filter(r=>!tipo||r[1]===tipo)
-.sort((a,b)=>b[col]-a[col]||a[0].localeCompare(b[0],"pt-BR"));
+  if(!canvas || !metasSETASC.length)return;
 
-const total=lista.reduce((a,r)=>a+r[2],0);
+  const contagem={};
 
-document.getElementById("rhTotalLotacao").textContent=
-lista.length+" lotações exibidas — "+fmtRH(total)+
-" registros ativos somados no recorte.";
+  metasSETASC.forEach(meta=>{
+    const s=valorPMAS(meta.status).trim() ||
+      "Não informado";
+    contagem[s]=(contagem[s]||0)+1;
+  });
 
-tabelaRH("rhTabelaLotacao",
-["Unidade","Tipo","Ativos","Efetivos",
-"Contratados","Comissionados","Terceirizados","Horas semanais"],
-lista.map(r=>r.map((v,i)=>i>=2?fmtRH(v):v))
-);
+  graficosPMAS
+    .filter(g=>g.canvas===canvas)
+    .forEach(g=>g.destroy());
 
+  graficosPMAS=graficosPMAS.filter(
+    g=>g.canvas!==canvas
+  );
+
+  graficosPMAS.push(new Chart(canvas,{
+    type:"doughnut",
+    data:{
+      labels:Object.keys(contagem),
+      datasets:[{
+        data:Object.values(contagem),
+        backgroundColor:[
+          "#16a34a",
+          "#2563eb",
+          "#eab308",
+          "#dc2626",
+          "#94a3b8"
+        ]
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{position:"bottom"}
+      }
+    }
+  }));
 }
 
-function filtrarDimensRH(){
+/* =========================================
+   FILTROS
+========================================= */
 
-const busca=document.getElementById("rhBuscaDimens").value
-.toLocaleLowerCase("pt-BR");
-const tipo=document.getElementById("rhTipoDimens").value;
+function preencherFiltrosPMAS(){
 
-const lista=DIMENS.filter(r=>
-r[0].toLocaleLowerCase("pt-BR").includes(busca)&&
-(!tipo||r[1]===tipo)
-);
+  const eixos=[
+    ...new Set(
+      metasPMAS.map(m=>valorPMAS(m.eixo))
+        .filter(Boolean)
+    )
+  ].sort();
 
-tabelaRH("rhTabelaDimens",
-["Unidade","Serviço","Famílias ref. 2026",
-"Equipe mínima (quadro)","Superior exigido",
-"Assistentes Sociais","Psicólogos","Pedagogos/outros",
-"Coordenação"],
-lista.map(r=>r.map((v,i)=>
-i===2?(v===null?"—":fmtRH(v)):v
-))
-);
+  document.getElementById("filtroEixoPMAS")
+    .innerHTML='<option value="">Todos os eixos</option>'+
+    eixos.map(e=>`
+      <option value="${seguroPMAS(e)}">
+        ${seguroPMAS(e)}
+      </option>
+    `).join("");
 
+  const situacoes=[
+    ...new Set(
+      metasPMAS.map(m=>valorPMAS(m.situacao))
+        .filter(Boolean)
+    )
+  ].sort();
+
+  document.getElementById("filtroSituacaoPMAS")
+    .innerHTML=
+    '<option value="">Todas as situações</option>'+
+    situacoes.map(s=>`
+      <option value="${seguroPMAS(s)}">
+        ${seguroPMAS(s)}
+      </option>
+    `).join("");
+
+  const statusSETASC=[
+    ...new Set(
+      metasSETASC.map(m=>valorPMAS(m.status))
+        .filter(Boolean)
+    )
+  ].sort();
+
+  document.getElementById("filtroSETASC")
+    .innerHTML=
+    '<option value="">Todas as situações</option>'+
+    statusSETASC.map(s=>`
+      <option value="${seguroPMAS(s)}">
+        ${seguroPMAS(s)}
+      </option>
+    `).join("");
 }
 
-function analisesRH(){
+/* =========================================
+   LISTA DE METAS PMAS
+========================================= */
 
-const unidadesSemEfetivos=EFETIVOS
-.filter(r=>r[4]===0).map(r=>r[0]);
+function atualizarMetasPMAS(){
 
-const maiores=LOTACOES.slice()
-.sort((a,b)=>b[2]-a[2])
-.slice(0,5);
+  const busca=document.getElementById(
+    "buscaMetaPMAS"
+  ).value.toLowerCase();
 
-document.getElementById("rhAnalises").innerHTML=`
+  const eixo=document.getElementById(
+    "filtroEixoPMAS"
+  ).value;
 
-<div class="rh-alert">
-<b>1. Conferência do quadro de pessoal:</b>
-o consolidado informa 284 ativos e 289 cadastrados.
-O total da tabela de categoria profissional × vínculo
-não é idêntico ao consolidado de ativos.
-Recomenda-se conciliação com a base nominal interna
-antes de publicação de indicadores de efetividade.
-</div>
+  const ano=document.getElementById(
+    "filtroAnoPMAS"
+  ).value;
 
-<div class="rh-alert">
-<b>2. Unidades sem efetivos no recorte específico:</b>
-${escapeRH(unidadesSemEfetivos.join("; "))}.
-Esse recorte não deve ser confundido com o total de
-efetivos de toda a SEMPRAS.
-</div>
+  const situacao=document.getElementById(
+    "filtroSituacaoPMAS"
+  ).value;
 
-<div class="rh-alert">
-<b>3. Maiores lotações por número de ativos:</b>
-${maiores.map(x=>escapeRH(x[0])+" ("+x[2]+")").join("; ")}.
-A avaliação da suficiência das equipes deve considerar
-a demanda territorial, jornada e composição profissional.
-</div>
+  let lista=metasPMAS.filter(m=>{
 
-<div class="rh-ok">
-<b>4. Recomendação de monitoramento:</b>
-manter atualização periódica de lotação, vínculo,
-carga horária, afastamentos e equipe de referência
-por unidade, articulando Gestão do Trabalho,
-CadSUAS, Censo SUAS e Vigilância Socioassistencial.
-</div>
+    const texto=Object.values(m)
+      .filter(v=>typeof v!=="object")
+      .join(" ").toLowerCase();
 
-<div class="rh-alert">
-<b>5. Qualidade da informação:</b>
-a tabela original contém classificação inconsistente
-para algumas lotações (por exemplo, CRAS registrados
-como tipo Cadastro Único), além de Educação Permanente
-com zero ativos e 40 horas informadas.
-Os registros foram preservados e sinalizados para revisão.
-</div>
-`;
+    if(busca && !texto.includes(busca))return false;
+    if(eixo && valorPMAS(m.eixo)!==eixo)return false;
+
+    if(situacao &&
+       valorPMAS(m.situacao)!==situacao)return false;
+
+    if(ano && !valorPMAS(m["ano"+ano]).trim())
+      return false;
+
+    return true;
+  });
+
+  document.getElementById("indicadoresFiltroPMAS")
+    .innerHTML=`
+      <div class="pmas-grid">
+        <div class="pmas-kpi">
+          <small>Metas encontradas</small>
+          <strong>${lista.length}</strong>
+        </div>
+        <div class="pmas-kpi">
+          <small>Total importado</small>
+          <strong>${metasPMAS.length}</strong>
+        </div>
+      </div>
+    `;
+
+  document.getElementById("listaMetasPMAS")
+    .innerHTML=lista.length?
+    lista.map(m=>`
+
+      <details>
+
+        <summary>
+          Meta ${seguroPMAS(m.numero)} —
+          ${seguroPMAS(m.eixo)}
+          ${m.situacao?
+          " | "+seguroPMAS(m.situacao):""}
+        </summary>
+
+        <div class="pmas-meta">
+          <b>Diretriz estratégica:</b>
+          ${seguroPMAS(m.diretriz)}
+        </div>
+
+        <div class="pmas-meta">
+          <b>Objetivo específico:</b>
+          ${seguroPMAS(m.objetivo)}
+        </div>
+
+        <div class="pmas-meta">
+          <b>Ação estratégica:</b>
+          ${seguroPMAS(m.acao)}
+        </div>
+
+        <h4>Planejamento anual</h4>
+
+        <div class="pmas-grid">
+          ${[2026,2027,2028,2029].map(a=>`
+            <div class="pmas-kpi">
+              <small>${a}</small>
+              <strong style="font-size:19px">
+                ${seguroPMAS(m["ano"+a]) || "—"}
+              </strong>
+            </div>
+          `).join("")}
+        </div>
+
+        <p><b>Período de execução:</b>
+          ${seguroPMAS(m.periodo)||"Não informado"}</p>
+
+        <p><b>Situação:</b>
+          ${seguroPMAS(m.situacao)||"Não informada"}</p>
+
+        <p><b>Resultados:</b>
+          ${seguroPMAS(m.resultado)||"Consultar base original"}</p>
+
+        <p><b>Impacto:</b>
+          ${seguroPMAS(m.impacto)||"Consultar base original"}</p>
+
+      </details>
+
+    `).join(""):
+    '<p>Nenhuma meta encontrada para os filtros selecionados.</p>';
 }
 
-/* ==========================================
-   INTEGRAÇÃO À ABA 2
-========================================== */
+/* =========================================
+   LISTA SETASC
+========================================= */
 
-function montarGestaoRH(){
+function atualizarSETASC(){
 
-const alvo=document.getElementById("conteudo");
+  const busca=document.getElementById(
+    "buscaSETASC"
+  ).value.toLowerCase();
 
-if(!alvo)return;
-if(document.getElementById("cad-rh"))return;
+  const filtro=document.getElementById(
+    "filtroSETASC"
+  ).value;
 
-alvo.insertAdjacentHTML("beforeend",htmlGestaoRH());
+  const lista=metasSETASC.filter(m=>{
 
-preencherTabelasRH();
-prepararFiltrosRH();
-analisesRH();
-carregarGraficosRH();
+    const texto=[
+      m.id,m.eixo,m.unidade,m.dificuldade,
+      m.acao,m.responsavel,m.prazo,m.status
+    ].join(" ").toLowerCase();
 
+    return (!busca||texto.includes(busca)) &&
+      (!filtro||valorPMAS(m.status)===filtro);
+  });
+
+  document.getElementById("listaSETASC").innerHTML=`
+
+    <p>
+      <b>${lista.length}</b> providências encontradas.
+      Total importado: ${metasSETASC.length}.
+    </p>
+
+    ${lista.map(m=>`
+
+      <details>
+
+        <summary>
+          Providência ${seguroPMAS(m.id)} —
+          ${seguroPMAS(m.unidade)}
+          | ${seguroPMAS(m.status)}
+        </summary>
+
+        <p><b>Eixo:</b>
+          ${seguroPMAS(m.eixo)}</p>
+
+        <p><b>Dificuldade / Meta:</b>
+          ${seguroPMAS(m.dificuldade)}</p>
+
+        <p><b>Ação:</b>
+          ${seguroPMAS(m.acao)}</p>
+
+        <p><b>Responsável:</b>
+          ${seguroPMAS(m.responsavel)}</p>
+
+        <p><b>Prazo:</b>
+          ${seguroPMAS(m.prazo)}</p>
+
+        <p><b>Execução registrada:</b>
+          ${seguroPMAS(m.execucao)}</p>
+
+        <p><b>Próximo passo:</b>
+          ${seguroPMAS(m.proximo)}</p>
+
+        <p><b>Última atualização:</b>
+          ${seguroPMAS(m.atualizacao)}</p>
+
+      </details>
+
+    `).join("")}
+  `;
 }
 
-// Mantém a função original da aba Rede SUAS
-// e acrescenta o módulo após seu conteúdo.
+function atualizarPMAS(){
 
-if(typeof window.rede==="function"){
+  document.getElementById("situacaoImportacaoPMAS")
+    .textContent=
+    "Planilha carregada: "+metasPMAS.length+
+    " metas PMAS e "+metasSETASC.length+
+    " providências SETASC.";
 
-const redeOriginal=window.rede;
-
-window.rede=function(){
-redeOriginal();
-montarGestaoRH();
-};
-
-}else{
-
-console.warn(
-"Módulo Gestão do Trabalho: função rede() não encontrada. "+
-"Verifique se este script foi inserido após o código principal."
-);
-
+  atualizarMetasPMAS();
+  atualizarSETASC();
+  graficoSituacaoSETASC();
 }
+
+/* =========================================
+   INTEGRAÇÃO COM A ABA 11
+========================================= */
+
+function iniciarPainelPMAS(){
+
+  const alvo=document.getElementById("conteudo");
+
+  if(!alvo)return;
+
+  limparGraficosPMAS();
+
+  alvo.innerHTML=telaPMAS();
+
+  document.getElementById("arquivoPMAS")
+    .addEventListener("change",function(){
+      importarPMAS(this.files[0]);
+    });
+
+  [
+    "buscaMetaPMAS",
+    "filtroEixoPMAS",
+    "filtroAnoPMAS",
+    "filtroSituacaoPMAS"
+  ].forEach(id=>{
+    document.getElementById(id)
+      .addEventListener("input",atualizarMetasPMAS);
+  });
+
+  [
+    "buscaSETASC",
+    "filtroSETASC"
+  ].forEach(id=>{
+    document.getElementById(id)
+      .addEventListener("input",atualizarSETASC);
+  });
+
+  preencherFiltrosPMAS();
+  atualizarMetasPMAS();
+  atualizarSETASC();
+  graficosResumoPMAS();
+
+  if(metasSETASC.length)graficoSituacaoSETASC();
+}
+
+/*
+ Substitui a função de conteúdo da aba 11.
+ Mantém a navegação das outras onze abas.
+*/
+
+window.pmas=iniciarPainelPMAS;
 
 })();
 </script>
-
-<!-- FIM DO MÓDULO GESTÃO DO TRABALHO -->
+<!-- FIM DO PAINEL PMAS -->
