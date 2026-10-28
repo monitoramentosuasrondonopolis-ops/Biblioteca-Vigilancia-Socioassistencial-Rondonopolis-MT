@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca de Dados VSA - Rondonópolis-MT</title>
+    <title>Painel e Biblioteca VSA - Rondonópolis-MT</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
-    <header class="bg-blue-900 text-white shadow-md">
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+    <header class="bg-blue-900 text-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 py-6">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <span class="bg-blue-800 text-blue-200 text-xs font-semibold px-2.5 py-1 rounded uppercase tracking-wider">SEMPRAS · Rondonópolis-MT</span>
-                    <h1 class="text-2xl md:text-3xl font-bold mt-1">Portal e Biblioteca da Vigilância Socioassistencial</h1>
-                    <p class="text-blue-200 text-sm mt-1">Análises socioterritoriais, contatos da rede, gráficos e indicadores oficiais.</p>
+                    <h1 class="text-2xl md:text-3xl font-bold mt-1">Painel Consolidado da Vigilância Socioassistencial</h1>
+                    <p class="text-blue-200 text-sm mt-1">Dashboards interativos, diretório da rede e indicadores gerenciais do SUAS.</p>
                 </div>
-                <div class="bg-blue-800/60 p-3 rounded-lg border border-blue-700 text-xs text-blue-100">
-                    <p class="font-semibold">🔄 Sincronização em Tempo Real</p>
-                    <p class="mt-0.5">Última atualização: <span id="ultima-atualizacao">Carregando...</span></p>
+                <div class="bg-blue-800/80 p-3 rounded-lg border border-blue-700 text-xs text-blue-100">
+                    <p class="font-semibold">📊 Status do Portal</p>
+                    <p class="mt-0.5">Atualização: <span id="ultima-atualizacao">Carregando...</span></p>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
                     <i data-lucide="search" class="w-5 h-5"></i>
                 </span>
-                <input type="text" id="busca-global" placeholder="Pesquisar contatos, CRAS, escolas, indicadores, RMA, PMAS..." class="w-full pl-10 pr-4 py-3 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition">
+                <input type="text" id="busca-global" placeholder="Pesquisar unidades, responsáveis, telefones ou indicadores..." class="w-full pl-10 pr-4 py-3 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition">
             </div>
         </div>
     </div>
@@ -43,7 +43,7 @@
 
     <footer class="bg-slate-800 text-slate-400 py-6 mt-auto text-center text-sm">
         <p>Prefeitura Municipal de Rondonópolis - SEMPRAS</p>
-        <p class="mt-1 text-xs">Vigilância Socioassistencial · Gestão e Monitoramento do SUAS</p>
+        <p class="mt-1 text-xs">Gerenciamento Técnico da Vigilância Socioassistencial</p>
     </footer>
 
     <script>
@@ -92,19 +92,30 @@
             const cat = dadosGlobais.categorias[abaAtiva];
             let html = `<div class="mb-6"><h2 class="text-xl font-bold text-slate-900">${cat.titulo}</h2><p class="text-slate-600 text-sm">${cat.descricao}</p></div>`;
 
-            // Renderizar Tabela de Contatos (se existir)
+            if (cat.kpis && cat.kpis.length > 0) {
+                html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">`;
+                cat.kpis.forEach(kpi => {
+                    html += `
+                        <div class="${kpi.cor} text-white p-5 rounded-2xl shadow-sm flex flex-col justify-between">
+                            <span class="text-xs uppercase font-semibold tracking-wider opacity-90">${kpi.titulo}</span>
+                            <span class="text-3xl font-extrabold my-2">${kpi.valor}</span>
+                            <span class="text-xs opacity-80">${kpi.detalhe}</span>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
             if (cat.tabelaContatos && cat.tabelaContatos.length > 0) {
-                let contatosFiltrados = cat.tabelaContatos.filter(c => 
+                let filtrados = cat.tabelaContatos.filter(c => 
                     c.unidade.toLowerCase().includes(filtroBusca.toLowerCase()) || 
                     c.responsavel.toLowerCase().includes(filtroBusca.toLowerCase()) ||
                     c.endereco.toLowerCase().includes(filtroBusca.toLowerCase())
                 );
-
-                html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="address-book" class="w-5 h-5 text-blue-600"></i> Guia Oficial de Telefones, E-mails e Endereços</h3>`;
                 html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto mb-8"><table class="w-full text-left border-collapse text-sm">`;
                 html += `<thead class="bg-slate-100 text-slate-700 text-xs uppercase"><tr><th class="p-3">Unidade / Equipamento</th><th class="p-3">Responsável</th><th class="p-3">Telefone</th><th class="p-3">E-mail</th><th class="p-3">Endereço</th></tr></thead><tbody class="divide-y divide-slate-100">`;
 
-                contatosFiltrados.forEach(c => {
+                filtrados.forEach(c => {
                     html += `
                         <tr class="hover:bg-slate-50">
                             <td class="p-3 font-bold text-slate-900">${c.unidade}</td>
@@ -118,59 +129,35 @@
                 html += `</tbody></table></div>`;
             }
 
-            // Renderizar Gráfico de Barras do IDCRAS (se houver dados de gráfico)
             if (cat.graficos && cat.graficos.idcras) {
-                html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="bar-chart" class="w-5 h-5 text-blue-600"></i> Dashboard do IDCRAS Rondonópolis (Pontuação Geral)</h3>`;
-                html += `<div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-8"><canvas id="chartIDCRAS" class="max-h-72 w-full"></canvas></div>`;
+                html += `<div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-8"><h3 class="font-bold text-slate-800 mb-4">Desempenho Geral do IDCRAS nas Unidades</h3><canvas id="chartIDCRAS" class="max-h-80 w-full"></canvas></div>`;
             }
 
-            // Renderizar Links e Fontes
-            html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="link" class="w-5 h-5 text-blue-600"></i> Acessos Rápidos e Arquivos Integrados</h3>`;
-            html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">`;
-
-            let linksFiltrados = cat.links.filter(l => 
-                l.nome.toLowerCase().includes(filtroBusca.toLowerCase()) || 
-                l.descricao.toLowerCase().includes(filtroBusca.toLowerCase())
-            );
-
-            if(linksFiltrados.length === 0) {
-                html += `<p class="text-slate-500 italic col-span-full">Nenhum link encontrado.</p>`;
-            } else {
-                linksFiltrados.forEach(link => {
+            if (cat.links && cat.links.length > 0) {
+                html += `<h3 class="text-lg font-semibold text-slate-800 mb-3">Links e Bases Oficiais Relacionadas</h3>`;
+                html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">`;
+                cat.links.forEach(link => {
                     html += `
-                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
                             <div>
-                                <div class="flex justify-between items-start gap-2">
-                                    <h4 class="font-bold text-slate-900">${link.nome}</h4>
-                                    <span class="text-xs px-2 py-0.5 rounded ${link.restrito ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">${link.restrito ? 'Restrito' : 'Público'}</span>
-                                </div>
-                                <p class="text-xs text-slate-600 mt-2">${link.descricao}</p>
+                                <h4 class="font-bold text-slate-900">${link.nome}</h4>
+                                <p class="text-xs text-slate-600 mt-1">${link.descricao}</p>
                             </div>
-                            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs text-slate-500">
-                                <span>Fonte: <strong>${link.orgao || 'Oficial'}</strong></span>
-                                <a href="${link.url}" target="_blank" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-semibold">Acessar / Abrir <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
+                            <div class="mt-4 pt-3 border-t flex justify-between items-center text-xs">
+                                <span class="text-slate-500">Orgão: <strong>${link.orgao}</strong></span>
+                                <a href="${link.url}" target="_blank" class="text-blue-600 font-semibold flex items-center gap-1">Acessar <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
                             </div>
                         </div>
                     `;
                 });
+                html += `</div>`;
             }
-            html += `</div>`;
 
-            // Renderizar Indicadores Resumidos
             if (cat.indicadores && cat.indicadores.length > 0) {
-                html += `<h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="table" class="w-5 h-5 text-blue-600"></i> Indicadores Analíticos Consolidados</h3>`;
                 html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto"><table class="w-full text-left border-collapse text-sm">`;
-                html += `<thead class="bg-slate-100 text-slate-700 text-xs uppercase"><tr><th class="p-3">Indicador</th><th class="p-3">Valor / Dado</th><th class="p-3">Período</th><th class="p-3">Fonte</th></tr></thead><tbody class="divide-y divide-slate-100">`;
-
+                html += `<thead class="bg-slate-100 text-slate-700 text-xs uppercase"><tr><th class="p-3">Indicador / Descrição</th><th class="p-3">Valor / Dado</th><th class="p-3">Período</th><th class="p-3">Fonte</th></tr></thead><tbody class="divide-y divide-slate-100">`;
                 cat.indicadores.forEach(ind => {
-                    html += `
-                        <tr class="hover:bg-slate-50">
-                            <td class="p-3 font-medium text-slate-900">${ind.nome}</td>
-                            <td class="p-3 font-bold text-blue-600">${ind.valor}</td>
-                            <td class="p-3 text-slate-600">${ind.periodo}</td>
-                            <td class="p-3 text-slate-600">${ind.fonte}</td>
-                        </tr>
-                    `;
+                    html += `<tr class="hover:bg-slate-50"><td class="p-3 font-medium text-slate-900">${ind.nome}</td><td class="p-3 font-bold text-blue-600">${ind.valor}</td><td class="p-3 text-slate-600">${ind.periodo}</td><td class="p-3 text-slate-600">${ind.fonte}</td></tr>`;
                 });
                 html += `</tbody></table></div>`;
             }
@@ -178,7 +165,6 @@
             painel.innerHTML = html;
             lucide.createIcons();
 
-            // Desenhar Gráfico se o elemento existir
             if (cat.graficos && cat.graficos.idcras) {
                 const ctx = document.getElementById('chartIDCRAS').getContext('2d');
                 new Chart(ctx, {
@@ -192,10 +178,7 @@
                             borderRadius: 6
                         }]
                     },
-                    options: {
-                        responsive: true,
-                        scales: { y: { beginAtZero: true, max: 5 } }
-                    }
+                    options: { responsive: true, scales: { y: { beginAtZero: true, max: 5 } } }
                 });
             }
         }
